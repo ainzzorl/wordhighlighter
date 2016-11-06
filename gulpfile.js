@@ -2,8 +2,15 @@ var gulp = require('gulp');
 var ts = require('gulp-typescript');
 var tsProject = ts.createProject('tsconfig.json');
 
-gulp.task('default', function () {
+gulp.task('copy-static-content', function () {
+    return gulp.src('manifest.json')
+        .pipe(gulp.dest('build'));
+});
+
+gulp.task('compile', function () {
     return tsProject.src()
         .pipe(tsProject())
         .js.pipe(gulp.dest('build'));
 });
+
+gulp.task('default', ['copy-static-content', 'compile']);
