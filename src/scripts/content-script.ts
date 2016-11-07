@@ -1,4 +1,4 @@
-///<reference path="dao.ts" />
+///<reference path="../lib/dao.ts" />
 
 console.log('In content script');
 
