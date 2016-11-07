@@ -8,10 +8,13 @@
       "strict_min_version": "50.0"
     }
   },
+  "background": {
+    "scripts": [ "dao.js", "background.js" ]
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content-script.js"]
+      "js": ["dao.js", "content-script.js"]
     }
   ]
 }

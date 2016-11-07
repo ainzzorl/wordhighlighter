@@ -1,6 +1,6 @@
 {
     "files": [
-        "src/content-script.ts"
+        "src/*.ts"
     ],
     "compilerOptions": {
         "noImplicitAny": true,
