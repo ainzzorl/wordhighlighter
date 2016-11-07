@@ -3,7 +3,7 @@ var ts = require('gulp-typescript');
 var tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('copy-static-content', function () {
-    return gulp.src('manifest.json')
+    return gulp.src(['manifest.json', 'wordhighlighter.css'])
         .pipe(gulp.dest('build'));
 });
 
