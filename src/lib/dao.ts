@@ -1,4 +1,4 @@
-///<reference path="../node_modules/@types/chrome/index.d.ts" />
+///<reference path="../../node_modules/@types/chrome/index.d.ts" />
 
 // TODO: use synced storage
 class DAO {
