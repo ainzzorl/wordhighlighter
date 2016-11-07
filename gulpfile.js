@@ -3,6 +3,7 @@ var ts = require('gulp-typescript');
 var tsProjectSrc = ts.createProject('tsconfig-src.json');
 var tsProjectSpec = ts.createProject('tsconfig-spec.json');
 var jasmine = require('gulp-jasmine');
+var concat = require('gulp-concat');
 
 gulp.task('copy-static-content', function () {
     return gulp.src(['manifest.json', 'wordhighlighter.css'])
@@ -21,9 +22,17 @@ gulp.task('compile-spec', function () {
             .js.pipe(gulp.dest('build/spec'));
 });
 
-gulp.task('spec', ['compile-src', 'compile-spec'], function() {
-    return gulp.src('build/spec/*Spec.js').pipe(jasmine());
+gulp.task('concat-spec', ['compile-src', 'compile-spec'], function() {
+    return gulp
+        .src(['build/lib/*.js', 'build/spec/*Spec.js'])
+        .pipe(concat('spec-all.js'))
+        .pipe(gulp.dest('./build/'));
 });
 
+gulp.task('spec', ['compile-src', 'compile-spec', 'concat-spec'], function() {
+    return gulp
+        .src('build/spec-all.js')
+        .pipe(jasmine());
+});
 
-gulp.task('default', ['copy-static-content', 'compile-src', 'compile-spec', 'spec']);
+gulp.task('default', ['copy-static-content', 'compile-src', 'compile-spec', 'concat-spec', 'spec']);

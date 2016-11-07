@@ -1,3 +1,4 @@
+///<reference path="../lib/background.ts" />
 ///<reference path="../lib/dao.ts" />
 
-new DAO().init();
+new Background(new DAO()).start();

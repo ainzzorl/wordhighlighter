@@ -9,12 +9,12 @@
     }
   },
   "background": {
-    "scripts": [ "dao.js", "background.js" ]
+    "scripts": [ "lib/dao.js", "lib/background.js", "scripts/background-script.js" ]
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["dao.js", "content-script.js"],
+      "js": [ "lib/dao.js", "scripts/content-script.js" ],
       "css": ["wordhighlighter.css"]
     }
   ]
