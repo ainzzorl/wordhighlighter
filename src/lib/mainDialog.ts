@@ -10,16 +10,17 @@ class MainDialog {
     }
 
     load(): void {
-        let listElement = document.querySelector('ul');
-        while (listElement.firstChild) {
-            listElement.removeChild(listElement.firstChild);
-        }
+        this.dao.getWords(function(words: Array<string>) {
+            let listElement = document.querySelector('ul');
+            while (listElement.firstChild) {
+                listElement.removeChild(listElement.firstChild);
+            }
 
-        let words = ['aaa', 'bbb'];
-        for (let i=0; i < words.length; i++) {
-            const listItem = document.createElement('li');
-            listItem.textContent = words[i];
-            listElement.appendChild(listItem);
-        }
+            for (let i=0; i < words.length; i++) {
+                const listItem = document.createElement('li');
+                listItem.textContent = words[i];
+                listElement.appendChild(listItem);
+            }
+        });
     }
 }
