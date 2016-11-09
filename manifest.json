@@ -17,5 +17,15 @@
       "js": [ "lib/dao.js", "scripts/content-script.js" ],
       "css": ["wordhighlighter.css"]
     }
-  ]
+  ],
+  "browser_action": {
+    "default_icon": {
+      "32": "icons/icon-32.png"
+    },
+    "default_title": "Word Highlighter",
+    "default_popup": "html/mainDialog.html"
+  },
+  "icons": {
+    "32": "icons/icon-32.png"
+  }
 }

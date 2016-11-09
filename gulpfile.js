@@ -5,7 +5,13 @@ var tsProjectSpec = ts.createProject('tsconfig-spec.json');
 var jasmine = require('gulp-jasmine');
 var concat = require('gulp-concat');
 
-gulp.task('copy-static-content', function () {
+
+gulp.task('copy-html', function () {
+    return gulp.src(['html/**/*'])
+        .pipe(gulp.dest('build/html'));
+});
+
+gulp.task('copy-static-content', ['copy-html'], function () {
     return gulp.src(['manifest.json', 'wordhighlighter.css'])
         .pipe(gulp.dest('build'));
 });
