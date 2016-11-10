@@ -41,4 +41,8 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-spec'], function() {
         .pipe(jasmine());
 });
 
-gulp.task('default', ['copy-static-content', 'compile-src', 'compile-spec', 'concat-spec', 'spec']);
+gulp.task('release', ['copy-static-content', 'compile-src', 'compile-spec', 'concat-spec', 'spec']);
+
+gulp.task('fast-build', ['copy-static-content', 'compile-src']);
+
+gulp.task('default', ['fast-build']);
