@@ -10,6 +10,7 @@ class MainDialog {
     }
 
     load(): void {
+        let dialog = this;
         this.dao.getWords(function(words: Array<string>) {
             let listElement = document.querySelector('ul');
             while (listElement.firstChild) {
@@ -22,5 +23,16 @@ class MainDialog {
                 listElement.appendChild(listItem);
             }
         });
+
+        this.document.addEventListener('click', function(e: MouseEvent) {
+            let target = <Element>e.target;
+            if (target.id === 'add-new-word-button') {
+              dialog.onAddNewWordClicked();
+            }
+        });
+    }
+
+    onAddNewWordClicked(): void {
+        console.log('in onAddNewWordClicked');
     }
 }
