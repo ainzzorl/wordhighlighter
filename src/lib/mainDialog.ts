@@ -33,6 +33,13 @@ class MainDialog {
     }
 
     onAddNewWordClicked(): void {
-        console.log('in onAddNewWordClicked');
+        let newWordElement = <HTMLInputElement>document.getElementById('new-word');
+        let newWord = newWordElement.value;
+        if (!newWord) {
+            return;
+        }
+        this.dao.addWord(newWord, function() {
+            this.load();
+        });
     }
 }
