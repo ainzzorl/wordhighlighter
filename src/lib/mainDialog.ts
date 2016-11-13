@@ -26,8 +26,13 @@ class MainDialog {
 
         this.document.addEventListener('click', function(e: MouseEvent) {
             let target = <Element>e.target;
-            if (target.id === 'add-new-word-button') {
-              dialog.onAddNewWordClicked();
+            switch (target.id) {
+                case 'add-new-word-button':
+                    dialog.onAddNewWordClicked();
+                    break;
+                case 'import-as-replacement':
+                    dialog.onImportAsReplacementClicked();
+                    break;
             }
         });
     }
@@ -41,5 +46,14 @@ class MainDialog {
         this.dao.addEntry(new DictionaryEntry(newWord), function() {
             this.load();
         });
+    }
+
+    onImportAsReplacementClicked(): void {
+        let importAreaElement = <HTMLInputElement>document.getElementById('import-area');
+        let importValues = importAreaElement.value;
+        if (!importAreaElement) {
+            return;
+        }
+        console.log(importValues);
     }
 }
