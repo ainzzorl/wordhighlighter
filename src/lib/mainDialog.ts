@@ -50,10 +50,18 @@ class MainDialog {
 
     onImportAsReplacementClicked(): void {
         let importAreaElement = <HTMLInputElement>document.getElementById('import-area');
-        let importValues = importAreaElement.value;
-        if (!importAreaElement) {
+        let importAreaValue = importAreaElement.value;
+        if (!importAreaValue) {
             return;
         }
-        console.log(importValues);
+        let newDictionary = importAreaValue
+            .split('\n')
+            .map(function(w) { return w.trim(); })
+            .filter(function(w) { return w; })
+            .map(function(w) { return new DictionaryEntry(w); });
+
+        this.dao.saveDictionary(newDictionary, function() {
+            this.load();
+        });
     }
 }

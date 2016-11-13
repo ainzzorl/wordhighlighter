@@ -28,4 +28,10 @@ class DAO {
             });
         });
     }
+
+    saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
+        chrome.storage.local.set({ dictionary: dictionary }, function() {
+            console.debug('Saved dictionary');
+        });
+    }
 }
