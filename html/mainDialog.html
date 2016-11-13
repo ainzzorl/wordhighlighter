@@ -4,9 +4,15 @@
     <p>Main Dialog</p>
     <ul>
     </ul>
-    <form onsubmit="onAddWordClicked()">
+    <form>
       <input id="new-word" type="text" name="new-word"/>
       <input id="add-new-word-button" type="submit" value="Add"/>
+    </form>
+    <form>
+      <textarea id="import-area" rows="4" cols="50"></textarea>
+      <br>
+      <input id="import-in-addition" type="submit" value="Import in addition"/>
+      <input id="import-as-replacement" type="submit" value="Import as replacement"/>
     </form>
     <script src="../lib/mainDialog.js"></script>
     <script src="../lib/dao.js"></script>
