@@ -4,7 +4,13 @@ var tsProjectSrc = ts.createProject('tsconfig-src.json');
 var tsProjectSpec = ts.createProject('tsconfig-spec.json');
 var jasmine = require('gulp-jasmine');
 var concat = require('gulp-concat');
+var clean = require('gulp-clean');
+var runSequence = require('run-sequence');
 
+gulp.task('clean', function () {
+    return gulp.src('build/*', {read: false})
+        .pipe(clean());
+});
 
 gulp.task('copy-html', function () {
     return gulp.src(['html/**/*'])
@@ -41,7 +47,13 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-spec'], function() {
         .pipe(jasmine());
 });
 
-gulp.task('release', ['copy-static-content', 'compile-src', 'compile-spec', 'concat-spec', 'spec']);
+gulp.task('release', function(callback) {
+  runSequence('clean',
+              ['copy-static-content', 'compile-src', 'compile-spec'],
+              'concat-spec',
+              'spec',
+              callback);
+});
 
 gulp.task('fast-build', ['copy-static-content', 'compile-src']);
 
