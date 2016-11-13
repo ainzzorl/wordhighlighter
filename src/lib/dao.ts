@@ -10,13 +10,13 @@ class DAO {
         });
     }
 
-    // TODO: don't overwrite existing
     init() {
-        var dictionary = new Array<DictionaryEntry>();
-        dictionary.push(new DictionaryEntry('people'));
-        dictionary.push(new DictionaryEntry('profit'));
-        chrome.storage.local.set({ dictionary: dictionary }, function() {
-            console.debug('Initialized the store');
+        chrome.storage.local.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
+            if (!result.dictionary) {
+                chrome.storage.local.set({ dictionary: [] }, function() {
+                    console.log('Initialize the dictionary');
+                });
+            }
         });
     }
 
