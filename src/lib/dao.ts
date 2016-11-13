@@ -1,27 +1,30 @@
 ///<reference path="../../node_modules/@types/chrome/index.d.ts" />
+///<reference path="dictionaryEntry.ts" />
 
 // TODO: use synced storage
 class DAO {
-    getWords(callback: (words: Array<string>) => void): void {
-        chrome.storage.local.get('words', function(result: { words: Array<string> }) {
-            let words: Array<string> = result.words;
-            callback(result.words);
+    getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
+        chrome.storage.local.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
+            let dictionary: Array<DictionaryEntry> = result.dictionary;
+            callback(result.dictionary);
         });
     }
 
     // TODO: don't overwrite existing
     init() {
-        var words = ['people', 'profit'];
-        chrome.storage.local.set({ words: words }, function() {
+        var dictionary = new Array<DictionaryEntry>();
+        dictionary.push(new DictionaryEntry('people'));
+        dictionary.push(new DictionaryEntry('profit'));
+        chrome.storage.local.set({ dictionary: dictionary }, function() {
             console.debug('Initialized the store');
         });
     }
 
-    addWord(word: string, callback: () => void): void {
-        this.getWords(function(words) {
-            words.push(word);
-            chrome.storage.local.set({ words: words }, function() {
-                console.debug('Word ' + word + ' has been added to the storages');
+    addEntry(entry: DictionaryEntry, callback: () => void): void {
+        this.getDictionary(function(dictionary) {
+            dictionary.push(entry);
+            chrome.storage.local.set({ dictionary: dictionary }, function() {
+                console.debug('Word ' + entry.value + ' has been added to the storages');
             });
         });
     }

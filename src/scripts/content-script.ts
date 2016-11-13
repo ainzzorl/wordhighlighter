@@ -3,16 +3,16 @@
 console.log('In content script');
 
 let dao = new DAO();
-dao.getWords(function(words: Array<string>) {
-    console.log('Received words: ' + words);
-    substitute(words);
+dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
+    console.log('Received words: ' + dictionary);
+    substitute(dictionary);
 });
 
-function substitute(words: Array<string>) {
+function substitute(dictionary: Array<DictionaryEntry>) {
     let html = document.body.innerHTML;
 
-    words.forEach(function(word) {
-      html = html.replace(word, "<span class='highlighted-word'>" + word + "</span>");
+    dictionary.forEach(function(dictionaryEntry) {
+      html = html.replace(dictionaryEntry.value, "<span class='highlighted-word'>" + dictionaryEntry.value + "</span>");
     });
 
     document.body.innerHTML = html;

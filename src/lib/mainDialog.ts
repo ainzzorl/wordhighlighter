@@ -11,15 +11,15 @@ class MainDialog {
 
     load(): void {
         let dialog = this;
-        this.dao.getWords(function(words: Array<string>) {
+        this.dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
             let listElement = document.querySelector('ul');
             while (listElement.firstChild) {
                 listElement.removeChild(listElement.firstChild);
             }
 
-            for (let i=0; i < words.length; i++) {
+            for (let i=0; i < dictionary.length; i++) {
                 const listItem = document.createElement('li');
-                listItem.textContent = words[i];
+                listItem.textContent = dictionary[i].value;
                 listElement.appendChild(listItem);
             }
         });
@@ -38,7 +38,7 @@ class MainDialog {
         if (!newWord) {
             return;
         }
-        this.dao.addWord(newWord, function() {
+        this.dao.addEntry(new DictionaryEntry(newWord), function() {
             this.load();
         });
     }
