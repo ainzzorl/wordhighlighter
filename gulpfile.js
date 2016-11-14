@@ -5,7 +5,10 @@ var tsProjectSpec = ts.createProject('tsconfig-spec.json');
 var jasmine = require('gulp-jasmine');
 var concat = require('gulp-concat');
 var clean = require('gulp-clean');
+var zip = require('gulp-zip');
 var runSequence = require('run-sequence');
+
+var XPI_NAME = 'word-highlighter.xpi';
 
 gulp.task('clean', function () {
     return gulp.src('build/*', {read: false})
@@ -17,7 +20,12 @@ gulp.task('copy-html', function () {
         .pipe(gulp.dest('build/html'));
 });
 
-gulp.task('copy-static-content', ['copy-html'], function () {
+gulp.task('copy-icons', function () {
+    return gulp.src(['icons/**/*'])
+        .pipe(gulp.dest('build/icons'));
+});
+
+gulp.task('copy-static-content', ['copy-html', 'copy-icons'], function () {
     return gulp.src(['manifest.json', 'wordhighlighter.css'])
         .pipe(gulp.dest('build'));
 });
@@ -47,11 +55,18 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-spec'], function() {
         .pipe(jasmine());
 });
 
+gulp.task('zip', ['copy-static-content', 'compile-src'], function() {
+  gulp.src('build/**/*')
+    .pipe(zip(XPI_NAME))
+    .pipe(gulp.dest('build/'));
+});
+
 gulp.task('release', function(callback) {
   runSequence('clean',
               ['copy-static-content', 'compile-src', 'compile-spec'],
               'concat-spec',
               'spec',
+              'zip',
               callback);
 });
 
