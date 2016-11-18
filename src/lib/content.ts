@@ -19,24 +19,40 @@ class Content {
 
     substitute(node: Node, dictionary: Array<DictionaryEntry>): void {
         let child = node.firstChild;
-        if (node.childNodes.length === 1 && node.firstChild.nodeType === Node.TEXT_NODE) {
-            this.substituteText(<HTMLElement> node, dictionary);
-            return;
-        }
         while (child) {
-            this.substitute(child, dictionary);
+            if (child.nodeType === Node.TEXT_NODE) {
+                let replacementList = this.substituteInTextNode(<HTMLElement> child, dictionary);
+                if (replacementList) {
+                    let replacement = Array.prototype.slice.call(replacementList);
+
+                    for (var i = 0; i < replacement.length; ++i) {
+                        node.insertBefore(replacement[i], child);
+                    }
+                    let next = child.nextSibling;
+                    node.removeChild(child);
+                    child = next;
+                    continue;
+                } else {
+                }
+            } else {
+                this.substitute(child, dictionary);
+            }
             child = <HTMLElement> child.nextSibling;
         }
     }
 
-    substituteText(node: HTMLElement, dictionary: Array<DictionaryEntry>) {
-        let originalHtml = node.innerHTML;
+    substituteInTextNode(node: HTMLElement, dictionary: Array<DictionaryEntry>): NodeList {
+        let originalHtml = node.textContent;
         let replacementHtml = originalHtml;
         dictionary.forEach(function(dictionaryEntry) {
             replacementHtml = replacementHtml.replace(dictionaryEntry.value, "<span class='highlighted-word'>" + dictionaryEntry.value + "</span>");
         });
-        if (originalHtml !== replacementHtml) {
-            node.innerHTML = replacementHtml;
+        if (originalHtml === replacementHtml) {
+            return null;
+        } else {
+            let newNode = document.createElement('span');
+            newNode.innerHTML = replacementHtml;
+            return newNode.childNodes;
         }
     }
 }
