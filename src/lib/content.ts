@@ -12,8 +12,13 @@ class Content {
 
     start(): void {
         let content = this;
+        let timeStart = performance.now();
+        console.log('Processing URL ' + document.URL);
         this.dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
             content.substitute(document, dictionary);
+            let timeEnd = performance.now();
+            let seconds = (timeEnd - timeStart) / 1000;
+            console.log('Finished processing ' + document.URL + ' in ' + seconds.toFixed(2) + ' seconds');
         });
     }
 
