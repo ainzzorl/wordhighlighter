@@ -7,6 +7,7 @@ var concat = require('gulp-concat');
 var clean = require('gulp-clean');
 var zip = require('gulp-zip');
 var runSequence = require('run-sequence');
+var Server = require('karma').Server;
 
 var XPI_NAME = 'word-highlighter.xpi';
 
@@ -49,10 +50,11 @@ gulp.task('concat-spec', ['compile-src', 'compile-spec'], function() {
         .pipe(gulp.dest('./build/'));
 });
 
-gulp.task('spec', ['compile-src', 'compile-spec', 'concat-spec'], function() {
-    return gulp
-        .src('build/spec-all.js')
-        .pipe(jasmine());
+gulp.task('spec', ['compile-src', 'compile-spec', 'concat-spec'], function(done) {
+    return new Server({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+        }, done).start();
 });
 
 gulp.task('zip', ['copy-static-content', 'compile-src'], function() {
