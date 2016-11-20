@@ -5,20 +5,25 @@
 describe('textNodeHandler', function() {
     let handler: TextNodeHandler;
     let dao: DAO;
-    let element: Text;
-    let result: Array<HTMLElement>;
-
-    beforeEach(function() {
-        let dictionary = [];
-        dictionary.push(new DictionaryEntry('people'));
-        dictionary.push(new DictionaryEntry('profit'));
-        handler = new TextNodeHandler(dictionary);
-    });
 
     describe('injectMarkup', function() {
+        let element: Text;
+        let result: Array<HTMLElement>;
+
+        beforeEach(function() {
+            handler = new TextNodeHandler(null);
+            element = document.createTextNode('Internet for people, not profit');
+        });
+
         describe('1 match in the middle', function() {
             beforeEach(function() {
-                element = document.createTextNode('Internet for people and');
+                handler.findMatches = function(input) {
+                    return [
+                        { value: 'Internet for ', matchOf: null },
+                        { value: 'people', matchOf: 'people' },
+                        { value: ', not profit', matchOf: null }
+                    ];
+                }
                 result = handler.injectMarkup(element);
             });
 
@@ -26,13 +31,17 @@ describe('textNodeHandler', function() {
                 expect(result.length).toEqual(3);
                 expect(result[0].nodeValue).toEqual('Internet for ');
                 expect(result[1].outerHTML).toEqual('<span class="highlighted-word">people</span>');
-                expect(result[2].nodeValue).toEqual(' and');
+                expect(result[2].nodeValue).toEqual(', not profit');
             });
         });
 
         describe('no match', function() {
             beforeEach(function() {
-                element = document.createTextNode('Text that does not match');
+                handler.findMatches = function(input) {
+                    return [
+                        { value: 'Internet for people, not profit', matchOf: null }
+                    ];
+                }
                 result = handler.injectMarkup(element);
             });
 
@@ -40,10 +49,34 @@ describe('textNodeHandler', function() {
                 expect(result).toBeNull();
             });
         });
+
+
+        describe('entire input is a match', function() {
+            beforeEach(function() {
+                handler.findMatches = function(input) {
+                    return [
+                        { value: 'Internet for people, not profit', matchOf: 'Internet for people, not profit' }
+                    ];
+                }
+                result = handler.injectMarkup(element);
+            });
+
+            it('injects markup', function() {
+                expect(result.length).toEqual(1);
+                expect(result[0].outerHTML).toEqual('<span class="highlighted-word">Internet for people, not profit</span>');
+            });
+        });
     });
 
     describe('findMatches', function() {
         let matchResult: Array<MatchResultEntry>;
+
+        beforeEach(function() {
+            let dictionary = [];
+            dictionary.push(new DictionaryEntry('people'));
+            dictionary.push(new DictionaryEntry('profit'));
+            handler = new TextNodeHandler(dictionary);
+        });
 
         describe('1 match in the middle', function() {
             beforeEach(function() {

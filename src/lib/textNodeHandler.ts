@@ -9,18 +9,21 @@ class TextNodeHandler {
     }
 
     injectMarkup(node: Node): Array<HTMLElement> {
-        let original = node.textContent;
-        let replacementHtml = original;
-        this.dictionary.forEach(function(dictionaryEntry) {
-            replacementHtml = replacementHtml.replace(dictionaryEntry.value, "<span class='highlighted-word'>" + dictionaryEntry.value + "</span>");
-        });
-        if (original === replacementHtml) {
+        let matchResults = this.findMatches(node.textContent);
+        let html = '';
+        if (matchResults.length === 1 && !matchResults[0].matchOf) {
             return null;
-        } else {
-            let newNode = document.createElement('span');
-            newNode.innerHTML = replacementHtml;
-            return Array.prototype.slice.call(newNode.childNodes);
         }
+        for (let i = 0; i < matchResults.length; ++i) {
+            if (matchResults[i].matchOf) {
+                html += this.wrap(matchResults[i].value);
+            } else {
+                html += matchResults[i].value;
+            }
+        }
+        let newNode = document.createElement('doesnotmatter');
+        newNode.innerHTML = html;
+        return Array.prototype.slice.call(newNode.childNodes);
     }
 
     // TODO: too complex, simplify.
@@ -98,5 +101,9 @@ class TextNodeHandler {
 
     private isWordCharacter(char: string) {
         return char[0] >= 'a' && char[0] <= 'z' || char[0] >= 'A' && char[0] <= 'Z';
+    }
+
+    private wrap(word: string) {
+        return "<span class='highlighted-word'>" + word + "</span>";
     }
 }
