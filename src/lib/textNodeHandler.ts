@@ -7,7 +7,7 @@ class TextNodeHandler {
         this.dictionary = dictionary;
     }
 
-    injectMarkip(node: Node): Array<HTMLElement> {
+    injectMarkup(node: Node): Array<HTMLElement> {
         let original = node.textContent;
         let replacementHtml = original;
         this.dictionary.forEach(function(dictionaryEntry) {

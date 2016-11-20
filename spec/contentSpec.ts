@@ -2,31 +2,39 @@
 ///<reference path="../src/lib/Content.ts" />
 
 describe('content', function() {
-    let dao;
+    let textNodeHandler: TextNodeHandler;
 
     describe('start', function() {
         let rootElement;
 
         beforeEach(function() {
-            let dao = new DAO();
-            dao.getDictionary = function(callback: (dictionary: Array<DictionaryEntry>) => void) {
-                let dictionary = [];
-                dictionary.push(new DictionaryEntry('people'));
-                dictionary.push(new DictionaryEntry('profit'));
-                callback(dictionary);
-            };
-
+            let textNodeHandler = new TextNodeHandler(null);
+            textNodeHandler.injectMarkup = function(node: Node): Array<HTMLElement> {
+                if (node.textContent === 'Replaced with 2') {
+                    return [
+                        createSpan('span1'),
+                        createSpan('span2')
+                    ];
+                }
+                return null;
+            }
             rootElement = document.createElement('div');
-            rootElement.innerHTML = '<h2>Internet for people,<br>not profit.</h2>';
+            rootElement.innerHTML = '<child>Replaced with 2</child>';
             document.body.appendChild(rootElement);
 
-            let content = new Content(dao, document);
-            content.start();
+            let content = new Content(textNodeHandler);
+            content.injectMarkup(rootElement);
         });
 
-        it('replaces the text entries', function() {
+        it('marks up the node', function() {
             expect(rootElement.innerHTML).toEqual(
-                '<h2>Internet for <span class="highlighted-word">people</span>,<br>not <span class="highlighted-word">profit</span>.</h2>');
+                '<child><span>span1</span><span>span2</span></child>');
         });
     });
+
+    function createSpan(value) {
+        let span = document.createElement('span');
+        span.innerHTML = value;
+        return span;
+    }
 });

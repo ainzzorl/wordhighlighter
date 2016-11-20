@@ -18,7 +18,7 @@ describe('textNodeHandler', function() {
     describe('1 match in the middle', function() {
         beforeEach(function() {
             element = document.createTextNode('Internet for people and');
-            result = handler.injectMarkip(element);
+            result = handler.injectMarkup(element);
         });
 
         it('injects markup', function() {
