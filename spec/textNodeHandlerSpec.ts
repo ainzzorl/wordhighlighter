@@ -28,4 +28,15 @@ describe('textNodeHandler', function() {
             expect(result[2].nodeValue).toEqual(' and');
         });
     });
+
+    describe('no match', function() {
+        beforeEach(function() {
+            element = document.createTextNode('Text that does not match');
+            result = handler.injectMarkup(element);
+        });
+
+        it('returns null', function() {
+            expect(result).toBeNull();
+        });
+    });
 });
