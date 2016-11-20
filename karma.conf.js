@@ -4,7 +4,8 @@ module.exports = function(config) {
     reporters: ['spec'],
     browsers: ['PhantomJS'],
     files: [
-      'build/spec-all.js'
+      'build/lib.js',
+      'build/spec/*.js'
     ]
   });
 };

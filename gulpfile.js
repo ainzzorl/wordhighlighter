@@ -43,14 +43,14 @@ gulp.task('compile-spec', function () {
             .js.pipe(gulp.dest('build/spec'));
 });
 
-gulp.task('concat-spec', ['compile-src', 'compile-spec'], function() {
+gulp.task('concat-lib', ['compile-src'], function() {
     return gulp
-        .src(['build/lib/*.js', 'build/spec/*Spec.js'])
-        .pipe(concat('spec-all.js'))
+        .src(['build/lib/*.js'])
+        .pipe(concat('lib.js'))
         .pipe(gulp.dest('./build/'));
 });
 
-gulp.task('spec', ['compile-src', 'compile-spec', 'concat-spec'], function(done) {
+gulp.task('spec', ['compile-src', 'compile-spec'], function(done) {
     return new Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
@@ -66,12 +66,12 @@ gulp.task('zip', ['copy-static-content', 'compile-src'], function() {
 gulp.task('release', function(callback) {
   runSequence('clean',
               ['copy-static-content', 'compile-src', 'compile-spec'],
-              'concat-spec',
+              'concat-lib',
               'spec',
               'zip',
               callback);
 });
 
-gulp.task('fast-build', ['copy-static-content', 'compile-src']);
+gulp.task('fast-build', ['copy-static-content', 'compile-src', 'concat-lib']);
 
 gulp.task('default', ['fast-build']);
