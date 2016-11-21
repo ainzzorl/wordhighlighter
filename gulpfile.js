@@ -7,6 +7,7 @@ var concat = require('gulp-concat');
 var clean = require('gulp-clean');
 var zip = require('gulp-zip');
 var runSequence = require('run-sequence');
+var browserify = require('gulp-browserify');
 var Server = require('karma').Server;
 
 var XPI_NAME = 'word-highlighter.xpi';
@@ -43,6 +44,14 @@ gulp.task('compile-spec', function () {
             .js.pipe(gulp.dest('build/spec'));
 });
 
+gulp.task('browserify-imports', [], function() {
+    gulp.src('src/imports/imports.js')
+        .pipe(browserify({
+            insertGlobals : true
+        }))
+        .pipe(gulp.dest('./build'))
+});
+
 gulp.task('concat-lib', ['compile-src'], function() {
     return gulp
         .src(['build/lib/*.js'])
@@ -50,7 +59,7 @@ gulp.task('concat-lib', ['compile-src'], function() {
         .pipe(gulp.dest('./build/'));
 });
 
-gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib'], function(done) {
+gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'browserify-imports'], function(done) {
     return new Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
@@ -65,7 +74,7 @@ gulp.task('zip', ['copy-static-content', 'compile-src'], function() {
 
 gulp.task('release', function(callback) {
   runSequence('clean',
-              ['copy-static-content', 'compile-src', 'compile-spec'],
+              ['copy-static-content', 'compile-src', 'compile-spec', 'browserify-imports'],
               'concat-lib',
               'spec',
               'zip',

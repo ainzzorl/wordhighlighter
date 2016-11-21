@@ -3,7 +3,11 @@
 let timeStart = performance.now();
 console.log('Processing URL ' + document.URL);
 new DAO().getDictionary(function(dictionary: Array<DictionaryEntry>) {
-    let textNodeHandler = new TextNodeHandler(dictionary);
+    // TODO: explain
+    let wnd: any = window;
+    let stemmer: Stemmer = wnd.stemmer;
+
+    let textNodeHandler = new TextNodeHandler(dictionary, stemmer);
     let content = new Content(textNodeHandler);
     content.injectMarkup(document);
     let timeEnd = performance.now();

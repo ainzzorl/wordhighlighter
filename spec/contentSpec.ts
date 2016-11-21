@@ -7,7 +7,7 @@ describe('content', function() {
     let content;
 
     beforeEach(function() {
-        textNodeHandler = new TextNodeHandler(null);
+        textNodeHandler = new TextNodeHandler(null, null);
         rootElement = document.createElement('div');
         content = new Content(textNodeHandler);
 

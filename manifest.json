@@ -14,7 +14,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": [ "lib.js", "scripts/content-script.js" ],
+      "js": [ "imports.js", "lib.js", "scripts/content-script.js" ],
       "css": ["wordhighlighter.css"]
     }
   ],

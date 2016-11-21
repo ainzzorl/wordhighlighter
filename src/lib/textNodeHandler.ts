@@ -1,11 +1,15 @@
+///<reference path="stemmer.ts" />
 ///<reference path="dictionaryEntry.ts" />
 ///<reference path="matchResultEntry.ts" />
 
+
 class TextNodeHandler {
     dictionary: Array<DictionaryEntry>;
+    stemmer: Stemmer;
 
-    constructor(dictionary: Array<DictionaryEntry>) {
+    constructor(dictionary: Array<DictionaryEntry>, stemmer: Stemmer) {
         this.dictionary = dictionary;
+        this.stemmer = stemmer;
     }
 
     injectMarkup(node: Node): Array<HTMLElement> {
@@ -96,7 +100,7 @@ class TextNodeHandler {
                 return this.dictionary[i].value;
             }
         };
-        return null;;
+        return null;
     }
 
     private isWordCharacter(char: string) {

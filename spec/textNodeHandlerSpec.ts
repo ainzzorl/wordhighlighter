@@ -5,13 +5,22 @@
 describe('textNodeHandler', function() {
     let handler: TextNodeHandler;
     let dao: DAO;
+    let stemmer: Stemmer;
+
+    beforeEach(function() {
+        stemmer = {
+            stem: function(word) {
+                return word;
+            }
+        };
+    });
 
     describe('injectMarkup', function() {
         let element: Text;
         let result: Array<HTMLElement>;
 
         beforeEach(function() {
-            handler = new TextNodeHandler(null);
+            handler = new TextNodeHandler(null, null);
             element = document.createTextNode('Internet for people, not profit');
         });
 
@@ -72,7 +81,7 @@ describe('textNodeHandler', function() {
         let matchResult: Array<MatchResultEntry>;
 
         beforeEach(function() {
-            handler = new TextNodeHandler(null);
+            handler = new TextNodeHandler(null, null);
             handler.findMatchForWord = function(word: string) {
                 switch (word) {
                     case 'people': return 'people';
@@ -156,7 +165,7 @@ describe('textNodeHandler', function() {
             let dictionary = [];
             dictionary.push(new DictionaryEntry('people'));
             dictionary.push(new DictionaryEntry('profit'));
-            handler = new TextNodeHandler(dictionary);
+            handler = new TextNodeHandler(dictionary, stemmer);
         });
 
         it('finds exact match', function() {
