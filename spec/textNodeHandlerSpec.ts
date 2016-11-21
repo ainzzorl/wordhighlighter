@@ -72,10 +72,14 @@ describe('textNodeHandler', function() {
         let matchResult: Array<MatchResultEntry>;
 
         beforeEach(function() {
-            let dictionary = [];
-            dictionary.push(new DictionaryEntry('people'));
-            dictionary.push(new DictionaryEntry('profit'));
-            handler = new TextNodeHandler(dictionary);
+            handler = new TextNodeHandler(null);
+            handler.findMatchForWord = function(word: string) {
+                switch (word) {
+                    case 'people': return 'people';
+                    case 'profit': return 'profit';
+                }
+                return null;
+            };
         });
 
         describe('1 match in the middle', function() {
@@ -144,6 +148,23 @@ describe('textNodeHandler', function() {
                 expect(matchResult[1].value).toEqual('profit');
                 expect(matchResult[1].matchOf).toEqual('profit');
             });
+        });
+    });
+
+    describe('findMatchForWord', function() {
+        beforeEach(function() {
+            let dictionary = [];
+            dictionary.push(new DictionaryEntry('people'));
+            dictionary.push(new DictionaryEntry('profit'));
+            handler = new TextNodeHandler(dictionary);
+        });
+
+        it('finds exact match', function() {
+            expect(handler.findMatchForWord('people')).toEqual('people');
+        });
+
+        it('detects no match', function() {
+            expect(handler.findMatchForWord('nomatch')).toBeNull();
         });
     });
 });
