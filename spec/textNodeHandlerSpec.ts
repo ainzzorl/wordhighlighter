@@ -5,15 +5,6 @@
 describe('textNodeHandler', function() {
     let handler: TextNodeHandler;
     let dao: DAO;
-    let stemmer: Stemmer;
-
-    beforeEach(function() {
-        stemmer = {
-            stem: function(word) {
-                return word;
-            }
-        };
-    });
 
     describe('injectMarkup', function() {
         let element: Text;
@@ -161,19 +152,35 @@ describe('textNodeHandler', function() {
     });
 
     describe('findMatchForWord', function() {
+        let stemmer: Stemmer;
+
         beforeEach(function() {
             let dictionary = [];
-            dictionary.push(new DictionaryEntry('people'));
-            dictionary.push(new DictionaryEntry('profit'));
+            dictionary.push(new DictionaryEntry('advent'));
+            dictionary.push(new DictionaryEntry('something'));
+            stemmer = {
+                stem: function(word) {
+                    switch (word) {
+                        case 'advent': return 'advent';
+                        case 'advents': return 'advent';
+                        case 'adventure': return 'adventur';
+                    }
+                    return word;
+                }
+            };
             handler = new TextNodeHandler(dictionary, stemmer);
         });
 
         it('finds exact match', function() {
-            expect(handler.findMatchForWord('people')).toEqual('people');
+            expect(handler.findMatchForWord('advent')).toEqual('advent');
+        });
+
+        it('finds stem match', function() {
+            expect(handler.findMatchForWord('advents')).toEqual('advent');
         });
 
         it('detects no match', function() {
-            expect(handler.findMatchForWord('nomatch')).toBeNull();
+            expect(handler.findMatchForWord('adventure')).toBeNull();
         });
     });
 });

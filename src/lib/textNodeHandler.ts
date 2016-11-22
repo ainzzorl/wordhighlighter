@@ -95,8 +95,9 @@ class TextNodeHandler {
     }
 
     findMatchForWord(word: string): string {
+        let targetStem = this.stemmer.stem(word);
         for (let i = 0; i < this.dictionary.length; ++i) {
-            if (word === this.dictionary[i].value) {
+            if (targetStem === this.stemmer.stem(this.dictionary[i].value)) {
                 return this.dictionary[i].value;
             }
         };
