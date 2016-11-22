@@ -32,8 +32,10 @@
     "karma-jasmine": "^1.0.2",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-spec-reporter": "0.0.26",
+    "lapack": "^0.1.0",
     "natural": "^0.4.0",
     "run-sequence": "^1.2.2",
-    "typescript": "^2.0.7"
+    "typescript": "^2.0.7",
+    "wordnet-db": "^3.1.2"
   }
 }
