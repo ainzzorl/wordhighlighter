@@ -7,10 +7,12 @@ class TextNodeHandler {
     dictionary: Array<DictionaryEntry>;
     stemmer: Stemmer;
     dictionaryStems: any;
+    contentWordStems: any; // TODO: cleanup to release memory
 
     constructor(dictionary: Array<DictionaryEntry>, stemmer: Stemmer) {
         this.dictionary = dictionary;
         this.stemmer = stemmer;
+        this.contentWordStems = {};
         if (stemmer) {
             this.calculateDictionaryStems();
         }
@@ -99,7 +101,14 @@ class TextNodeHandler {
     }
 
     findMatchForWord(word: string): string {
-        let targetStem = this.stemmer.stem(word);
+        let cachedStem = this.contentWordStems[word];
+        let targetStem: string;
+        if (cachedStem) {
+            targetStem = cachedStem;
+        } else {
+            targetStem = this.stemmer.stem(word);
+            this.contentWordStems[word] = targetStem;
+        }
         let result = <DictionaryEntry> this.dictionaryStems[targetStem];
         return result ? result.value : null;
     }
