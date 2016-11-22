@@ -175,7 +175,7 @@ describe('textNodeHandler', function() {
             expect(handler.findMatchForWord('advent')).toEqual('advent');
         });
 
-        it('finds stem match', function() {
+        fit('finds stem match', function() {
             expect(handler.findMatchForWord('advents')).toEqual('advent');
         });
 

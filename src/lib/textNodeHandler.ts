@@ -6,10 +6,14 @@
 class TextNodeHandler {
     dictionary: Array<DictionaryEntry>;
     stemmer: Stemmer;
+    dictionaryStems: any;
 
     constructor(dictionary: Array<DictionaryEntry>, stemmer: Stemmer) {
         this.dictionary = dictionary;
         this.stemmer = stemmer;
+        if (stemmer) {
+            this.calculateDictionaryStems();
+        }
     }
 
     injectMarkup(node: Node): Array<HTMLElement> {
@@ -96,12 +100,8 @@ class TextNodeHandler {
 
     findMatchForWord(word: string): string {
         let targetStem = this.stemmer.stem(word);
-        for (let i = 0; i < this.dictionary.length; ++i) {
-            if (targetStem === this.stemmer.stem(this.dictionary[i].value)) {
-                return this.dictionary[i].value;
-            }
-        };
-        return null;
+        let result = <DictionaryEntry> this.dictionaryStems[targetStem];
+        return result ? result.value : null;
     }
 
     private isWordCharacter(char: string) {
@@ -110,5 +110,15 @@ class TextNodeHandler {
 
     private wrap(word: string) {
         return "<span class='highlighted-word'>" + word + "</span>";
+    }
+
+    private calculateDictionaryStems(): void {
+        this.dictionaryStems = {};
+        for (let i = 0; i < this.dictionary.length; ++i) {
+            let stem = this.stemmer.stem(this.dictionary[i].value);
+            if (stem) {
+                this.dictionaryStems[stem] = this.dictionary[i];
+            }
+        }
     }
 }
