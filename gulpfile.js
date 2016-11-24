@@ -8,6 +8,7 @@ var clean = require('gulp-clean');
 var zip = require('gulp-zip');
 var runSequence = require('run-sequence');
 var browserify = require('gulp-browserify');
+var tslint = require('gulp-tslint');
 var Server = require('karma').Server;
 
 var XPI_NAME = 'word-highlighter.xpi';
@@ -52,6 +53,45 @@ gulp.task('browserify-imports', [], function() {
         .pipe(gulp.dest('./build'))
 });
 
+gulp.task('tslint', function() {
+    return gulp.src(['src/**/*.ts', 'spec/**/*.ts'])
+        .pipe(tslint({
+            formatter: 'verbose',
+            configuration: {
+                'rules': {
+                    'class-name': true,
+                    'comment-format': [true, 'check-space'],
+                    'indent': [true, 'spaces'],
+                    'no-duplicate-variable': true,
+                    'no-eval': true,
+                    'no-internal-module': true,
+                    'no-trailing-whitespace': true,
+                    'no-var-keyword': true,
+                    'one-line': [true, 'check-open-brace', 'check-whitespace'],
+                    'quotemark': [true, 'single'],
+                    'semicolon': true,
+                    'triple-equals': [true, 'allow-null-check'],
+                    'typedef-whitespace': [true, {
+                        'call-signature': 'nospace',
+                        'index-signature': 'nospace',
+                        'parameter': 'nospace',
+                        'property-declaration': 'nospace',
+                        'variable-declaration': 'nospace'
+                    }],
+                    'variable-name': [true, 'ban-keywords'],
+                    'whitespace': [true,
+                        'check-branch',
+                        'check-decl',
+                        'check-operator',
+                        'check-separator',
+                        'check-type'
+                    ]
+                }
+            }
+        }))
+        .pipe(tslint.report())
+});
+
 gulp.task('concat-lib', ['compile-src'], function() {
     return gulp
         .src(['build/lib/*.js'])
@@ -74,7 +114,7 @@ gulp.task('zip', ['copy-static-content', 'compile-src'], function() {
 
 gulp.task('release', function(callback) {
   runSequence('clean',
-              ['copy-static-content', 'compile-src', 'compile-spec', 'browserify-imports'],
+              ['copy-static-content', 'compile-src', 'compile-spec', 'browserify-imports', 'tslint'],
               'concat-lib',
               'spec',
               'zip',

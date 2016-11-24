@@ -22,7 +22,7 @@ class Content {
             if (child.nodeType === Node.TEXT_NODE) {
                 let replacement = this.textNodeHandler.injectMarkup(child);
                 if (replacement) {
-                    for (var i = 0; i < replacement.length; ++i) {
+                    for (let i = 0; i < replacement.length; ++i) {
                         node.insertBefore(replacement[i], child);
                     }
                     let next = child.nextSibling;

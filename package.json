@@ -25,6 +25,7 @@
     "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.0",
     "gulp-jasmine": "^2.4.2",
+    "gulp-tslint": "^7.0.1",
     "gulp-typescript": "^3.1.2",
     "gulp-zip": "^3.2.0",
     "jasmine": "^2.5.2",
@@ -35,6 +36,7 @@
     "lapack": "^0.1.0",
     "natural": "^0.4.0",
     "run-sequence": "^1.2.2",
+    "tslint": "^4.0.2",
     "typescript": "^2.0.7",
     "wordnet-db": "^3.1.2"
   }

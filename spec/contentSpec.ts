@@ -22,7 +22,7 @@ describe('content', function() {
                 return null;
             }
             return [];
-        }
+        };
     });
 
     describe('one text node', function() {
@@ -36,7 +36,7 @@ describe('content', function() {
                 expect(rootElement.innerHTML).toEqual(
                     '<child><span>span1</span><span>span2</span></child>');
             });
-        })
+        });
 
         describe('no match', function() {
             beforeEach(function() {
@@ -48,7 +48,7 @@ describe('content', function() {
                 expect(rootElement.innerHTML).toEqual(
                     '<child>Does not match</child>');
             });
-        })
+        });
     });
 
     describe('blacklisted tags', function() {

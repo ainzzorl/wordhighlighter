@@ -23,7 +23,7 @@ describe('textNodeHandler', function() {
                         { value: 'people', matchOf: 'people' },
                         { value: ', not profit', matchOf: null }
                     ];
-                }
+                };
                 result = handler.injectMarkup(element);
             });
 
@@ -41,7 +41,7 @@ describe('textNodeHandler', function() {
                     return [
                         { value: 'Internet for people, not profit', matchOf: null }
                     ];
-                }
+                };
                 result = handler.injectMarkup(element);
             });
 
@@ -57,7 +57,7 @@ describe('textNodeHandler', function() {
                     return [
                         { value: 'Internet for people, not profit', matchOf: 'Internet for people, not profit' }
                     ];
-                }
+                };
                 result = handler.injectMarkup(element);
             });
 
@@ -175,7 +175,7 @@ describe('textNodeHandler', function() {
             expect(handler.findMatchForWord('advent')).toEqual('advent');
         });
 
-        fit('finds stem match', function() {
+        it('finds stem match', function() {
             expect(handler.findMatchForWord('advents')).toEqual('advent');
         });
 

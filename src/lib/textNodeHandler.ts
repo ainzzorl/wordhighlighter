@@ -53,7 +53,7 @@ class TextNodeHandler {
                             result.push({
                                 value: currentNoMatch,
                                 matchOf: null
-                            })
+                            });
                         }
                         result.push({
                             value: currentWord,
@@ -77,7 +77,7 @@ class TextNodeHandler {
                     result.push({
                         value: currentNoMatch,
                         matchOf: null
-                    })
+                    });
                 }
                 result.push({
                     value: currentWord,
@@ -94,7 +94,7 @@ class TextNodeHandler {
                 result.push({
                     value: currentNoMatch,
                     matchOf: null
-                })
+                });
             }
         }
         return result;
@@ -118,7 +118,7 @@ class TextNodeHandler {
     }
 
     private wrap(word: string) {
-        return "<span class='highlighted-word'>" + word + "</span>";
+        return '<span class="highlighted-word">' + word + '</span>';
     }
 
     private calculateDictionaryStems(): void {

@@ -17,7 +17,7 @@ class MainDialog {
                 listElement.removeChild(listElement.firstChild);
             }
 
-            for (let i=0; i < dictionary.length; i++) {
+            for (let i = 0; i < dictionary.length; i++) {
                 const listItem = document.createElement('li');
                 listItem.textContent = dictionary[i].value;
                 listElement.appendChild(listItem);
