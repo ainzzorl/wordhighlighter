@@ -5,13 +5,10 @@ var tsProjectSpec = ts.createProject('tsconfig-spec.json');
 var jasmine = require('gulp-jasmine');
 var concat = require('gulp-concat');
 var clean = require('gulp-clean');
-var zip = require('gulp-zip');
 var runSequence = require('run-sequence');
 var browserify = require('gulp-browserify');
 var tslint = require('gulp-tslint');
 var Server = require('karma').Server;
-
-var XPI_NAME = 'word-highlighter.xpi';
 
 gulp.task('clean', function () {
     return gulp.src('build/*', {read: false})
@@ -106,18 +103,11 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib'], function(done) 
         }, done).start();
 });
 
-gulp.task('zip', ['copy-static-content', 'compile-src'], function() {
-  gulp.src('build/**/*')
-    .pipe(zip(XPI_NAME))
-    .pipe(gulp.dest('build/'));
-});
-
 gulp.task('release', function(callback) {
   runSequence('clean',
               ['copy-static-content', 'compile-src', 'compile-spec', 'browserify-imports', 'tslint'],
               'concat-lib',
               'spec',
-              'zip',
               callback);
 });
 
