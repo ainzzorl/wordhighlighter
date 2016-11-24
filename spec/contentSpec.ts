@@ -51,6 +51,25 @@ describe('content', function() {
         })
     });
 
+    describe('blacklisted tags', function() {
+        beforeEach(function() {
+            rootElement.innerHTML =
+                '<child>'
+                + '<not-blacklisted>Replaced with 2</not-blacklisted>'
+                + '<script>Replaced with 2</script>'
+                + '</child>';
+            content.injectMarkup(rootElement);
+        });
+
+        it('ignores the blacklisted tag', function() {
+            expect(rootElement.innerHTML).toEqual(
+                '<child>'
+                + '<not-blacklisted><span>span1</span><span>span2</span></not-blacklisted>'
+                + '<script>Replaced with 2</script>'
+                + '</child>');
+        });
+    });
+
     function createSpan(value) {
         let span = document.createElement('span');
         span.innerHTML = value;

@@ -1,6 +1,12 @@
 ///<reference path="textNodeHandler.ts" />
 
 class Content {
+    private BLACKLISTED_TAGS: any = {
+        'SCRIPT': true,
+        'STYLE': true,
+        'TITLE': true
+    };
+
     textNodeHandler: TextNodeHandler;
 
     constructor(textNodeHandler: TextNodeHandler) {
@@ -8,6 +14,9 @@ class Content {
     }
 
     injectMarkup(node: Node): void {
+        if (this.isBlacklisted(node)) {
+            return;
+        }
         let child = node.firstChild;
         while (child) {
             if (child.nodeType === Node.TEXT_NODE) {
@@ -26,5 +35,9 @@ class Content {
             }
             child = <HTMLElement> child.nextSibling;
         }
+    }
+
+    private isBlacklisted(node: Node): void {
+        return this.BLACKLISTED_TAGS[(<HTMLElement>node).tagName];
     }
 }
