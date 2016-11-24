@@ -1,5 +1,5 @@
 ///<reference path="../node_modules/@types/jasmine/index.d.ts" />
-///<reference path="../src/lib/Background.ts" />
+///<reference path="../src/lib/background.ts" />
 
 describe('background', function() {
     let dao;

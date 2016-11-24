@@ -1,5 +1,5 @@
 ///<reference path="../node_modules/@types/jasmine/index.d.ts" />
-///<reference path="../src/lib/Content.ts" />
+///<reference path="../src/lib/content.ts" />
 
 describe('content', function() {
     let textNodeHandler: TextNodeHandler;
