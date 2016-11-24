@@ -59,7 +59,7 @@ gulp.task('concat-lib', ['compile-src'], function() {
         .pipe(gulp.dest('./build/'));
 });
 
-gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'browserify-imports'], function(done) {
+gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib'], function(done) {
     return new Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
