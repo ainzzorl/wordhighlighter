@@ -18,4 +18,4 @@ TBD
 - Clone the repo.
 - Run "npm install"
 - Run "gulp release". It should generate build artifacts in ./build/
-- Run "web-ext run --f <PATH-TO-BROWSER-EXECUTABLE> -s build" to start the browser with the add-on installed.
+- Run "web-ext run --f PATH-TO-BROWSER-EXECUTABLE -s build" to start the browser with the add-on installed.
