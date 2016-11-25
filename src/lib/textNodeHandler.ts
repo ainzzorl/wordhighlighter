@@ -110,7 +110,7 @@ class TextNodeHandler {
             this.contentWordStems[word] = targetStem;
         }
         let result = <DictionaryEntry> this.dictionaryStems[targetStem];
-        return result ? result.value : null;
+        return (result && result.value) ? result.value : null;
     }
 
     private isWordCharacter(char: string) {
