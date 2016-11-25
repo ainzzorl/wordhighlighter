@@ -3,6 +3,7 @@
 class Content {
     private BLACKLISTED_TAGS: any = {
         'SCRIPT': true,
+        'NOSCRIPT': true,
         'STYLE': true,
         'TITLE': true
     };
