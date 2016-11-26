@@ -26,7 +26,7 @@ gulp.task('copy-icons', function () {
 });
 
 gulp.task('copy-static-content', ['copy-html', 'copy-icons'], function () {
-    return gulp.src(['manifest.json', 'wordhighlighter.css'])
+    return gulp.src(['manifest.json', 'wordhighlighter.css', 'node_modules/angular/angular.min.js'])
         .pipe(gulp.dest('build'));
 });
 

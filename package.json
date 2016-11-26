@@ -17,9 +17,11 @@
   },
   "homepage": "https://github.com/wordhighlighter/wordhighlighter#readme",
   "devDependencies": {
+    "@types/angular": "^1.5.20",
     "@types/chrome": "0.0.35",
     "@types/jasmine": "^2.5.37",
     "@types/natural": "^0.2.31",
+    "angular": "^1.5.9",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
     "gulp-clean": "^0.3.2",
