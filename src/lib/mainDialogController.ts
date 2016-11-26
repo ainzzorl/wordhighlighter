@@ -1,10 +1,10 @@
 ///<reference path="../../node_modules/@types/angular/index.d.ts" />
+///<reference path="dao.ts" />
 
 if (typeof angular !== 'undefined') {
-    let app = angular.module('wordhighlighter', []);
+    let app = angular.module('wordhighlighter', ['ngTable']);
 
-    app.controller('mainDialogController', function($scope: any) {
-
+    app.controller('mainDialogController', function($scope: any, NgTableParams: any) {
         let dao = new DAO();
 
         $scope.dictionary = [];
@@ -14,6 +14,12 @@ if (typeof angular !== 'undefined') {
         function load() {
             dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
                 $scope.dictionary = dictionary;
+                $scope.tableParams = new NgTableParams({
+                    count: $scope.dictionary.length // hide pager
+                }, {
+                    dataset: $scope.dictionary,
+                    counts: [] // hide page sizes
+                });
                 $scope.$apply();
             });
         };
@@ -21,7 +27,7 @@ if (typeof angular !== 'undefined') {
         $scope.onAddNewWordClicked = function() {
             if ($scope.newWord) {
                 dao.addEntry(new DictionaryEntry($scope.newWord), function() {
-                    this.load();
+                    load();
                 });
                 $scope.newWord = '';
             }

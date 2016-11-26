@@ -36,6 +36,7 @@
     "karma-spec-reporter": "0.0.26",
     "lapack": "^0.1.0",
     "natural": "^0.4.0",
+    "ng-table": "^2.1.0",
     "run-sequence": "^1.2.2",
     "tslint": "^4.0.2",
     "typescript": "^2.0.7",

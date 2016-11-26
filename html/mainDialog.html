@@ -3,13 +3,21 @@
   <head>
     <meta charset="UTF-8">
     <script src="../angular.min.js"></script>
+    <script src="../ng-table.min.js"></script>
     <script src="../lib.js"></script>
+    <link rel="stylesheet" href="../ng-table.min.css">
   </head>
   <body ng-controller="mainDialogController">
     <p>Main Dialog</p>
-    <ul ng-repeat="dictionaryEntry in dictionary">
-      <li>{{dictionaryEntry.value}}</li>
-    </ul>
+
+    <table ng-table="tableParams" class="table">
+      <tr ng-repeat="dictionaryEntry in $data">
+        <td title="'Word'" sortable="'value'">
+          {{dictionaryEntry.value}}
+        </td>
+      </tr>
+    </table>
+
     <form ng-submit="onAddNewWordClicked()">
       <input ng-model="newWord" type="text" name="new-word"/>
       <input type="submit" value="Add"/>

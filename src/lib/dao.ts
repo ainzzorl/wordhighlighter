@@ -25,6 +25,7 @@ class DAO {
             dictionary.push(entry);
             chrome.storage.local.set({ dictionary: dictionary }, function() {
                 console.debug('Word ' + entry.value + ' has been added to the storages');
+                callback();
             });
         });
     }
@@ -32,6 +33,7 @@ class DAO {
     saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
         chrome.storage.local.set({ dictionary: dictionary }, function() {
             console.debug('Saved dictionary');
+            callback();
         });
     }
 }
