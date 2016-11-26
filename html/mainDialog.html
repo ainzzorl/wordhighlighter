@@ -5,12 +5,13 @@
     <script src="../angular.min.js"></script>
     <script src="../ng-table.min.js"></script>
     <script src="../lib.js"></script>
+    <link rel="stylesheet" href="../bootstrap.min.css">
     <link rel="stylesheet" href="../ng-table.min.css">
   </head>
   <body ng-controller="mainDialogController">
     <p>Main Dialog</p>
 
-    <table ng-table="tableParams" class="table">
+    <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
       <tr ng-repeat="dictionaryEntry in $data">
         <td title="'Word'" sortable="'value'">
           {{dictionaryEntry.value}}
