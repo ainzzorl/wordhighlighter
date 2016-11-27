@@ -25,10 +25,15 @@ gulp.task('copy-icons', function () {
         .pipe(gulp.dest('build/icons'));
 });
 
-gulp.task('copy-static-content', ['copy-html', 'copy-icons'], function () {
+gulp.task('copy-fonts', function () {
+    return gulp.src(['node_modules/bootstrap/dist/fonts/**/*'])
+        .pipe(gulp.dest('build/fonts'));
+});
+
+gulp.task('copy-static-content', ['copy-html', 'copy-icons', 'copy-fonts'], function () {
     return gulp.src(['manifest.json', 'wordhighlighter.css', 'node_modules/angular/angular.min.js',
                     'node_modules/ng-table/bundles/ng-table.min.js', 'node_modules/ng-table/bundles/ng-table.min.css',
-                    'node_modules/bootstrap/dist/css/bootstrap.min.css'])
+                    'node_modules/bootstrap/dist/js/bootstrap.min.js', 'node_modules/bootstrap/dist/css/bootstrap.min.css'])
         .pipe(gulp.dest('build'));
 });
 

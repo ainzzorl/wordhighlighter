@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <script src="../angular.min.js"></script>
     <script src="../ng-table.min.js"></script>
+    <script src="../bootstrap.min.js"></script>
     <script src="../lib.js"></script>
     <link rel="stylesheet" href="../bootstrap.min.css">
     <link rel="stylesheet" href="../ng-table.min.css">
@@ -11,10 +12,23 @@
   <body ng-controller="mainDialogController">
     <p>Main Dialog</p>
 
-    <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
-      <tr ng-repeat="dictionaryEntry in $data">
-        <td title="'Word'" sortable="'value'">
-          {{dictionaryEntry.value}}
+    <table
+      ng-table="tableParams"
+      class="table table-condensed table-bordered table-striped"
+      ng-form="tableForm"
+    >
+      <tr ng-repeat="dictionaryEntry in $data track by $index" ng-form="rowForm">
+        <td title="'Word'" sortable="'value'" ng-switch="dictionaryEntry.isEditing" ng-class="value.$dirty ? 'bg-warning' : ''" ng-form="value">
+          <span ng-switch-default class="editable-text">{{dictionaryEntry.value}}</span>
+          <div class="controls" ng-class="value.$invalid && value.$dirty ? 'has-error' : ''" ng-switch-when="true">
+            <input type="text" name="value" ng-model="dictionaryEntry.value" class="editable-input form-control input-sm" required />
+          </div>
+        </td>
+        <td>
+          <button class="btn btn-primary btn-sm" ng-click="save(dictionaryEntry, rowForm)" ng-if="dictionaryEntry.isEditing" ng-disabled="dictionaryEntry.$pristine || dictionaryEntry.$invalid"><span class="glyphicon glyphicon-ok"></span></button>
+          <button class="btn btn-default btn-sm" ng-click="cancel(dictionaryEntry, rowForm)" ng-if="dictionaryEntry.isEditing"><span class="glyphicon glyphicon-remove"></span></button>
+          <button class="btn btn-default btn-sm" ng-click="dictionaryEntry.isEditing = true" ng-if="!dictionaryEntry.isEditing"><span class="glyphicon glyphicon-pencil"></span></button>
+          <button class="btn btn-danger btn-sm" ng-click="del(dictionaryEntry)" ng-if="!dictionaryEntry.isEditing"><span class="glyphicon glyphicon-trash"></span></button>
         </td>
       </tr>
     </table>
