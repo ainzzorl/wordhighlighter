@@ -4,14 +4,16 @@
 if (typeof angular !== 'undefined') {
     let app = angular.module('wordhighlighter', ['ngTable']);
 
-    app.controller('mainDialogController', function($scope: any, NgTableParams: any) {
-        let dao = new DAO();
+    app.service('dao', function() {
+        return new DAO();
+    });
 
+    app.controller('mainDialogController', function($scope: any, NgTableParams: any, dao: DAO) {
         $scope.dictionary = [];
         $scope.newWord = '';
         $scope.importAsReplacementContent = '';
 
-        function load() {
+        $scope.load = function() {
             dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
                 $scope.dictionary = dictionary;
                 let count = 0;
@@ -32,7 +34,7 @@ if (typeof angular !== 'undefined') {
         $scope.onAddNewWordClicked = function() {
             if ($scope.newWord) {
                 dao.addEntry(new DictionaryEntry($scope.newWord), function() {
-                    load();
+                    $scope.load();
                 });
                 $scope.newWord = '';
             }
@@ -49,7 +51,7 @@ if (typeof angular !== 'undefined') {
                 .map(function(w: string) { return new DictionaryEntry(w); });
 
             dao.saveDictionary(newDictionary, function() {
-                load();
+                $scope.load();
             });
 
             $scope.importAsReplacementContent = '';
@@ -82,6 +84,6 @@ if (typeof angular !== 'undefined') {
             dao.saveDictionary($scope.tableParams.settings().dataset, function() {});
         };
 
-        load();
+        $scope.load();
     });
 }
