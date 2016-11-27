@@ -57,32 +57,42 @@ if (typeof angular !== 'undefined') {
             $scope.importAsReplacementContent = '';
         };
 
-        $scope.cancel = function(row: any, rowForm: any) {
-            let originalRow = $scope.resetRow(row, rowForm);
-            angular.extend(row, originalRow);
+        $scope.cancel = function(dictionaryEntry: any, dictionaryEntryForm: any) {
+            let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
+            angular.extend(dictionaryEntry, originalRow);
         };
 
-        $scope.del = function(row: any) {
-            $scope.tableParams.settings().dataset = $scope.tableParams.settings().dataset.filter(function(e: any) {
-                return e.id !== row.id;
-            });
+        $scope.delete = function(dictionaryEntry: any) {
+            $scope.dictionary.splice(findEntryIndexById(dictionaryEntry.id), 1);
             $scope.tableParams.reload();
-            dao.saveDictionary($scope.tableParams.settings().dataset, function() {});
+            dao.saveDictionary($scope.dictionary, function() {});
         };
 
-        $scope.resetRow = function(row: any, rowForm: any) {
-            row.isEditing = false;
-            rowForm.$setPristine();
-            return $scope.originalData.find(function(or: any) {
-                return or.id === row.id;
-            });
+        $scope.save = function(dictionaryEntry: any, dictionaryEntryForm: any) {
+            let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
+            angular.extend(originalRow, dictionaryEntry);
+            dao.saveDictionary($scope.dictionary, function() {});
         };
 
-        $scope.save = function(row: any, rowForm: any) {
-            let originalRow = $scope.resetRow(row, rowForm);
-            angular.extend(originalRow, row);
-            dao.saveDictionary($scope.tableParams.settings().dataset, function() {});
+        let resetRow = function(dictionaryEntry: any, dictionaryEntryForm: any) {
+            dictionaryEntry.isEditing = false;
+            dictionaryEntryForm.$setPristine();
+            for (let i = 0; i < $scope.originalData.length; ++i) {
+                if ($scope.originalData[i].id === dictionaryEntry.id) {
+                    return $scope.originalData[i];
+                }
+            }
+            return null;
         };
+
+        function findEntryIndexById(id: number): number {
+            for (let i = 0; i < $scope.dictionary.length; ++i) {
+                if ($scope.dictionary[i].id === id) {
+                    return i;
+                }
+            }
+            return -1;
+        }
 
         $scope.load();
     });
