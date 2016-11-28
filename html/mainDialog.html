@@ -9,37 +9,16 @@
     <link rel="stylesheet" href="../bootstrap.min.css">
     <link rel="stylesheet" href="../ng-table.min.css">
   </head>
-  <body ng-controller="mainDialogController">
-    <p>Main Dialog</p>
-
-    <table
-      ng-table="tableParams"
-      class="table table-condensed table-bordered table-striped"
-    >
-      <tr ng-repeat="dictionaryEntry in $data track by $index" ng-form="dictionaryEntryForm">
-        <td title="'Word'" sortable="'value'" ng-switch="dictionaryEntry.isEditing" ng-class="value.$dirty ? 'bg-warning' : ''" ng-form="value">
-          <span ng-switch-default class="editable-text">{{dictionaryEntry.value}}</span>
-          <div class="controls" ng-class="value.$invalid && value.$dirty ? 'has-error' : ''" ng-switch-when="true">
-            <input type="text" name="value" ng-model="dictionaryEntry.value" class="editable-input form-control input-sm" required />
-          </div>
-        </td>
-        <td>
-          <button class="btn btn-primary btn-sm" ng-click="save(dictionaryEntry, dictionaryEntryForm)" ng-if="dictionaryEntry.isEditing" ng-disabled="dictionaryEntry.$pristine || dictionaryEntry.$invalid"><span class="glyphicon glyphicon-ok"></span></button>
-          <button class="btn btn-default btn-sm" ng-click="cancel(dictionaryEntry, dictionaryEntryForm)" ng-if="dictionaryEntry.isEditing"><span class="glyphicon glyphicon-remove"></span></button>
-          <button class="btn btn-default btn-sm" ng-click="dictionaryEntry.isEditing = true" ng-if="!dictionaryEntry.isEditing"><span class="glyphicon glyphicon-pencil"></span></button>
-          <button class="btn btn-danger btn-sm" ng-click="delete(dictionaryEntry)" ng-if="!dictionaryEntry.isEditing"><span class="glyphicon glyphicon-trash"></span></button>
-        </td>
-      </tr>
-    </table>
-
-    <form ng-submit="onAddNewWordClicked()">
-      <input ng-model="newWord" type="text" name="new-word"/>
-      <input type="submit" value="Add"/>
-    </form>
-    <form>
-      <textarea ng-model="importAsReplacementContent" rows="4" cols="50"></textarea>
-      <br>
-      <input type="submit" ng-click="onImportAsReplacementClicked()" value="Import as replacement"/>
-    </form>
+  <body>
+    <ul class="nav nav-tabs">
+      <li ng-click="currentTab = 'words'" ng-class="{active: (currentTab === 'words')}"><a href="#">Words</a></li>
+      <li ng-click="currentTab = 'importExport'" ng-class="{active: (currentTab === 'importExport')}"><a href="#">Import/Export</a></li>
+      <li ng-click="currentTab = 'settings'" ng-class="{active: (currentTab === 'settings')}"><a href="#">Settings</a></li>
+    </ul>
+    <div ng-switch="currentTab">
+      <div ng-switch-when="words"><div ng-include="'wordsTab.html'"></div></div>
+      <div ng-switch-when="importExport"><div ng-include="'importExportTab.html'"></div></div>
+      <div ng-switch-when="settings"><div ng-include="'settingsTab.html'"></div></div>
+    </div>
   </body>
 </html>

@@ -8,6 +8,11 @@ if (typeof angular !== 'undefined') {
         return new DAO();
     });
 
+    app
+    .run(function($rootScope: any) {
+        $rootScope.currentTab = 'words';
+    });
+
     app.controller('mainDialogController', function($scope: any, NgTableParams: any, dao: DAO) {
         $scope.dictionary = [];
         $scope.newWord = '';
