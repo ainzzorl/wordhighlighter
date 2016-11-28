@@ -18,12 +18,24 @@ class DAO {
                 });
             }
         });
+        chrome.storage.local.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
+            if (!result.idSequenceNumber) {
+                chrome.storage.local.set({ idSequenceNumber: 1 }, function() {
+                    console.log('Initialize the id sequence');
+                });
+            }
+        });
     }
 
-    addEntry(entry: DictionaryEntry, callback: () => void): void {
-        this.getDictionary(function(dictionary) {
-            dictionary.push(entry);
-            chrome.storage.local.set({ dictionary: dictionary }, function() {
+    addEntry(value: string, description: string, callback: () => void): void {
+        chrome.storage.local.get(['dictionary', 'idSequenceNumber'],
+                function(result: { dictionary: Array<DictionaryEntry>, idSequenceNumber: number }) {
+            let now: Date = new Date();
+            let entry: DictionaryEntry = new DictionaryEntry(
+                result.idSequenceNumber, value, description, now, now
+            );
+            result.dictionary.push(entry);
+            chrome.storage.local.set({ dictionary: result.dictionary, idSequenceNumber: result.idSequenceNumber + 1 }, function() {
                 console.debug('Word ' + entry.value + ' has been added to the storages');
                 callback();
             });

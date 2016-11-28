@@ -19,11 +19,12 @@ describe('mainDialogController', function() {
         dao = {
             getDictionary: function(callback: (dictionary: Array<DictionaryEntry>) => void) {
                 let result = [];
-                result.push(new DictionaryEntry('word1'));
-                result.push(new DictionaryEntry('word2'));
+                result.push(new DictionaryEntry(1, 'word1', 'desc1', new Date(), new Date()));
+                result.push(new DictionaryEntry(2, 'word2', 'desc2', new Date(), new Date()));
+                result.push(new DictionaryEntry(3, 'word3', 'desc3', new Date(), new Date()));
                 callback(result);
             },
-            addEntry(entry: DictionaryEntry, callback: () => void): void {
+            addEntry(value: string, description: string, callback: () => void): void {
                 callback();
             },
             saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
@@ -55,17 +56,11 @@ describe('mainDialogController', function() {
         it ('loads the dictionary', function() {
             expect($scope.dictionary.map(function(de: DictionaryEntry) {
                 return de.value;
-            })).toEqual(['word1', 'word2']);
+            })).toEqual(['word1', 'word2', 'word3']);
         });
 
         it ('makes a copy of the original data', function() {
             expect($scope.originalData).toEqual($scope.dictionary);
-        });
-
-        it ('assigns ids to the dictionary entries', function() {
-            expect($scope.dictionary.map(function(de: any) {
-                return de.id;
-            })).toEqual([0, 1]);
         });
     });
 
@@ -82,8 +77,7 @@ describe('mainDialogController', function() {
             });
 
             it ('adds the new entry', function() {
-                // TODO: better matcher
-                expect(dao.addEntry).toHaveBeenCalledWith(jasmine.any(Object), jasmine.any(Function));
+                expect(dao.addEntry).toHaveBeenCalledWith('newword', '', jasmine.any(Function));
             });
 
             it ('reloads the dictionary', function() {

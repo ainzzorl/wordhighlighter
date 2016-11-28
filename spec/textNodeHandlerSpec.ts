@@ -156,8 +156,8 @@ describe('textNodeHandler', function() {
 
         beforeEach(function() {
             let dictionary = [];
-            dictionary.push(new DictionaryEntry('advent'));
-            dictionary.push(new DictionaryEntry('something'));
+            dictionary.push(new DictionaryEntry(1, 'advent', '', new Date(), new Date()));
+            dictionary.push(new DictionaryEntry(2, 'something', '', new Date(), new Date()));
             stemmer = {
                 stem: function(word) {
                     switch (word) {

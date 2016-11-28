@@ -16,10 +16,6 @@ if (typeof angular !== 'undefined') {
         $scope.load = function() {
             dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
                 $scope.dictionary = dictionary;
-                let count = 0;
-                $scope.dictionary.forEach(function(e: any) {
-                    e.id = count++;
-                });
                 $scope.tableParams = new NgTableParams({
                     count: $scope.dictionary.length // hide pager
                 }, {
@@ -33,28 +29,11 @@ if (typeof angular !== 'undefined') {
 
         $scope.onAddNewWordClicked = function() {
             if ($scope.newWord) {
-                dao.addEntry(new DictionaryEntry($scope.newWord), function() {
+                dao.addEntry($scope.newWord, '', function() {
                     $scope.load();
                 });
                 $scope.newWord = '';
             }
-        };
-
-        $scope.onImportAsReplacementClicked = function() {
-            if (!$scope.importAsReplacementContent) {
-                return;
-            }
-            let newDictionary = $scope.importAsReplacementContent
-                .split('\n')
-                .map(function(w: string) { return w.trim(); })
-                .filter(function(w: string) { return w; })
-                .map(function(w: string) { return new DictionaryEntry(w); });
-
-            dao.saveDictionary(newDictionary, function() {
-                $scope.load();
-            });
-
-            $scope.importAsReplacementContent = '';
         };
 
         $scope.cancel = function(dictionaryEntry: any, dictionaryEntryForm: any) {
