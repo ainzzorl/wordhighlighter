@@ -2,11 +2,11 @@
   <form id="new-word-form" ng-submit="onAddNewWordClicked()">
     <div class="form-group">
       <label for="new-word-value">Word:</label>
-      <input ng-model="newWord.value" type="text" class="form-control" id="new-word-value">
+      <input ng-model="newWord.value" type="text" class="form-control" id="new-word-value"/>
     </div>
     <div class="form-group">
       <label for="new-word-description">Description (optional):</label>
-      <input ng-model="newWord.description" type="tel" class="form-control" id="new-word-description">
+      <input ng-model="newWord.description" type="tel" class="form-control" id="new-word-description"/>
     </div>
     <button type="submit" class="btn btn-primary">Add</button>
   </form>
@@ -20,6 +20,12 @@
           <span ng-switch-default class="editable-text">{{dictionaryEntry.value}}</span>
           <div class="controls" ng-class="value.$invalid && value.$dirty ? 'has-error' : ''" ng-switch-when="true">
             <input type="text" name="value" ng-model="dictionaryEntry.value" class="editable-input form-control input-sm" required />
+          </div>
+        </td>
+        <td title="'Description'" sortable="'description'" ng-switch="dictionaryEntry.isEditing" ng-class="description.$dirty ? 'bg-warning' : ''" ng-form="description">
+          <span ng-switch-default class="editable-text">{{dictionaryEntry.description}}</span>
+          <div class="controls" ng-class="description.$invalid && description.$dirty ? 'has-error' : ''" ng-switch-when="true">
+            <input type="text" name="description" ng-model="dictionaryEntry.description" class="editable-input form-control input-sm" />
           </div>
         </td>
         <td>
