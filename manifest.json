@@ -15,7 +15,7 @@
     {
       "matches": ["<all_urls>"],
       "js": [ "imports.js", "lib.js", "scripts/content-script.js" ],
-      "css": ["wordhighlighter.css"]
+      "css": ["css/wordhighlighter.css"]
     }
   ],
   "browser_action": {

@@ -27,7 +27,7 @@ class DAO {
         });
     }
 
-    addEntry(value: string, description: string, callback: () => void): void {
+    addEntry(value: string, description: string, callback: (newEntry: DictionaryEntry) => void): void {
         chrome.storage.local.get(['dictionary', 'idSequenceNumber'],
                 function(result: { dictionary: Array<DictionaryEntry>, idSequenceNumber: number }) {
             let now: Date = new Date();
@@ -37,7 +37,7 @@ class DAO {
             result.dictionary.push(entry);
             chrome.storage.local.set({ dictionary: result.dictionary, idSequenceNumber: result.idSequenceNumber + 1 }, function() {
                 console.debug('Word ' + entry.value + ' has been added to the storages');
-                callback();
+                callback(entry);
             });
         });
     }

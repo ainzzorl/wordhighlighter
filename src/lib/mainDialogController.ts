@@ -15,14 +15,17 @@ if (typeof angular !== 'undefined') {
 
     app.controller('mainDialogController', function($scope: any, NgTableParams: any, dao: DAO) {
         $scope.dictionary = [];
-        $scope.newWord = '';
+        $scope.newWord = {
+            value: '',
+            description: ''
+        };
         $scope.importAsReplacementContent = '';
 
         $scope.load = function() {
             dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
                 $scope.dictionary = dictionary;
                 $scope.tableParams = new NgTableParams({
-                    count: $scope.dictionary.length // hide pager
+                    count: 1000000000 // hide pager
                 }, {
                     dataset: $scope.dictionary,
                     counts: [] // hide page sizes
@@ -33,11 +36,13 @@ if (typeof angular !== 'undefined') {
         };
 
         $scope.onAddNewWordClicked = function() {
-            if ($scope.newWord) {
-                dao.addEntry($scope.newWord, '', function() {
-                    $scope.load();
+            if ($scope.newWord.value) {
+                dao.addEntry($scope.newWord.value, $scope.newWord.description, function(newEntry: DictionaryEntry) {
+                    $scope.dictionary.push(newEntry);
+                    $scope.tableParams.reload();
                 });
-                $scope.newWord = '';
+                $scope.newWord.value = '';
+                $scope.newWord.description = '';
             }
         };
 

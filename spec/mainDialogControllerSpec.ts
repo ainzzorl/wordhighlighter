@@ -24,8 +24,8 @@ describe('mainDialogController', function() {
                 result.push(new DictionaryEntry(3, 'word3', 'desc3', new Date(), new Date()));
                 callback(result);
             },
-            addEntry(value: string, description: string, callback: () => void): void {
-                callback();
+            addEntry(value: string, description: string, callback: (dictionaryEntry: DictionaryEntry) => void): void {
+                callback(new DictionaryEntry(1, value, description, new Date(), new Date()));
             },
             saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
                 callback();
@@ -66,32 +66,47 @@ describe('mainDialogController', function() {
 
     describe('onAddNewWordClicked', function() {
         beforeEach(function() {
-            spyOn($scope, 'load').and.callThrough();
+            spyOn($scope.tableParams, 'reload').and.callThrough();
             spyOn(dao, 'addEntry').and.callThrough();
+            $scope.dictionary = [];
         });
 
         describe('new word is not empty', function() {
             beforeEach(function() {
-                $scope.newWord = 'newword';
+                $scope.newWord = {
+                    value: 'new-word-value',
+                    description: 'new-word-desciption'
+                };
                 $scope.onAddNewWordClicked();
             });
 
-            it ('adds the new entry', function() {
-                expect(dao.addEntry).toHaveBeenCalledWith('newword', '', jasmine.any(Function));
+            it ('persists the new entry', function() {
+                expect(dao.addEntry).toHaveBeenCalledWith(
+                    'new-word-value', 'new-word-desciption', jasmine.any(Function));
             });
 
-            it ('reloads the dictionary', function() {
-                expect($scope.load).toHaveBeenCalled();
+            it ('adds the new entry to the table', function() {
+                expect($scope.dictionary.length).toEqual(1);
+                expect($scope.dictionary[0].value).toEqual('new-word-value');
+                expect($scope.dictionary[0].desciption).toEqual('new-word-desciption');
+            });
+
+            it ('reloads the table', function() {
+                expect($scope.tableParams.reload).toHaveBeenCalled();
             });
 
             it ('resets the word', function() {
-                expect($scope.newWord).toEqual('');
+                expect($scope.newWord.value).toEqual('');
+                expect($scope.newWord.description).toEqual('');
             });
         });
 
         describe('new word is empty', function() {
             beforeEach(function() {
-                $scope.newWord = '';
+                $scope.newWord = {
+                    value: '',
+                    description: 'new-word-desciption'
+                };
                 $scope.onAddNewWordClicked();
             });
 
@@ -100,7 +115,7 @@ describe('mainDialogController', function() {
             });
 
             it ('does not reload the dictionary', function() {
-                expect($scope.load).not.toHaveBeenCalled();
+                expect($scope.tableParams.reload).not.toHaveBeenCalled();
             });
         });
     });

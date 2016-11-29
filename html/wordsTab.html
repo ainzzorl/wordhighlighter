@@ -1,4 +1,16 @@
 <div ng-controller="mainDialogController">
+  <form id="new-word-form" ng-submit="onAddNewWordClicked()">
+    <div class="form-group">
+      <label for="new-word-value">Word:</label>
+      <input ng-model="newWord.value" type="text" class="form-control" id="new-word-value">
+    </div>
+    <div class="form-group">
+      <label for="new-word-description">Description (optional):</label>
+      <input ng-model="newWord.description" type="tel" class="form-control" id="new-word-description">
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+  </form>
+
     <table
       ng-table="tableParams"
       class="table table-condensed table-bordered table-striped"
@@ -18,9 +30,4 @@
         </td>
       </tr>
     </table>
-
-    <form ng-submit="onAddNewWordClicked()">
-      <input ng-model="newWord" type="text" name="new-word"/>
-      <input type="submit" value="Add"/>
-    </form>
 </div>
