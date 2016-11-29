@@ -65,6 +65,7 @@ if (typeof angular !== 'undefined') {
 
         let resetRow = function(dictionaryEntry: any, dictionaryEntryForm: any) {
             dictionaryEntry.isEditing = false;
+            dictionaryEntry.isDeleting = false;
             dictionaryEntryForm.$setPristine();
             for (let i = 0; i < $scope.originalData.length; ++i) {
                 if ($scope.originalData[i].id === dictionaryEntry.id) {

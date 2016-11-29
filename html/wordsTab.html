@@ -29,10 +29,23 @@
           </div>
         </td>
         <td>
-          <button class="btn btn-primary btn-sm" ng-click="save(dictionaryEntry, dictionaryEntryForm)" ng-if="dictionaryEntry.isEditing" ng-disabled="dictionaryEntry.$pristine || dictionaryEntry.$invalid"><span class="glyphicon glyphicon-ok"></span></button>
-          <button class="btn btn-default btn-sm" ng-click="cancel(dictionaryEntry, dictionaryEntryForm)" ng-if="dictionaryEntry.isEditing"><span class="glyphicon glyphicon-remove"></span></button>
-          <button class="btn btn-default btn-sm" ng-click="dictionaryEntry.isEditing = true" ng-if="!dictionaryEntry.isEditing"><span class="glyphicon glyphicon-pencil"></span></button>
-          <button class="btn btn-danger btn-sm" ng-click="delete(dictionaryEntry)" ng-if="!dictionaryEntry.isEditing"><span class="glyphicon glyphicon-trash"></span></button>
+          <span ng-show="!dictionaryEntry.isDeleting">
+            <span ng-show="dictionaryEntry.isEditing">
+              <button class="btn btn-primary btn-sm" ng-click="save(dictionaryEntry, dictionaryEntryForm)" ng-disabled="dictionaryEntry.$pristine || dictionaryEntry.$invalid"><span class="glyphicon glyphicon-ok"></span></button>
+              <button class="btn btn-default btn-sm" ng-click="cancel(dictionaryEntry, dictionaryEntryForm)"><span class="glyphicon glyphicon-remove"></span></button>
+            </span>
+            <span ng-show="!dictionaryEntry.isEditing">
+              <button class="btn btn-default btn-sm" ng-click="dictionaryEntry.isEditing = true"><span class="glyphicon glyphicon-pencil"></span></button>
+              <button class="btn btn-danger btn-sm" ng-click="dictionaryEntry.isDeleting = true"><span class="glyphicon glyphicon-trash"></span></button>
+            </span>
+          </span>
+          <span ng-show="dictionaryEntry.isDeleting">
+              <div>Are you sure you want to delete this word?</div>
+              <div>
+                <button class="btn btn-danger btn-sm" ng-click="delete(dictionaryEntry)">Confirm</button>
+                <button class="btn btn-default btn-sm" ng-click="cancel(dictionaryEntry)">Cancel</button>
+              </div>
+          </span>
         </td>
       </tr>
     </table>
