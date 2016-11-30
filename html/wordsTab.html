@@ -11,6 +11,10 @@
     <button type="submit" class="btn btn-primary">Add</button>
   </form>
 
+  <div class="alert alert-danger" ng-show="showAddingDupeError">
+    This word is already present in the dictionary.
+  </div>
+
     <table
       ng-table="tableParams"
       class="table table-condensed table-bordered table-striped"

@@ -72,32 +72,74 @@ describe('mainDialogController', function() {
         });
 
         describe('new word is not empty', function() {
-            beforeEach(function() {
-                $scope.newWord = {
-                    value: 'new-word-value',
-                    description: 'new-word-description'
-                };
-                $scope.onAddNewWordClicked();
+            describe ('not dupe', function() {
+                beforeEach(function() {
+                    $scope.newWord = {
+                        value: 'new-word-value',
+                        description: 'new-word-description'
+                    };
+                    $scope.showAddingDupeError = true;
+                    $scope.onAddNewWordClicked();
+                });
+
+                it ('persists the new entry', function() {
+                    expect(dao.addEntry).toHaveBeenCalledWith(
+                        'new-word-value', 'new-word-description', jasmine.any(Function));
+                });
+
+                it ('adds the new entry to the table', function() {
+                    expect($scope.dictionary.length).toEqual(1);
+                    expect($scope.dictionary[0].value).toEqual('new-word-value');
+                    expect($scope.dictionary[0].description).toEqual('new-word-description');
+                });
+
+                it ('reloads the table', function() {
+                    expect($scope.tableParams.reload).toHaveBeenCalled();
+                });
+
+                it ('resets the word', function() {
+                    expect($scope.newWord.value).toEqual('');
+                    expect($scope.newWord.description).toEqual('');
+                });
+
+                it ('hides the error', function() {
+                    expect($scope.showAddingDupeError).toBe(false);
+                });
             });
 
-            it ('persists the new entry', function() {
-                expect(dao.addEntry).toHaveBeenCalledWith(
-                    'new-word-value', 'new-word-description', jasmine.any(Function));
-            });
+            describe ('dupe', function() {
+                beforeEach(function() {
+                    $scope.dictionary = [
+                        new DictionaryEntry(1, 'new-word-value', '', new Date(), new Date())
+                    ];
+                    $scope.newWord = {
+                        value: 'new-word-value',
+                        description: 'new-word-description'
+                    };
+                    $scope.showAddingDupeError = false;
+                    $scope.onAddNewWordClicked();
+                });
 
-            it ('adds the new entry to the table', function() {
-                expect($scope.dictionary.length).toEqual(1);
-                expect($scope.dictionary[0].value).toEqual('new-word-value');
-                expect($scope.dictionary[0].description).toEqual('new-word-description');
-            });
+                it ('does not persist the new entry', function() {
+                    expect(dao.addEntry).not.toHaveBeenCalled();
+                });
 
-            it ('reloads the table', function() {
-                expect($scope.tableParams.reload).toHaveBeenCalled();
-            });
+                it ('does not add the new entry to the table', function() {
+                    expect($scope.dictionary.length).toEqual(1);
+                });
 
-            it ('resets the word', function() {
-                expect($scope.newWord.value).toEqual('');
-                expect($scope.newWord.description).toEqual('');
+                it ('does not reload the table', function() {
+                    expect($scope.tableParams.reload).not.toHaveBeenCalled();
+                });
+
+                it ('does not reset the word', function() {
+                    expect($scope.newWord.value).toEqual('new-word-value');
+                    expect($scope.newWord.description).toEqual('new-word-description');
+                });
+
+                it ('shows an error', function() {
+                    expect($scope.showAddingDupeError).toBe(true);
+                });
             });
         });
 
@@ -200,6 +242,20 @@ describe('mainDialogController', function() {
 
         it ('persists the dictionary', function() {
             expect(dao.saveDictionary).toHaveBeenCalled();
+        });
+    });
+
+    describe('isDupe', function() {
+        it('is true if the match is exacy', function() {
+            expect($scope.isDupe('word1')).toBe(true);
+        });
+
+        it('is true if the match is exacy but in different case', function() {
+            expect($scope.isDupe('WORD1')).toBe(true);
+        });
+
+        it('is false otherwise', function() {
+            expect($scope.isDupe('word4')).toBe(false);
         });
     });
 });

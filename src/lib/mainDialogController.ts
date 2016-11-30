@@ -19,7 +19,8 @@ if (typeof angular !== 'undefined') {
             value: '',
             description: ''
         };
-        $scope.importAsReplacementContent = '';
+
+        $scope.showAddingDupeError = false;
 
         $scope.load = function() {
             dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
@@ -36,13 +37,19 @@ if (typeof angular !== 'undefined') {
         };
 
         $scope.onAddNewWordClicked = function() {
-            if ($scope.newWord.value) {
-                dao.addEntry($scope.newWord.value, $scope.newWord.description, function(newEntry: DictionaryEntry) {
+            let newValue: string = $scope.newWord.value.trim();
+            if (newValue) {
+                if ($scope.isDupe(newValue)) {
+                    $scope.showAddingDupeError = true;
+                    return;
+                }
+                dao.addEntry(newValue, $scope.newWord.description, function(newEntry: DictionaryEntry) {
                     $scope.dictionary.push(newEntry);
                     $scope.tableParams.reload();
                 });
                 $scope.newWord.value = '';
                 $scope.newWord.description = '';
+                $scope.showAddingDupeError = false;
             }
         };
 
@@ -61,6 +68,15 @@ if (typeof angular !== 'undefined') {
             let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
             angular.extend(originalRow, dictionaryEntry);
             dao.saveDictionary($scope.dictionary, function() {});
+        };
+
+        $scope.isDupe = function(word: string): boolean {
+            for (let i = 0; i < $scope.dictionary.length; ++i) {
+                if ($scope.dictionary[i].value.toUpperCase() === word.toUpperCase()) {
+                    return true;
+                }
+            }
+            return false;
         };
 
         let resetRow = function(dictionaryEntry: any, dictionaryEntryForm: any) {
