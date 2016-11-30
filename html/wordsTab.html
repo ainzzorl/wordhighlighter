@@ -25,6 +25,9 @@
           <div class="controls" ng-class="value.$invalid && value.$dirty ? 'has-error' : ''" ng-switch-when="true">
             <input type="text" name="value" ng-model="dictionaryEntry.value" class="editable-input form-control input-sm" required />
           </div>
+          <div class="alert alert-danger" ng-show="dictionaryEntry.isDupe">
+            This word is already present in the dictionary.
+          </div>
         </td>
         <td title="'Description'" sortable="'description'" ng-switch="dictionaryEntry.isEditing" ng-class="description.$dirty ? 'bg-warning' : ''" ng-form="description">
           <span ng-switch-default class="editable-text">{{dictionaryEntry.description}}</span>

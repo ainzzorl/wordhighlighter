@@ -56,6 +56,7 @@ if (typeof angular !== 'undefined') {
         $scope.cancel = function(dictionaryEntry: any, dictionaryEntryForm: any) {
             let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
             angular.extend(dictionaryEntry, originalRow);
+            dictionaryEntry.isDupe = false;
         };
 
         $scope.delete = function(dictionaryEntry: any) {
@@ -65,14 +66,20 @@ if (typeof angular !== 'undefined') {
         };
 
         $scope.save = function(dictionaryEntry: any, dictionaryEntryForm: any) {
+            if ($scope.isDupe(dictionaryEntry.value, dictionaryEntry.id)) {
+                dictionaryEntry.isDupe = true;
+                return;
+            };
             let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
             angular.extend(originalRow, dictionaryEntry);
             dao.saveDictionary($scope.dictionary, function() {});
+            dictionaryEntry.isDupe = false;
         };
 
-        $scope.isDupe = function(word: string): boolean {
+        $scope.isDupe = function(word: string, skippedId: number = undefined): boolean {
             for (let i = 0; i < $scope.dictionary.length; ++i) {
-                if ($scope.dictionary[i].value.toUpperCase() === word.toUpperCase()) {
+                if ($scope.dictionary[i].value.toUpperCase() === word.toUpperCase()
+                    && (!skippedId || skippedId !== $scope.dictionary[i].id)) {
                     return true;
                 }
             }

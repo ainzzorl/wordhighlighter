@@ -200,6 +200,7 @@ describe('mainDialogController', function() {
             originalValue = $scope.dictionary[1].value;
             $scope.dictionary[1].value += '-updated';
             $scope.dictionary[1].isEditing = true;
+            $scope.dictionary[1].isDupe = true;
 
             $scope.cancel($scope.dictionary[1], dictionaryEntryForm);
         });
@@ -215,47 +216,97 @@ describe('mainDialogController', function() {
         it ('marks the row as not being edited', function() {
             expect($scope.dictionary[1].isEditing).toBe(false);
         });
+
+        it ('hides the dupe error', function() {
+            expect($scope.dictionary[1].isDupe).toBe(false);
+        });
     });
 
     describe('save', function() {
         beforeEach(function() {
             spyOn(dictionaryEntryForm, '$setPristine').and.callThrough();
             spyOn(dao, 'saveDictionary').and.callThrough();
-
-            $scope.dictionary[1].value += '-updated';
-            $scope.dictionary[1].isEditing = true;
-
-            $scope.save($scope.dictionary[1], dictionaryEntryForm);
         });
 
-        it ('updates the original data', function() {
-            expect($scope.originalData[1].value).toEqual($scope.dictionary[1].value);
+        describe('not dupe', function() {
+            beforeEach(function() {
+                $scope.dictionary[1].value += '-updated';
+                $scope.dictionary[1].isEditing = true;
+                $scope.dictionary[1].isDupe = true;
+
+                $scope.save($scope.dictionary[1], dictionaryEntryForm);
+            });
+
+            it ('updates the original data', function() {
+                expect($scope.originalData[1].value).toEqual($scope.dictionary[1].value);
+            });
+
+            it ('sets the form pristine', function() {
+                expect(dictionaryEntryForm.$setPristine).toHaveBeenCalled();
+            });
+
+            it ('marks the row as not being edited', function() {
+                expect($scope.dictionary[1].isEditing).toBe(false);
+            });
+
+            it ('persists the dictionary', function() {
+                expect(dao.saveDictionary).toHaveBeenCalled();
+            });
+
+            it ('hides the dupe error', function() {
+                expect($scope.dictionary[1].isDupe).toBe(false);
+            });
         });
 
-        it ('sets the form pristine', function() {
-            expect(dictionaryEntryForm.$setPristine).toHaveBeenCalled();
-        });
+        describe('dupe', function() {
+            let originalData: string;
 
-        it ('marks the row as not being edited', function() {
-            expect($scope.dictionary[1].isEditing).toBe(false);
-        });
+            beforeEach(function() {
+                $scope.dictionary[1].value = $scope.dictionary[2].value;
+                $scope.dictionary[1].isEditing = true;
+                $scope.dictionary[1].isDupe = false;
+                originalData = $scope.originalData[1].value;
 
-        it ('persists the dictionary', function() {
-            expect(dao.saveDictionary).toHaveBeenCalled();
+                $scope.save($scope.dictionary[1], dictionaryEntryForm);
+            });
+
+            it ('does not update the original data', function() {
+                expect($scope.originalData[1].value).toEqual(originalData);
+            });
+
+            it ('does not set the form pristine', function() {
+                expect(dictionaryEntryForm.$setPristine).not.toHaveBeenCalled();
+            });
+
+            it ('does not mark the row as not being edited', function() {
+                expect($scope.dictionary[1].isEditing).toBe(true);
+            });
+
+            it ('does not persist the dictionary', function() {
+                expect(dao.saveDictionary).not.toHaveBeenCalled();
+            });
+
+            it ('shows the dupe error', function() {
+                expect($scope.dictionary[1].isDupe).toBe(true);
+            });
         });
     });
 
     describe('isDupe', function() {
-        it('is true if the match is exacy', function() {
+        it ('is true if the match is exacy', function() {
             expect($scope.isDupe('word1')).toBe(true);
         });
 
-        it('is true if the match is exacy but in different case', function() {
+        it ('is true if the match is exacy but in different case', function() {
             expect($scope.isDupe('WORD1')).toBe(true);
         });
 
-        it('is false otherwise', function() {
+        it ('is false otherwise', function() {
             expect($scope.isDupe('word4')).toBe(false);
+        });
+
+        it ('is false if the match is skipped', function() {
+            expect($scope.isDupe('word1', 1)).toBe(false);
         });
     });
 });
