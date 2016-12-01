@@ -1,12 +1,12 @@
-<div>
+<div ng-controller="importController">
     <p>Enter the words you want to import to the text area below. Format: word;description, one per line. Descriptions are optional</p>
-     <form>
+     <form ng-submit="onImportClicked()">
         <button class="btn btn-primary">Import</button>
-        <select class="form-control">
-            <option>Keep existing</option>
-            <option>Overwrite existing</option>
-            <option>Replace the current database</option>
+        <select class="form-control" ng-model="importInput.mode">
+            <option value="keep">Keep existing</option>
+            <option value="overwrite">Overwrite existing</option>
+            <option value="replace">Replace the current database</option>
         </select>
-        <textarea rows="4" cols="50"></textarea>
+        <textarea rows="4" cols="50" ng-model="importInput.data"></textarea>
      </form>
 </div>
