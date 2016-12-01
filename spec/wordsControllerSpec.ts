@@ -4,7 +4,7 @@
 
 declare let inject: any;
 
-describe('mainDialogController', function() {
+describe('wordsController', function() {
 
     let controller;
     let $scope: any;
@@ -13,7 +13,7 @@ describe('mainDialogController', function() {
     let dictionaryEntryForm;
 
     let mod: any = module;
-    beforeEach(mod('wordhighlighter'));
+    beforeEach(mod('mainDialog'));
 
     beforeEach(function() {
         dao = {
@@ -45,7 +45,7 @@ describe('mainDialogController', function() {
 
     beforeEach(inject(function($controller, $rootScope) {
         $scope = $rootScope.$new();
-        controller = $controller('mainDialogController', { $scope: $scope, NgTableParams: NgTableParams, dao: dao });
+        controller = $controller('wordsController', { $scope: $scope, NgTableParams: NgTableParams, dao: dao });
     }));
 
     describe('load', function() {

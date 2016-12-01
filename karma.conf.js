@@ -8,6 +8,7 @@ module.exports = function(config) {
       'node_modules/angular-mocks/angular-mocks.js',
       'node_modules/ng-table/bundles/ng-table.min.js', // TODO: mock it instead
       'build/lib.js',
+      'build/mainDialog.js',
       'build/spec/*.js'
     ]
   });

@@ -108,7 +108,14 @@ gulp.task('concat-lib', ['compile-src'], function() {
         .pipe(gulp.dest('./build/'));
 });
 
-gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib'], function(done) {
+gulp.task('concat-main-dialog', ['compile-src'], function() {
+    return gulp
+        .src(['build/mainDialog/*.js'])
+        .pipe(concat('mainDialog.js'))
+        .pipe(gulp.dest('./build/'));
+});
+
+gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dialog'], function(done) {
     return new Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
@@ -118,11 +125,11 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib'], function(done) 
 gulp.task('release', function(callback) {
   runSequence('clean',
               ['copy-static-content', 'compile-src', 'compile-spec', 'browserify-imports', 'tslint'],
-              'concat-lib',
+              ['concat-lib', 'concat-main-dialog'],
               'spec',
               callback);
 });
 
-gulp.task('fast-build', ['copy-static-content', 'compile-src', 'concat-lib']);
+gulp.task('fast-build', ['copy-static-content', 'compile-src', 'concat-lib', 'concat-main-dialog']);
 
 gulp.task('default', ['fast-build']);
