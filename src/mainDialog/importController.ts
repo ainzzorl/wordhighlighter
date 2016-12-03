@@ -37,4 +37,22 @@ angular
         });
         return result;
     };
+
+    // Assumes that all words are trimmed already (should be done by parseInput)
+    // TODO: use sets to make it faster.
+    $scope.getDuplicateEntries = function(entries: Array<DictionaryEntry>): Array<string> {
+        let result: Array<string> = [];
+        let found: Array<string> = [];
+        entries.forEach(function(entry: DictionaryEntry) {
+            let word = entry.value;
+            if (found.indexOf(word) >= 0) {
+                if (result.indexOf(word) < 0) {
+                    result.push(word);
+                }
+            } else {
+                found.push(word);
+            }
+        });
+        return result;
+    };
 });
