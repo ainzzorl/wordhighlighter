@@ -1,5 +1,5 @@
 class DictionaryEntry {
-    readonly id: number;
+    id: number; // TODO: getter/setter
     readonly value: string;
     readonly description: string;
     readonly createdAt: Date;

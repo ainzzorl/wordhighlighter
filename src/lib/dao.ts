@@ -44,9 +44,24 @@ class DAO {
     }
 
     saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
-        chrome.storage.local.set({ dictionary: dictionary }, function() {
-            console.debug('Saved dictionary');
-            callback();
+        let needsToGenerateIds = dictionary.filter(function(dictionaryEntry: DictionaryEntry) {
+            return !dictionaryEntry.id;
+        });
+        if (needsToGenerateIds.length === 0) {
+            chrome.storage.local.set({ dictionary: dictionary }, function() {
+                console.debug('Saved dictionary');
+                callback();
+            });
+            return;
+        }
+        chrome.storage.local.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
+            let idSequenceNumber = result.idSequenceNumber;
+            needsToGenerateIds.forEach(function(dictionaryEntry: DictionaryEntry) {
+                dictionaryEntry.id = idSequenceNumber++;
+            });
+            chrome.storage.local.set({ idSequenceNumber: idSequenceNumber, dictionary: dictionary }, function() {
+                console.log('Saved the dictionary. New id sequence number: ' + idSequenceNumber);
+            });
         });
     }
 }
