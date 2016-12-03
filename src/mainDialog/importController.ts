@@ -5,7 +5,7 @@ angular
 .controller('importController', function($scope: any, dao: DAO) {
 
     $scope.MODE_KEEP = 'keep';
-    $scope.MODE_OVERWRITE = 'overwrite';
+    $scope.MODE_OVERWRITE = 'overwrite'; // TODO: implement
     $scope.MODE_REPLACE = 'replace';
 
     $scope.importInput = {
@@ -58,5 +58,20 @@ angular
 
     $scope.importAsReplacement = function(entries: Array<DictionaryEntry>) {
         dao.saveDictionary(entries, function() {});
+    };
+
+    // TODO: optimize with sets
+    $scope.importAndKeep = function(newEntries: Array<DictionaryEntry>) {
+        dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
+            newEntries.forEach(function(newEntry: DictionaryEntry) {
+                let exists = dictionary.some(function(existingEntry: DictionaryEntry): boolean {
+                    return existingEntry.value === newEntry.value;
+                });
+                if (!exists) {
+                    dictionary.push(newEntry);
+                };
+            });
+            dao.saveDictionary(dictionary, function() {});
+        });
     };
 });

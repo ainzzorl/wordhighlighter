@@ -114,4 +114,31 @@ describe('importController', function() {
             expect(dao.saveDictionary).toHaveBeenCalledWith(input, jasmine.any(Function));
         });
     });
+
+    describe('importAndKeep', function() {
+        let input;
+
+        beforeEach(function() {
+            input = [
+                new DictionaryEntry(null, 'new', 'new - desc', null, null),
+                new DictionaryEntry(null, 'both', 'both new - desc', null, null)
+            ];
+            dao.getDictionary = function(callback: (dictionary: Array<DictionaryEntry>) => void) {
+                callback([
+                    new DictionaryEntry(null, 'old', 'old - desc', null, null),
+                    new DictionaryEntry(null, 'both', 'both old - desc', null, null)
+                ]);
+            };
+            spyOn(dao, 'saveDictionary');
+            $scope.importAndKeep(input);
+        });
+
+        it('saves the dictionary', function() {
+            expect(dao.saveDictionary).toHaveBeenCalledWith([
+                new DictionaryEntry(null, 'old', 'old - desc', null, null),
+                new DictionaryEntry(null, 'both', 'both old - desc', null, null),
+                new DictionaryEntry(null, 'new', 'new - desc', null, null)
+            ], jasmine.any(Function));
+        });
+    });
 });
