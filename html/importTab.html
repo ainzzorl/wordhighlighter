@@ -3,9 +3,9 @@
      <form ng-submit="onImportClicked()">
         <button class="btn btn-primary">Import</button>
         <select class="form-control" ng-model="importInput.mode">
-            <option value="keep">Keep existing</option>
-            <option value="overwrite">Overwrite existing</option>
-            <option value="replace">Replace the current database</option>
+            <option value="{{MODE_KEEP}}">Keep existing</option>
+            <option value="{{MODE_OVERWRITE}}">Overwrite existing</option>
+            <option value="{{MODE_REPLACE}}">Replace the current database</option>
         </select>
         <textarea rows="4" cols="50" ng-model="importInput.data"></textarea>
      </form>
