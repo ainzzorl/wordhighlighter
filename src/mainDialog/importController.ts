@@ -2,7 +2,7 @@
 
 angular
 .module('mainDialog')
-.controller('importController', function($scope: any) {
+.controller('importController', function($scope: any, dao: DAO) {
 
     $scope.MODE_KEEP = 'keep';
     $scope.MODE_OVERWRITE = 'overwrite';
@@ -54,5 +54,9 @@ angular
             }
         });
         return result;
+    };
+
+    $scope.importAsReplacement = function(entries: Array<DictionaryEntry>) {
+        dao.saveDictionary(entries, function() {});
     };
 });

@@ -2,6 +2,7 @@
 ///<reference path="dictionaryEntry.ts" />
 
 // TODO: use synced storage
+// TODO: unit test
 class DAO {
     getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
         chrome.storage.local.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {

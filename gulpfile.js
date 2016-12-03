@@ -122,6 +122,7 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dia
         }, done).start();
 });
 
+// TODO: optimize: some tasks are called twice
 gulp.task('release', function(callback) {
   runSequence('clean',
               ['copy-static-content', 'compile-src', 'compile-spec', 'browserify-imports', 'tslint'],

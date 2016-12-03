@@ -6,13 +6,22 @@ describe('importController', function() {
 
     let controller;
     let $scope: any;
+    let dao;
 
     let mod: any = module;
     beforeEach(mod('mainDialog'));
 
+    beforeEach(function() {
+        dao = {
+            saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
+                callback();
+            }
+        };
+    });
+
     beforeEach(inject(function($controller, $rootScope) {
         $scope = $rootScope.$new();
-        controller = $controller('importController', { $scope: $scope });
+        controller = $controller('importController', { $scope: $scope, dao: dao });
     }));
 
     describe('parseInput', function() {
@@ -89,6 +98,20 @@ describe('importController', function() {
             it ('detects no duplicates', function() {
                 expect(result.length).toEqual(0);
             });
+        });
+    });
+
+    describe('importAsReplacement', function() {
+        let input;
+
+        beforeEach(function() {
+            input = [new DictionaryEntry(null, 'word 1', 'desc 1', null, null)];
+            spyOn(dao, 'saveDictionary');
+            $scope.importAsReplacement(input);
+        });
+
+        it('saves the dictionary', function() {
+            expect(dao.saveDictionary).toHaveBeenCalledWith(input, jasmine.any(Function));
         });
     });
 });
