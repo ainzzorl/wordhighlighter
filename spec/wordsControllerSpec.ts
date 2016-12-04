@@ -24,8 +24,8 @@ describe('wordsController', function() {
                 result.push(new DictionaryEntry(3, 'word3', 'desc3', new Date(), new Date()));
                 callback(result);
             },
-            addEntry(value: string, description: string, callback: (dictionaryEntry: DictionaryEntry) => void): void {
-                callback(new DictionaryEntry(1, value, description, new Date(), new Date()));
+            addEntry(value: string, description: string, strictMatch: boolean, callback: (dictionaryEntry: DictionaryEntry) => void): void {
+                callback(new DictionaryEntry(1, value, description, new Date(), new Date(), strictMatch));
             },
             saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
                 callback();
@@ -76,7 +76,8 @@ describe('wordsController', function() {
                 beforeEach(function() {
                     $scope.newWord = {
                         value: 'new-word-value',
-                        description: 'new-word-description'
+                        description: 'new-word-description',
+                        strictMatch: true
                     };
                     $scope.showAddingDupeError = true;
                     $scope.onAddNewWordClicked();
@@ -84,13 +85,14 @@ describe('wordsController', function() {
 
                 it ('persists the new entry', function() {
                     expect(dao.addEntry).toHaveBeenCalledWith(
-                        'new-word-value', 'new-word-description', jasmine.any(Function));
+                        'new-word-value', 'new-word-description', true, jasmine.any(Function));
                 });
 
                 it ('adds the new entry to the table', function() {
                     expect($scope.dictionary.length).toEqual(1);
                     expect($scope.dictionary[0].value).toEqual('new-word-value');
                     expect($scope.dictionary[0].description).toEqual('new-word-description');
+                    expect($scope.dictionary[0].strictMatch).toBe(true);
                 });
 
                 it ('reloads the table', function() {
@@ -100,6 +102,7 @@ describe('wordsController', function() {
                 it ('resets the word', function() {
                     expect($scope.newWord.value).toEqual('');
                     expect($scope.newWord.description).toEqual('');
+                    expect($scope.newWord.strictMatch).toBe(false);
                 });
 
                 it ('hides the error', function() {

@@ -8,7 +8,13 @@
     <div class="form-group">
       <label for="new-word-description">Description (optional):</label>
       <br>
-      <input ng-model="newWord.description" type="tel" class="form-control words-form-input"/>
+      <!-- TODO: text area -->
+      <input ng-model="newWord.description" type="text" class="form-control words-form-input"/>
+    </div>
+    <div class="form-group">
+      <label for="new-word-strict-match">Use strict match (optional):</label>
+      <br>
+      <input id="new-word-strict-match-checkbox" ng-model="newWord.strictMatch" type="checkbox">
     </div>
     <button id="add-word-button" type="submit" class="btn btn-primary">Add</button>
   </form>
@@ -36,6 +42,12 @@
           <span ng-switch-default class="editable-text">{{dictionaryEntry.description}}</span>
           <div class="controls" ng-class="description.$invalid && description.$dirty ? 'has-error' : ''" ng-switch-when="true">
             <input type="text" name="description" ng-model="dictionaryEntry.description" class="editable-input form-control input-sm" />
+          </div>
+        </td>
+        <td title="'Strict Match'" sortable="'strictMatch'" ng-switch="dictionaryEntry.isEditing" class="strict-match-column" ng-class="strictMatch.$dirty ? 'bg-warning' : ''" ng-form="strictMatch">
+          <span ng-switch-default>{{dictionaryEntry.strictMatch ? 'Yes' : 'No'}}</span>
+          <div class="controls" ng-switch-when="true">
+            <input type="checkbox" name="strictMatch" ng-model="dictionaryEntry.strictMatch" class="form-control" />
           </div>
         </td>
         <td class="control-column">

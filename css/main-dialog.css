@@ -24,6 +24,10 @@ body {
     margin-right: 3%;
 }
 
+#new-word-strict-match-checkbox {
+    margin-left: 3%;
+}
+
 #words-table {
     width: 100%;
     min-width: 100%;
@@ -32,6 +36,10 @@ body {
 #words-table .control-column {
     /* Width of 2 icons */
     min-width: 94px;
+}
+
+#words-table .strict-match-column {
+    width: 15px;
 }
 
 #add-word-button {

@@ -1,10 +1,14 @@
+///<reference path="../lib/dao.ts" />
+///<reference path="../lib/dictionaryEntry.ts" />
+
 angular
 .module('mainDialog')
 .controller('wordsController', function($scope: any, NgTableParams: any, dao: DAO) {
     $scope.dictionary = [];
     $scope.newWord = {
         value: '',
-        description: ''
+        description: '',
+        scrictMatch: false
     };
 
     $scope.showAddingDupeError = false;
@@ -30,12 +34,13 @@ angular
                 $scope.showAddingDupeError = true;
                 return;
             }
-            dao.addEntry(newValue, $scope.newWord.description, function(newEntry: DictionaryEntry) {
+            dao.addEntry(newValue, $scope.newWord.description, $scope.newWord.strictMatch, function(newEntry: DictionaryEntry) {
                 $scope.dictionary.push(newEntry);
                 $scope.tableParams.reload();
             });
             $scope.newWord.value = '';
             $scope.newWord.description = '';
+            $scope.newWord.strictMatch = false;
             $scope.showAddingDupeError = false;
         }
     };
