@@ -181,6 +181,7 @@ describe('importController', function() {
             input = [new DictionaryEntry(null, 'word 1', 'desc 1', null, null)];
             spyOn(dao, 'saveDictionary').and.callThrough();
             $scope.showInputSuccessConfirmation = false;
+            $scope.importInput.data = 'input-data';
             $scope.importAsReplacement(input);
         });
 
@@ -190,6 +191,10 @@ describe('importController', function() {
 
         it('shows confirmation', function() {
             expect($scope.showInputSuccessConfirmation).toBe(true);
+        });
+
+        it('resets input data', function() {
+            expect($scope.importInput.data).toEqual('');
         });
     });
 
@@ -208,6 +213,7 @@ describe('importController', function() {
                 ]);
             };
             $scope.showInputSuccessConfirmation = false;
+            $scope.importInput.data = 'input-data';
             spyOn(dao, 'saveDictionary').and.callThrough();
             $scope.importAndKeep(input);
         });
@@ -222,6 +228,10 @@ describe('importController', function() {
 
         it('shows confirmation', function() {
             expect($scope.showInputSuccessConfirmation).toBe(true);
+        });
+
+        it('resets input data', function() {
+            expect($scope.importInput.data).toEqual('');
         });
     });
 });

@@ -2,9 +2,20 @@
     <p>Enter the words you want to import to the text area below. Format: word;description, one per line. Descriptions are optional</p>
      <form ng-submit="onImportClicked()">
         <button class="btn btn-primary">Import</button>
+
+        <div class="alert alert-danger" ng-show="dupes && dupes.length > 0">
+            The input contains duplicates: {{ dupes.join(', ') }}
+        </div>
+
+        <div class="alert alert-success" ng-show="showInputSuccessConfirmation">
+            The import has succeeded!
+        </div>
+
         <select class="form-control" ng-model="importInput.mode">
             <option value="{{MODE_KEEP}}">Keep existing</option>
+            <!-- TODO: enable
             <option value="{{MODE_OVERWRITE}}">Overwrite existing</option>
+            -->
             <option value="{{MODE_REPLACE}}">Replace the current database</option>
         </select>
         <textarea rows="4" cols="50" ng-model="importInput.data"></textarea>

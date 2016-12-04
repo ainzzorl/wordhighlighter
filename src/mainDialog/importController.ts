@@ -19,7 +19,7 @@ angular
     $scope.onImportClicked = function() {
         let input: Array<DictionaryEntry> = $scope.parseInput();
         $scope.showInputSuccessConfirmation = false;
-        $scope.dupes = $scope.getDuplicateEntries();
+        $scope.dupes = $scope.getDuplicateEntries(input);
         if ($scope.dupes.length > 0) {
             return;
         }
@@ -92,5 +92,7 @@ angular
 
     function onSuccess() {
         $scope.showInputSuccessConfirmation = true;
+        $scope.importInput.data = '';
+        $scope.$apply();
     }
 });
