@@ -2,15 +2,10 @@ var gulp = require('gulp');
 var ts = require('gulp-typescript');
 var tsProjectSrc = ts.createProject('tsconfig-src.json');
 var tsProjectSpec = ts.createProject('tsconfig-spec.json');
-var jasmine = require('gulp-jasmine');
 var concat = require('gulp-concat');
-var clean = require('gulp-clean');
-var runSequence = require('run-sequence');
-var browserify = require('gulp-browserify');
-var tslint = require('gulp-tslint');
-var Server = require('karma').Server;
 
 gulp.task('clean', function () {
+    var clean = require('gulp-clean');
     return gulp.src('build/*', {read: false})
         .pipe(clean());
 });
@@ -55,6 +50,7 @@ gulp.task('compile-spec', function () {
 });
 
 gulp.task('browserify-imports', [], function() {
+    var browserify = require('gulp-browserify');
     gulp.src('src/imports/imports.js')
         .pipe(browserify({
             insertGlobals : true
@@ -63,6 +59,7 @@ gulp.task('browserify-imports', [], function() {
 });
 
 gulp.task('tslint', function() {
+    var tslint = require('gulp-tslint');
     return gulp.src(['src/**/*.ts', 'spec/**/*.ts'])
         .pipe(tslint({
             formatter: 'verbose',
@@ -116,6 +113,7 @@ gulp.task('concat-main-dialog', ['compile-src'], function() {
 });
 
 gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dialog'], function(done) {
+    var Server = require('karma').Server;
     return new Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
@@ -124,7 +122,8 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dia
 
 // TODO: optimize: some tasks are called twice
 gulp.task('release', function(callback) {
-  runSequence('clean',
+    var runSequence = require('run-sequence');
+    runSequence('clean',
               ['copy-static-content', 'compile-src', 'compile-spec', 'browserify-imports', 'tslint'],
               ['concat-lib', 'concat-main-dialog'],
               'spec',
