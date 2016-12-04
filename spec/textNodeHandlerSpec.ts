@@ -158,6 +158,8 @@ describe('textNodeHandler', function() {
             let dictionary = [];
             dictionary.push(new DictionaryEntry(1, 'advent', '', new Date(), new Date()));
             dictionary.push(new DictionaryEntry(2, 'something', '', new Date(), new Date()));
+            dictionary.push(new DictionaryEntry(3, 'To hamper', '', new Date(), new Date()));
+            dictionary.push(new DictionaryEntry(4, 'go to', '', new Date(), new Date()));
             stemmer = {
                 stem: function(word) {
                     switch (word) {
@@ -181,6 +183,14 @@ describe('textNodeHandler', function() {
 
         it('detects no match', function() {
             expect(handler.findMatchForWord('adventure')).toBeNull();
+        });
+
+        it('ignores "to" at the beginning', function() {
+            expect(handler.findMatchForWord('hamper')).toEqual('To hamper');
+        });
+
+        it('does not ignore "to" elsewhere', function() {
+            expect(handler.findMatchForWord('go')).toBeNull();
         });
     });
 });

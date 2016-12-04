@@ -4,6 +4,8 @@
 
 
 class TextNodeHandler {
+    IGNORED_PREFIXES = ['a ', 'an ', 'to '];
+
     dictionary: Array<DictionaryEntry>;
     stemmer: Stemmer;
     dictionaryStems: any;
@@ -124,10 +126,20 @@ class TextNodeHandler {
     private calculateDictionaryStems(): void {
         this.dictionaryStems = {};
         for (let i = 0; i < this.dictionary.length; ++i) {
-            let stem = this.stemmer.stem(this.dictionary[i].value);
+            let stem = this.stemmer.stem(this.removeIgnoredPrefixes(this.dictionary[i].value));
             if (stem) {
                 this.dictionaryStems[stem] = this.dictionary[i];
             }
         }
+    }
+
+    private removeIgnoredPrefixes(input: string): string {
+        let result = input;
+        this.IGNORED_PREFIXES.forEach(function(prefix: string) {
+            if (result.toLowerCase().lastIndexOf(prefix, 0) === 0) {
+                result = result.substring(prefix.length);
+            }
+        });
+        return result;
     }
 }
