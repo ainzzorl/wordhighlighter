@@ -24,6 +24,79 @@ describe('importController', function() {
         controller = $controller('importController', { $scope: $scope, dao: dao });
     }));
 
+    describe('onImportClicked', function() {
+        let input;
+
+        beforeEach(function() {
+            input = [
+                new DictionaryEntry(null, 'word 1', '', null, null)
+            ];
+            $scope.parseInput = function() {
+                return input;
+            };
+        });
+
+        describe('keep', function() {
+            beforeEach(function() {
+                $scope.importInput.mode = $scope.MODE_KEEP;
+                spyOn($scope, 'importAndKeep');
+            });
+
+            describe('no dupes', function() {
+                beforeEach(function() {
+                    $scope.getDuplicateEntries = function() {
+                        return [];
+                    };
+                    $scope.onImportClicked();
+                });
+
+                it('detects no dupes', function() {
+                    expect($scope.dupes).toEqual([]);
+                });
+
+                it('imports data', function() {
+                    expect($scope.importAndKeep).toHaveBeenCalled();
+                });
+            });
+
+            describe('dupes', function() {
+                beforeEach(function() {
+                    $scope.getDuplicateEntries = function() {
+                        return ['dup'];
+                    };
+                    $scope.onImportClicked();
+                });
+
+                it('detects dupes', function() {
+                    expect($scope.dupes).toEqual(['dup']);
+                });
+
+                it('does not import', function() {
+                    expect($scope.importAndKeep).not.toHaveBeenCalled();
+                });
+
+                it('shows no confirmation', function() {
+                    expect($scope.showInputSuccessConfirmation).toBe(false);
+                });
+            });
+        });
+
+        describe('replace', function() {
+            beforeEach(function() {
+                $scope.importInput.mode = $scope.MODE_REPLACE;
+                spyOn($scope, 'importAsReplacement');
+                $scope.getDuplicateEntries = function() {
+                    return [];
+                };
+                $scope.onImportClicked();
+            });
+
+            it('imports data', function() {
+                expect($scope.importAsReplacement).toHaveBeenCalled();
+            });
+        });
+    });
+
     describe('parseInput', function() {
         let result: Array<DictionaryEntry>;
 
@@ -87,7 +160,7 @@ describe('importController', function() {
 
         describe('no duplicates', function() {
             beforeEach(function() {
-                let input =  [
+                let input = [
                     new DictionaryEntry(null, 'word 1', '', null, null),
                     new DictionaryEntry(null, 'word 2', '', null, null),
                     new DictionaryEntry(null, 'word 3', '', null, null),
@@ -106,12 +179,17 @@ describe('importController', function() {
 
         beforeEach(function() {
             input = [new DictionaryEntry(null, 'word 1', 'desc 1', null, null)];
-            spyOn(dao, 'saveDictionary');
+            spyOn(dao, 'saveDictionary').and.callThrough();
+            $scope.showInputSuccessConfirmation = false;
             $scope.importAsReplacement(input);
         });
 
         it('saves the dictionary', function() {
             expect(dao.saveDictionary).toHaveBeenCalledWith(input, jasmine.any(Function));
+        });
+
+        it('shows confirmation', function() {
+            expect($scope.showInputSuccessConfirmation).toBe(true);
         });
     });
 
@@ -129,7 +207,8 @@ describe('importController', function() {
                     new DictionaryEntry(null, 'both', 'both old - desc', null, null)
                 ]);
             };
-            spyOn(dao, 'saveDictionary');
+            $scope.showInputSuccessConfirmation = false;
+            spyOn(dao, 'saveDictionary').and.callThrough();
             $scope.importAndKeep(input);
         });
 
@@ -139,6 +218,10 @@ describe('importController', function() {
                 new DictionaryEntry(null, 'both', 'both old - desc', null, null),
                 new DictionaryEntry(null, 'new', 'new - desc', null, null)
             ], jasmine.any(Function));
+        });
+
+        it('shows confirmation', function() {
+            expect($scope.showInputSuccessConfirmation).toBe(true);
         });
     });
 });

@@ -1,3 +1,4 @@
+///<reference path="../lib/dao.ts" />
 ///<reference path="../lib/dictionaryEntry.ts" />
 
 angular
@@ -13,9 +14,23 @@ angular
         mode: $scope.MODE_KEEP
     };
 
+    $scope.showInputSuccessConfirmation = false;
+
     $scope.onImportClicked = function() {
-        console.log('Importing data, mode=' + $scope.importInput.mode);
-        console.log($scope.importInput.data);
+        let input: Array<DictionaryEntry> = $scope.parseInput();
+        $scope.showInputSuccessConfirmation = false;
+        $scope.dupes = $scope.getDuplicateEntries();
+        if ($scope.dupes.length > 0) {
+            return;
+        }
+        switch ($scope.importInput.mode) {
+            case $scope.MODE_KEEP:
+                $scope.importAndKeep(input);
+                break;
+            case $scope.MODE_REPLACE:
+                $scope.importAsReplacement(input);
+                break;
+        }
     };
 
     $scope.parseInput = function(): Array<DictionaryEntry> {
@@ -57,7 +72,7 @@ angular
     };
 
     $scope.importAsReplacement = function(entries: Array<DictionaryEntry>) {
-        dao.saveDictionary(entries, function() {});
+        dao.saveDictionary(entries, onSuccess);
     };
 
     // TODO: optimize with sets
@@ -71,7 +86,11 @@ angular
                     dictionary.push(newEntry);
                 };
             });
-            dao.saveDictionary(dictionary, function() {});
+            dao.saveDictionary(dictionary, onSuccess);
         });
     };
+
+    function onSuccess() {
+        $scope.showInputSuccessConfirmation = true;
+    }
 });

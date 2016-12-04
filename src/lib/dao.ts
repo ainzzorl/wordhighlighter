@@ -61,6 +61,7 @@ class DAO {
             });
             chrome.storage.local.set({ idSequenceNumber: idSequenceNumber, dictionary: dictionary }, function() {
                 console.log('Saved the dictionary. New id sequence number: ' + idSequenceNumber);
+                callback();
             });
         });
     }
