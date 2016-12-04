@@ -38,3 +38,14 @@ body {
     margin-left: 3%;
     margin-top: 5px;
 }
+
+#import-data-row {
+    width: 100%;
+}
+
+#import-data {
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 90%;
+}
