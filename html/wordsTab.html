@@ -2,13 +2,15 @@
   <form id="new-word-form" ng-submit="onAddNewWordClicked()">
     <div class="form-group">
       <label for="new-word-value">Word:</label>
-      <input ng-model="newWord.value" type="text" class="form-control" id="new-word-value"/>
+      <br>
+      <input ng-model="newWord.value" type="text" class="form-control words-form-input"/>
     </div>
     <div class="form-group">
       <label for="new-word-description">Description (optional):</label>
-      <input ng-model="newWord.description" type="tel" class="form-control" id="new-word-description"/>
+      <br>
+      <input ng-model="newWord.description" type="tel" class="form-control words-form-input"/>
     </div>
-    <button type="submit" class="btn btn-primary">Add</button>
+    <button id="add-word-button" type="submit" class="btn btn-primary">Add</button>
   </form>
 
   <div class="alert alert-danger" ng-show="showAddingDupeError">
@@ -16,6 +18,7 @@
   </div>
 
     <table
+      id="words-table"
       ng-table="tableParams"
       class="table table-condensed table-bordered table-striped"
     >
@@ -35,7 +38,7 @@
             <input type="text" name="description" ng-model="dictionaryEntry.description" class="editable-input form-control input-sm" />
           </div>
         </td>
-        <td>
+        <td class="control-column">
           <span ng-show="!dictionaryEntry.isDeleting">
             <span ng-show="dictionaryEntry.isEditing">
               <button class="btn btn-primary btn-sm" ng-click="save(dictionaryEntry, dictionaryEntryForm)" ng-disabled="dictionaryEntry.$pristine || dictionaryEntry.$invalid"><span class="glyphicon glyphicon-ok"></span></button>

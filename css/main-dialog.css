@@ -6,6 +6,35 @@
     margin-bottom: 5px;
 }
 
+html {
+    width: 400px;
+    max-width: 400px;
+    min-width: 400px;
+}
+
 body {
     width: 400px;
+    max-width: 400px;
+    min-width: 400px;
+}
+
+.words-form-input {
+    max-width: 94%;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+#words-table {
+    width: 100%;
+    min-width: 100%;
+}
+
+#words-table .control-column {
+    /* Width of 2 icons */
+    min-width: 94px;
+}
+
+#add-word-button {
+    margin-left: 3%;
+    margin-top: 5px;
 }
