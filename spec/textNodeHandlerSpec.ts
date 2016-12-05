@@ -16,7 +16,7 @@ describe('textNodeHandler', function() {
         let result: Array<HTMLElement>;
 
         beforeEach(function() {
-            handler.wrap = function(entry: DictionaryEntry) {
+            handler.wrap = function(word: string, entry: DictionaryEntry) {
                 return '<wrapped>' + entry.value + '</wrapped>';
             };
             element = document.createTextNode('Internet for people, not profit');
@@ -81,13 +81,13 @@ describe('textNodeHandler', function() {
             let result;
 
             beforeEach(function() {
-                result = handler.wrap(new DictionaryEntry(1, 'word', 'description', null, null));
+                result = handler.wrap('source', new DictionaryEntry(1, 'word', 'description', null, null));
             });
 
             it('wraps the entry', function() {
                 expect(result).toEqual(
                     '<span class="highlighted-word">'
-                    + 'word'
+                    + 'source'
                     + '<div class="highlighted-word-tooltip">'
                     + '<p class="">word</p>'
                     + '<div>description</div>'
@@ -100,13 +100,13 @@ describe('textNodeHandler', function() {
             let result;
 
             beforeEach(function() {
-                result = handler.wrap(new DictionaryEntry(1, 'word', '', null, null));
+                result = handler.wrap('source', new DictionaryEntry(1, 'word', '', null, null));
             });
 
             it('wraps the entry', function() {
                 expect(result).toEqual(
                     '<span class="highlighted-word">'
-                    + 'word'
+                    + 'source'
                     + '<div class="highlighted-word-tooltip">'
                     + '<p class="highlighted-word-title-no-description">word</p>'
                     + '</div>'

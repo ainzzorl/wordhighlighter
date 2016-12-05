@@ -29,7 +29,7 @@ class TextNodeHandler {
         }
         for (let i = 0; i < matchResults.length; ++i) {
             if (matchResults[i].matchOf) {
-                html += this.wrap(matchResults[i].matchOf);
+                html += this.wrap(matchResults[i].value, matchResults[i].matchOf);
             } else {
                 html += matchResults[i].value;
             }
@@ -121,9 +121,9 @@ class TextNodeHandler {
         return (result && result.value) ? result : null;
     }
 
-    wrap(entry: DictionaryEntry) {
+    wrap(word: string, entry: DictionaryEntry) {
         return '<span class="highlighted-word">'
-                + entry.value
+                + word
                 + this.tooltipContent(entry)
                 + '</span>';
     }
