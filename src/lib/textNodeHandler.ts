@@ -29,7 +29,7 @@ class TextNodeHandler {
         }
         for (let i = 0; i < matchResults.length; ++i) {
             if (matchResults[i].matchOf) {
-                html += this.wrap(matchResults[i].value);
+                html += this.wrap(matchResults[i].matchOf);
             } else {
                 html += matchResults[i].value;
             }
@@ -103,10 +103,10 @@ class TextNodeHandler {
         return result;
     }
 
-    findMatchForWord(word: string): string {
+    findMatchForWord(word: string): DictionaryEntry {
         let strictMatch = <DictionaryEntry> this.strictMatchMap[word.toLowerCase()];
         if (strictMatch && strictMatch.value) {
-            return strictMatch.value;
+            return strictMatch;
         }
 
         let cachedStem = this.contentWordStems[word];
@@ -118,15 +118,28 @@ class TextNodeHandler {
             this.contentWordStems[word] = targetStem;
         }
         let result = <DictionaryEntry> this.dictionaryStemMap[targetStem];
-        return (result && result.value) ? result.value : null;
+        return (result && result.value) ? result : null;
+    }
+
+    wrap(entry: DictionaryEntry) {
+        return '<span class="highlighted-word">'
+                + entry.value
+                + this.tooltipContent(entry)
+                + '</span>';
     }
 
     private isWordCharacter(char: string) {
         return char[0] >= 'a' && char[0] <= 'z' || char[0] >= 'A' && char[0] <= 'Z';
     }
 
-    private wrap(word: string) {
-        return '<span class="highlighted-word">' + word + '</span>';
+    private tooltipContent(entry: DictionaryEntry) {
+        let wrappedDescription = entry.description ?
+            '<div>' + entry.description + '</div>' : '';
+        let wordClass = entry.description ? '' : 'highlighted-word-title-no-description';
+        return '<div class="highlighted-word-tooltip">'
+                + '<p class="' + wordClass + '">' + entry.value + '</p>'
+                + wrappedDescription
+                + '</div>';
     }
 
     private calculateIndexes(): void {

@@ -1,17 +1,24 @@
 ///<reference path="../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../src/lib/textNodeHandler.ts" />
 ///<reference path="../src/lib/dao.ts" />
+///<reference path="../src/lib/dictionaryEntry.ts" />
 
 describe('textNodeHandler', function() {
     let handler: TextNodeHandler;
     let dao: DAO;
+
+    beforeEach(function() {
+        handler = new TextNodeHandler(null, null);
+    });
 
     describe('injectMarkup', function() {
         let element: Text;
         let result: Array<HTMLElement>;
 
         beforeEach(function() {
-            handler = new TextNodeHandler(null, null);
+            handler.wrap = function(entry: DictionaryEntry) {
+                return '<wrapped>' + entry.value + '</wrapped>';
+            };
             element = document.createTextNode('Internet for people, not profit');
         });
 
@@ -20,7 +27,7 @@ describe('textNodeHandler', function() {
                 handler.findMatches = function(input) {
                     return [
                         { value: 'Internet for ', matchOf: null },
-                        { value: 'people', matchOf: 'people' },
+                        { value: 'people', matchOf: new DictionaryEntry(1, 'people', '', null, null) },
                         { value: ', not profit', matchOf: null }
                     ];
                 };
@@ -30,7 +37,7 @@ describe('textNodeHandler', function() {
             it('injects markup', function() {
                 expect(result.length).toEqual(3);
                 expect(result[0].nodeValue).toEqual('Internet for ');
-                expect(result[1].outerHTML).toEqual('<span class="highlighted-word">people</span>');
+                expect(result[1].outerHTML).toEqual('<wrapped>people</wrapped>');
                 expect(result[2].nodeValue).toEqual(', not profit');
             });
         });
@@ -55,7 +62,8 @@ describe('textNodeHandler', function() {
             beforeEach(function() {
                 handler.findMatches = function(input) {
                     return [
-                        { value: 'Internet for people, not profit', matchOf: 'Internet for people, not profit' }
+                        { value: 'Internet for people, not profit',
+                          matchOf: new DictionaryEntry(1, 'Internet for people, not profit', '', null, null) }
                     ];
                 };
                 result = handler.injectMarkup(element);
@@ -63,7 +71,46 @@ describe('textNodeHandler', function() {
 
             it('injects markup', function() {
                 expect(result.length).toEqual(1);
-                expect(result[0].outerHTML).toEqual('<span class="highlighted-word">Internet for people, not profit</span>');
+                expect(result[0].outerHTML).toEqual('<wrapped>Internet for people, not profit</wrapped>');
+            });
+        });
+    });
+
+    describe('wrap', function() {
+        describe('has description', function() {
+            let result;
+
+            beforeEach(function() {
+                result = handler.wrap(new DictionaryEntry(1, 'word', 'description', null, null));
+            });
+
+            it('wraps the entry', function() {
+                expect(result).toEqual(
+                    '<span class="highlighted-word">'
+                    + 'word'
+                    + '<div class="highlighted-word-tooltip">'
+                    + '<p class="">word</p>'
+                    + '<div>description</div>'
+                    + '</div>'
+                    + '</span>');
+            });
+        });
+
+        describe('no description', function() {
+            let result;
+
+            beforeEach(function() {
+                result = handler.wrap(new DictionaryEntry(1, 'word', '', null, null));
+            });
+
+            it('wraps the entry', function() {
+                expect(result).toEqual(
+                    '<span class="highlighted-word">'
+                    + 'word'
+                    + '<div class="highlighted-word-tooltip">'
+                    + '<p class="highlighted-word-title-no-description">word</p>'
+                    + '</div>'
+                    + '</span>');
             });
         });
     });
@@ -72,11 +119,10 @@ describe('textNodeHandler', function() {
         let matchResult: Array<MatchResultEntry>;
 
         beforeEach(function() {
-            handler = new TextNodeHandler(null, null);
-            handler.findMatchForWord = function(word: string) {
+            handler.findMatchForWord = function(word: string): DictionaryEntry {
                 switch (word) {
-                    case 'people': return 'people';
-                    case 'profit': return 'profit';
+                    case 'people': return new DictionaryEntry(1, 'people', '', null, null);
+                    case 'profit': return new DictionaryEntry(2, 'profit', '', null, null);
                 }
                 return null;
             };
@@ -92,7 +138,7 @@ describe('textNodeHandler', function() {
                 expect(matchResult[0].value).toEqual('Internet for ');
                 expect(matchResult[0].matchOf).toBeNull();
                 expect(matchResult[1].value).toEqual('people');
-                expect(matchResult[1].matchOf).toEqual('people');
+                expect(matchResult[1].matchOf.value).toEqual('people');
                 expect(matchResult[2].value).toEqual(', not');
                 expect(matchResult[2].matchOf).toBeNull();
             });
@@ -118,7 +164,7 @@ describe('textNodeHandler', function() {
             it('finds the match', function() {
                 expect(matchResult.length).toEqual(1);
                 expect(matchResult[0].value).toEqual('people');
-                expect(matchResult[0].matchOf).toEqual('people');
+                expect(matchResult[0].matchOf.value).toEqual('people');
             });
         });
 
@@ -130,7 +176,7 @@ describe('textNodeHandler', function() {
             it('finds the match', function() {
                 expect(matchResult.length).toEqual(2);
                 expect(matchResult[0].value).toEqual('people');
-                expect(matchResult[0].matchOf).toEqual('people');
+                expect(matchResult[0].matchOf.value).toEqual('people');
                 expect(matchResult[1].value).toEqual(' and');
                 expect(matchResult[1].matchOf).toBeNull();
             });
@@ -146,7 +192,7 @@ describe('textNodeHandler', function() {
                 expect(matchResult[0].value).toEqual('not ');
                 expect(matchResult[0].matchOf).toBeNull();
                 expect(matchResult[1].value).toEqual('profit');
-                expect(matchResult[1].matchOf).toEqual('profit');
+                expect(matchResult[1].matchOf.value).toEqual('profit');
             });
         });
     });
@@ -179,11 +225,11 @@ describe('textNodeHandler', function() {
 
         describe('stem matching', function() {
             it('finds exact match', function() {
-                expect(handler.findMatchForWord('advent')).toEqual('advent');
+                expect(handler.findMatchForWord('advent').value).toEqual('advent');
             });
 
             it('finds stem match', function() {
-                expect(handler.findMatchForWord('advents')).toEqual('advent');
+                expect(handler.findMatchForWord('advents').value).toEqual('advent');
             });
 
             it('detects no match', function() {
@@ -191,7 +237,7 @@ describe('textNodeHandler', function() {
             });
 
             it('ignores "to" at the beginning', function() {
-                expect(handler.findMatchForWord('hamper')).toEqual('To hamper');
+                expect(handler.findMatchForWord('hamper').value).toEqual('To hamper');
             });
 
             it('does not ignore "to" elsewhere', function() {
@@ -201,11 +247,11 @@ describe('textNodeHandler', function() {
 
         describe('strict matching', function() {
             it('finds exact match', function() {
-                expect(handler.findMatchForWord('contention')).toEqual('Contention');
+                expect(handler.findMatchForWord('contention').value).toEqual('Contention');
             });
 
             it('ignores case', function() {
-                expect(handler.findMatchForWord('cOnTeNtIoN')).toEqual('Contention');
+                expect(handler.findMatchForWord('cOnTeNtIoN').value).toEqual('Contention');
             });
 
             it('does not find stem match', function() {
