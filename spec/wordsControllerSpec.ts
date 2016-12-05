@@ -231,11 +231,12 @@ describe('wordsController', function() {
             spyOn(dao, 'saveDictionary').and.callThrough();
         });
 
-        describe('not dupe', function() {
+        describe('not dupe, changed', function() {
             beforeEach(function() {
                 $scope.dictionary[1].value += '-updated';
                 $scope.dictionary[1].isEditing = true;
                 $scope.dictionary[1].isDupe = true;
+                $scope.dictionary[1].updatedAt = null;
 
                 $scope.save($scope.dictionary[1], dictionaryEntryForm);
             });
@@ -258,6 +259,42 @@ describe('wordsController', function() {
 
             it ('hides the dupe error', function() {
                 expect($scope.dictionary[1].isDupe).toBe(false);
+            });
+
+            it ('updates the date', function() {
+                expect($scope.dictionary[1].updatedAt).not.toBeNull();
+            });
+        });
+
+        describe('no dupe, did not change', function() {
+            let originalData: string;
+            let originalDate: Date;
+
+            beforeEach(function() {
+                originalData = $scope.originalData[1].value;
+                originalDate = $scope.originalData[1].updatedAt;
+
+                $scope.save($scope.dictionary[1], dictionaryEntryForm);
+            });
+
+            it ('does not update the original data', function() {
+                expect($scope.originalData[1].value).toEqual(originalData);
+            });
+
+            it ('marks the row as not being edited', function() {
+                expect($scope.dictionary[1].isEditing).toBe(false);
+            });
+
+            it ('does not persist the dictionary', function() {
+                expect(dao.saveDictionary).not.toHaveBeenCalled();
+            });
+
+            it ('does not show the dupe error', function() {
+                expect($scope.dictionary[1].isDupe).toBe(false);
+            });
+
+            it ('does not update the date', function() {
+                expect($scope.dictionary[1].updatedAt).toEqual(originalDate);
             });
         });
 

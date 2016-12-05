@@ -3,7 +3,7 @@ class DictionaryEntry {
     readonly value: string;
     readonly description: string;
     readonly createdAt: Date;
-    readonly updatedAt: Date;
+    updatedAt: Date; // TODO: instead of public, use touch()
     readonly strictMatch: boolean;
 
     constructor(id: number, value: string, description: string, createdAt: Date, updatedAt: Date, strictMatch: boolean = false) {

@@ -63,8 +63,11 @@ angular
             return;
         };
         let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
+        if (changed(dictionaryEntry, originalRow)) {
+            dictionaryEntry.updatedAt = new Date();
+            dao.saveDictionary($scope.dictionary, function() {});
+        }
         angular.extend(originalRow, dictionaryEntry);
-        dao.saveDictionary($scope.dictionary, function() {});
         dictionaryEntry.isDupe = false;
     };
 
@@ -97,6 +100,12 @@ angular
             }
         }
         return -1;
+    }
+
+    function changed(dictionaryEntry: any, originalRow: any) {
+        return dictionaryEntry.value !== originalRow.value
+            || dictionaryEntry.description !== originalRow.description
+            || dictionaryEntry.strictMatch !== originalRow.strictMatch;
     }
 
     $scope.load();
