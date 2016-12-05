@@ -8,7 +8,7 @@
 
 .highlighted-word .highlighted-word-tooltip {
     visibility: hidden;
-    width: 120px;
+    width: 200px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -20,10 +20,16 @@
 
     /* Position the tooltip */
     position: absolute;
-    z-index: 1;
+    z-index: 1000;
     bottom: 100%;
     left: 50%;
     margin-left: -60px;
+}
+
+.highlighted-word .highlighted-word-tooltip p {
+    margin-top: 0px;
+    padding-top: 0px;
+    color: #fff;
 }
 
 .highlighted-word:hover .highlighted-word-tooltip {
