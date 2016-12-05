@@ -160,6 +160,7 @@ describe('textNodeHandler', function() {
             dictionary.push(new DictionaryEntry(2, 'something', '', new Date(), new Date()));
             dictionary.push(new DictionaryEntry(3, 'To hamper', '', new Date(), new Date()));
             dictionary.push(new DictionaryEntry(4, 'go to', '', new Date(), new Date()));
+            dictionary.push(new DictionaryEntry(5, 'Contention', '', new Date(), new Date(), true));
             stemmer = {
                 stem: function(word) {
                     switch (word) {
@@ -167,30 +168,49 @@ describe('textNodeHandler', function() {
                         case 'advents': return 'advent';
                         case 'adventure': return 'adventur';
                     }
+                    if (word.toLowerCase().indexOf('content') === 0) {
+                        return 'content';
+                    }
                     return word;
                 }
             };
             handler = new TextNodeHandler(dictionary, stemmer);
         });
 
-        it('finds exact match', function() {
-            expect(handler.findMatchForWord('advent')).toEqual('advent');
+        describe('stem matching', function() {
+            it('finds exact match', function() {
+                expect(handler.findMatchForWord('advent')).toEqual('advent');
+            });
+
+            it('finds stem match', function() {
+                expect(handler.findMatchForWord('advents')).toEqual('advent');
+            });
+
+            it('detects no match', function() {
+                expect(handler.findMatchForWord('adventure')).toBeNull();
+            });
+
+            it('ignores "to" at the beginning', function() {
+                expect(handler.findMatchForWord('hamper')).toEqual('To hamper');
+            });
+
+            it('does not ignore "to" elsewhere', function() {
+                expect(handler.findMatchForWord('go')).toBeNull();
+            });
         });
 
-        it('finds stem match', function() {
-            expect(handler.findMatchForWord('advents')).toEqual('advent');
-        });
+        describe('strict matching', function() {
+            it('finds exact match', function() {
+                expect(handler.findMatchForWord('contention')).toEqual('Contention');
+            });
 
-        it('detects no match', function() {
-            expect(handler.findMatchForWord('adventure')).toBeNull();
-        });
+            it('ignores case', function() {
+                expect(handler.findMatchForWord('cOnTeNtIoN')).toEqual('Contention');
+            });
 
-        it('ignores "to" at the beginning', function() {
-            expect(handler.findMatchForWord('hamper')).toEqual('To hamper');
-        });
-
-        it('does not ignore "to" elsewhere', function() {
-            expect(handler.findMatchForWord('go')).toBeNull();
+            it('does not find stem match', function() {
+                expect(handler.findMatchForWord('content')).toBeNull();
+            });
         });
     });
 });

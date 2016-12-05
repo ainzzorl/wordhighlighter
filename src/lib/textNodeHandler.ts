@@ -8,7 +8,8 @@ class TextNodeHandler {
 
     dictionary: Array<DictionaryEntry>;
     stemmer: Stemmer;
-    dictionaryStems: any;
+    dictionaryStemMap: any;
+    strictMatchMap: any;
     contentWordStems: any; // TODO: cleanup to release memory
 
     constructor(dictionary: Array<DictionaryEntry>, stemmer: Stemmer) {
@@ -16,7 +17,7 @@ class TextNodeHandler {
         this.stemmer = stemmer;
         this.contentWordStems = {};
         if (stemmer) {
-            this.calculateDictionaryStems();
+            this.calculateIndexes();
         }
     }
 
@@ -103,6 +104,11 @@ class TextNodeHandler {
     }
 
     findMatchForWord(word: string): string {
+        let strictMatch = <DictionaryEntry> this.strictMatchMap[word.toLowerCase()];
+        if (strictMatch && strictMatch.value) {
+            return strictMatch.value;
+        }
+
         let cachedStem = this.contentWordStems[word];
         let targetStem: string;
         if (cachedStem) {
@@ -111,7 +117,7 @@ class TextNodeHandler {
             targetStem = this.stemmer.stem(word);
             this.contentWordStems[word] = targetStem;
         }
-        let result = <DictionaryEntry> this.dictionaryStems[targetStem];
+        let result = <DictionaryEntry> this.dictionaryStemMap[targetStem];
         return (result && result.value) ? result.value : null;
     }
 
@@ -123,12 +129,18 @@ class TextNodeHandler {
         return '<span class="highlighted-word">' + word + '</span>';
     }
 
-    private calculateDictionaryStems(): void {
-        this.dictionaryStems = {};
+    private calculateIndexes(): void {
+        this.dictionaryStemMap = {};
+        this.strictMatchMap = {};
         for (let i = 0; i < this.dictionary.length; ++i) {
-            let stem = this.stemmer.stem(this.removeIgnoredPrefixes(this.dictionary[i].value));
-            if (stem) {
-                this.dictionaryStems[stem] = this.dictionary[i];
+            let entry: DictionaryEntry = this.dictionary[i];
+            if (entry.strictMatch) {
+                this.strictMatchMap[entry.value.toLowerCase()] = entry;
+            } else {
+                let stem = this.stemmer.stem(this.removeIgnoredPrefixes(entry.value));
+                if (stem) {
+                    this.dictionaryStemMap[stem] = entry;
+                }
             }
         }
     }
