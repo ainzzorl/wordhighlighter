@@ -1,9 +1,19 @@
 <div ng-controller="wordsController">
-  <form id="new-word-form" ng-submit="onAddNewWordClicked()">
+  <form name="newWordForm" id="new-word-form" ng-submit="onAddNewWordClicked()" novalidate>
     <div class="form-group">
       <label for="new-word-value">Word:</label>
       <br>
-      <input ng-model="newWord.value" type="text" class="form-control words-form-input"/>
+      <input
+        ng-model="newWord.value"
+        name="value"
+        minlength="3"
+        type="text"
+        class="form-control words-form-input"
+        required/>
+      <div ng-show="newWordForm.$submitted" class="form-validation-error">
+        <div ng-show="newWordForm.value.$error.required">Required</div>
+        <div ng-show="newWordForm.value.$error.minlength">Must be 3 characters or longer</div>
+      </div>
     </div>
     <div class="form-group">
       <label for="new-word-description">Description (optional):</label>
@@ -29,22 +39,26 @@
       class="table table-condensed table-bordered table-striped"
     >
       <tr ng-repeat="dictionaryEntry in $data track by $index" ng-form="dictionaryEntryForm">
-        <td title="'Word'" sortable="'value'" ng-switch="dictionaryEntry.isEditing" ng-class="value.$dirty ? 'bg-warning' : ''" ng-form="value">
+        <td title="'Word'" sortable="'value'" ng-switch="dictionaryEntry.isEditing"ng-form="value">
           <span ng-switch-default class="editable-text">{{dictionaryEntry.value}}</span>
-          <div class="controls" ng-class="value.$invalid && value.$dirty ? 'has-error' : ''" ng-switch-when="true">
-            <input type="text" name="value" ng-model="dictionaryEntry.value" class="editable-input form-control input-sm" required />
+          <div class="controls" ng-switch-when="true">
+            <input type="text" name="value" minlength="3" ng-model="dictionaryEntry.value" class="editable-input form-control input-sm" required />
+            <div ng-show="dictionaryEntryForm.value.$dirty" class="form-validation-error">
+              <div ng-show="dictionaryEntryForm.value.$error.required">Required</div>
+              <div ng-show="dictionaryEntryForm.value.$error.minlength">Must be 3 characters or longer</div>
+            </div>
           </div>
           <div class="alert alert-danger" ng-show="dictionaryEntry.isDupe">
             This word is already present in the dictionary.
           </div>
         </td>
-        <td title="'Description'" sortable="'description'" ng-switch="dictionaryEntry.isEditing" ng-class="description.$dirty ? 'bg-warning' : ''" ng-form="description">
+        <td title="'Description'" sortable="'description'" ng-switch="dictionaryEntry.isEditing" ng-form="description">
           <span ng-switch-default class="editable-text">{{dictionaryEntry.description}}</span>
-          <div class="controls" ng-class="description.$invalid && description.$dirty ? 'has-error' : ''" ng-switch-when="true">
+          <div class="controls" ng-switch-when="true">
             <input type="text" name="description" ng-model="dictionaryEntry.description" class="editable-input form-control input-sm" />
           </div>
         </td>
-        <td title="'Strict Match'" sortable="'strictMatch'" ng-switch="dictionaryEntry.isEditing" class="strict-match-column" ng-class="strictMatch.$dirty ? 'bg-warning' : ''" ng-form="strictMatch">
+        <td title="'Strict Match'" sortable="'strictMatch'" ng-switch="dictionaryEntry.isEditing" class="strict-match-column" ng-form="strictMatch">
           <span ng-switch-default>{{dictionaryEntry.strictMatch ? 'Yes' : 'No'}}</span>
           <div class="controls" ng-switch-when="true">
             <input type="checkbox" name="strictMatch" ng-model="dictionaryEntry.strictMatch" class="form-control" />
@@ -53,7 +67,7 @@
         <td class="control-column">
           <span ng-show="!dictionaryEntry.isDeleting">
             <span ng-show="dictionaryEntry.isEditing">
-              <button class="btn btn-primary btn-sm" ng-click="save(dictionaryEntry, dictionaryEntryForm)" ng-disabled="dictionaryEntry.$pristine || dictionaryEntry.$invalid"><span class="glyphicon glyphicon-ok"></span></button>
+              <button class="btn btn-primary btn-sm" ng-click="save(dictionaryEntry, dictionaryEntryForm)" ng-disabled="dictionaryEntryForm.$invalid"><span class="glyphicon glyphicon-ok"></span></button>
               <button class="btn btn-default btn-sm" ng-click="cancel(dictionaryEntry, dictionaryEntryForm)"><span class="glyphicon glyphicon-remove"></span></button>
             </span>
             <span ng-show="!dictionaryEntry.isEditing">

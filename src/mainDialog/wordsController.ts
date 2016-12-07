@@ -42,6 +42,7 @@ angular
             $scope.newWord.description = '';
             $scope.newWord.strictMatch = false;
             $scope.showAddingDupeError = false;
+            $scope.newWordForm.$setPristine();
         }
     };
 
@@ -73,7 +74,7 @@ angular
 
     $scope.isDupe = function(word: string, skippedId: number = undefined): boolean {
         for (let i = 0; i < $scope.dictionary.length; ++i) {
-            if ($scope.dictionary[i].value.toUpperCase() === word.toUpperCase()
+            if ($scope.dictionary[i].value && $scope.dictionary[i].value.toUpperCase() === word.toUpperCase()
                 && (!skippedId || skippedId !== $scope.dictionary[i].id)) {
                 return true;
             }

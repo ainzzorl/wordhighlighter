@@ -66,7 +66,11 @@ describe('wordsController', function() {
 
     describe('onAddNewWordClicked', function() {
         beforeEach(function() {
+            $scope.newWordForm = {
+                $setPristine: function() {}
+            };
             spyOn($scope.tableParams, 'reload').and.callThrough();
+            spyOn($scope.newWordForm, '$setPristine').and.callThrough();
             spyOn(dao, 'addEntry').and.callThrough();
             $scope.dictionary = [];
         });
@@ -103,6 +107,10 @@ describe('wordsController', function() {
                     expect($scope.newWord.value).toEqual('');
                     expect($scope.newWord.description).toEqual('');
                     expect($scope.newWord.strictMatch).toBe(false);
+                });
+
+                it ('resets the form', function() {
+                    expect($scope.newWordForm.$setPristine).toHaveBeenCalled();
                 });
 
                 it ('hides the error', function() {
