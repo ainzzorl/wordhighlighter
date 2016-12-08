@@ -1,10 +1,10 @@
 <div class="container" ng-controller="importController">
     <div class="row">
-    <p>Enter the words you want to import to the text area below. Format: word;description, one per line. Descriptions are optional</p>
+        <p>Enter the words you want to import to the text area below. Format: word;description, one per line. Descriptions are optional</p>
     </div>
 
     <div class="row">
-        <form ng-submit="onImportClicked()">
+        <form>
             <div class="alert alert-danger row" ng-show="dupes && dupes.length > 0">
                 The input contains duplicates: {{ dupes.join(', ') }}
             </div>
@@ -13,9 +13,9 @@
                 The import has succeeded!
             </div>
 
-            <div class="row input-group">
+            <div class="row input-group" ng-hide="showConfirmationDialog">
                 <div class="col-sm-3 input-group-btn">
-                    <button class="btn btn-primary">Import</button>
+                    <button class="btn btn-primary" ng-click="showConfirmationDialog = true">Import</button>
                 </div>
                 <div class="col-sm-9">
                     <select class="form-control" ng-model="importInput.mode">
@@ -27,6 +27,14 @@
                     </select>
                 </div>
             </div>
+            <div class="row" ng-show="showConfirmationDialog">
+                <p>Are you sure you want to perform the import? This operation cannot be undone.</p>
+                <div class="col-sm-3 input-group-btn">
+                    <button ng-click="showConfirmationDialog = false; onImportClicked()" class="btn btn-primary">Confirm</button>
+                    <button ng-click="showConfirmationDialog = false" class="btn btn-default">Cancel</button>
+                </div>
+            </div>
+
             <div id="import-data-row" class="row">
                 <textarea id="import-data" rows="4" cols="50" ng-model="importInput.data"></textarea>
             </div>
