@@ -1,12 +1,12 @@
 <div ng-controller="settingsController">
-  <form name="settingsForm" novalidate>
+  <form name="settingsForm" ng-submit="save()" novalidate>
     <div class="form-group">
       <label for="enable-highlighting">Enable highlighting:</label>
-      <input type="checkbox"/>
+      <input type="checkbox" ng-model="settings.enableHighlighting"/>
     </div>
     <div class="form-group">
       <label for="timeout">Timeout:</label>
-      <input ng-model="timeout" type="text" size="3"/>
+      <input ng-model="settings.timeout" type="text" size="3"/>
       <!-- TODO: validation -->
     </div>
     <div class="form-group">

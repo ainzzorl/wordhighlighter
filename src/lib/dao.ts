@@ -1,5 +1,6 @@
 ///<reference path="../../node_modules/@types/chrome/index.d.ts" />
 ///<reference path="dictionaryEntry.ts" />
+///<reference path="settings.ts" />
 
 // TODO: use synced storage
 // TODO: unit test
@@ -11,18 +12,34 @@ class DAO {
         });
     }
 
+    getSettings(callback: (settings: Settings) => void): void {
+        chrome.storage.local.get('settings', function(result: { settings: Settings }) {
+            callback(result.settings);
+        });
+    }
+
     init() {
         chrome.storage.local.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
             if (!result.dictionary) {
                 chrome.storage.local.set({ dictionary: [] }, function() {
-                    console.log('Initialize the dictionary');
+                    console.log('Initialized the dictionary');
                 });
             }
         });
         chrome.storage.local.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
             if (!result.idSequenceNumber) {
                 chrome.storage.local.set({ idSequenceNumber: 1 }, function() {
-                    console.log('Initialize the id sequence');
+                    console.log('Initialized the id sequence');
+                });
+            }
+        });
+        chrome.storage.local.get('settings', function(result: { settings: Settings }) {
+            if (!result.settings) {
+                let settings = new Settings();
+                settings.enableHighlighting = true;
+                settings.timeout = 3;
+                chrome.storage.local.set({ settings: settings }, function() {
+                    console.log('Initialized the settings');
                 });
             }
         });
