@@ -18,6 +18,9 @@ describe('settingsController', function() {
                 settings.enableHighlighting = true;
                 settings.timeout = 123;
                 callback(settings);
+            },
+            saveSettings(settings: Settings, callback: () => void): void {
+                callback();
             }
         };
     });
@@ -35,6 +38,20 @@ describe('settingsController', function() {
         it ('loads the settings', function() {
             expect($scope.settings.enableHighlighting).toBe(true);
             expect($scope.settings.timeout).toEqual(123);
+        });
+    });
+
+    describe('save', function() {
+        beforeEach(function() {
+            spyOn(dao, 'saveSettings');
+            $scope.settings = new Settings();
+            $scope.settings.timeout = 456;
+            $scope.settings.enableHighlighting = false;
+            $scope.save();
+        });
+
+        it ('saves the settings', function() {
+            expect(dao.saveSettings).toHaveBeenCalledWith($scope.settings, jasmine.any(Function));
         });
     });
 });

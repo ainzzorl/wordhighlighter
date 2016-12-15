@@ -11,6 +11,7 @@ angular
     };
 
     $scope.save = function() {
+        dao.saveSettings($scope.settings, function() {});
     };
 
     $scope.load();

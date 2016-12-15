@@ -82,4 +82,11 @@ class DAO {
             });
         });
     }
+
+    saveSettings(settings: Settings, callback: () => void): void {
+        chrome.storage.local.set({ settings: settings }, function() {
+            console.log('Saved the settings');
+            callback();
+        });
+    }
 }
