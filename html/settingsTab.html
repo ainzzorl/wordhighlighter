@@ -1,1 +1,16 @@
-<p ng-show="currentTab === 'settings'">Settings tab content</p>
+<div ng-controller="settingsController">
+  <form name="settingsForm" novalidate>
+    <div class="form-group">
+      <label for="enable-highlighting">Enable highlighting:</label>
+      <input type="checkbox"/>
+    </div>
+    <div class="form-group">
+      <label for="timeout">Timeout:</label>
+      <input ng-model="timeout" type="text" size="3"/>
+      <!-- TODO: validation -->
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+  </form>
+</div>
