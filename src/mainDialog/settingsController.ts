@@ -7,6 +7,7 @@ angular
     $scope.load = function() {
         dao.getSettings(function(settings: Settings) {
             $scope.settings = settings;
+            $scope.$apply();
         });
     };
 
