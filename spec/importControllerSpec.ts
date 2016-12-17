@@ -95,6 +95,21 @@ describe('importController', function() {
                 expect($scope.importAsReplacement).toHaveBeenCalled();
             });
         });
+
+        describe('overwrite', function() {
+            beforeEach(function() {
+                $scope.importInput.mode = $scope.MODE_OVERWRITE;
+                spyOn($scope, 'importAndOverwrite');
+                $scope.getDuplicateEntries = function() {
+                    return [];
+                };
+                $scope.onImportClicked();
+            });
+
+            it('imports data', function() {
+                expect($scope.importAndOverwrite).toHaveBeenCalled();
+            });
+        });
     });
 
     describe('parseInput', function() {
@@ -222,6 +237,43 @@ describe('importController', function() {
             expect(dao.saveDictionary).toHaveBeenCalledWith([
                 new DictionaryEntry(null, 'old', 'old - desc', null, null),
                 new DictionaryEntry(null, 'both', 'both old - desc', null, null),
+                new DictionaryEntry(null, 'new', 'new - desc', null, null)
+            ], jasmine.any(Function));
+        });
+
+        it('shows confirmation', function() {
+            expect($scope.showInputSuccessConfirmation).toBe(true);
+        });
+
+        it('resets input data', function() {
+            expect($scope.importInput.data).toEqual('');
+        });
+    });
+
+    describe('importAndOverwrite', function() {
+        let input;
+
+        beforeEach(function() {
+            input = [
+                new DictionaryEntry(null, 'new', 'new - desc', null, null),
+                new DictionaryEntry(null, 'both', 'both new - desc', null, null)
+            ];
+            dao.getDictionary = function(callback: (dictionary: Array<DictionaryEntry>) => void) {
+                callback([
+                    new DictionaryEntry(null, 'old', 'old - desc', null, null),
+                    new DictionaryEntry(null, 'both', 'both old - desc', null, null)
+                ]);
+            };
+            $scope.showInputSuccessConfirmation = false;
+            $scope.importInput.data = 'input-data';
+            spyOn(dao, 'saveDictionary').and.callThrough();
+            $scope.importAndOverwrite(input);
+        });
+
+        it('saves the dictionary', function() {
+            expect(dao.saveDictionary).toHaveBeenCalledWith([
+                new DictionaryEntry(null, 'old', 'old - desc', null, null),
+                new DictionaryEntry(null, 'both', 'both new - desc', null, null),
                 new DictionaryEntry(null, 'new', 'new - desc', null, null)
             ], jasmine.any(Function));
         });

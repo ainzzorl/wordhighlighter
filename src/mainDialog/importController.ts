@@ -6,7 +6,7 @@ angular
 .controller('importController', function($scope: any, dao: DAO) {
 
     $scope.MODE_KEEP = 'keep';
-    $scope.MODE_OVERWRITE = 'overwrite'; // TODO: implement
+    $scope.MODE_OVERWRITE = 'overwrite';
     $scope.MODE_REPLACE = 'replace';
 
     $scope.importInput = {
@@ -29,6 +29,9 @@ angular
                 break;
             case $scope.MODE_REPLACE:
                 $scope.importAsReplacement(input);
+                break;
+            case $scope.MODE_OVERWRITE:
+                $scope.importAndOverwrite(input);
                 break;
         }
     };
@@ -81,6 +84,25 @@ angular
             newEntries.forEach(function(newEntry: DictionaryEntry) {
                 let exists = dictionary.some(function(existingEntry: DictionaryEntry): boolean {
                     return existingEntry.value === newEntry.value;
+                });
+                if (!exists) {
+                    dictionary.push(newEntry);
+                };
+            });
+            dao.saveDictionary(dictionary, onSuccess);
+        });
+    };
+
+    $scope.importAndOverwrite = function(newEntries: Array<DictionaryEntry>) {
+        dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
+            newEntries.forEach(function(newEntry: DictionaryEntry) {
+                let exists = false;
+                dictionary.forEach(function(existingEntry: DictionaryEntry) {
+                    if (existingEntry.value === newEntry.value) {
+                        exists = true;
+                        existingEntry.description = newEntry.description;
+                        existingEntry.updatedAt = newEntry.updatedAt;
+                    };
                 });
                 if (!exists) {
                     dictionary.push(newEntry);

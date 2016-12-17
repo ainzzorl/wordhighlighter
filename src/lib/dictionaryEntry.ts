@@ -1,10 +1,10 @@
 class DictionaryEntry {
     id: number; // TODO: getter/setter
-    readonly value: string;
-    readonly description: string;
-    readonly createdAt: Date;
+    value: string;
+    description: string;
+    createdAt: Date;
     updatedAt: Date; // TODO: instead of public, use touch()
-    readonly strictMatch: boolean;
+    strictMatch: boolean;
 
     constructor(id: number, value: string, description: string, createdAt: Date, updatedAt: Date, strictMatch: boolean = false) {
         this.id = id;
