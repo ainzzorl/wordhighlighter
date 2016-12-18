@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Word Highlighter",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "permissions": ["storage", "contextMenus"],
   "applications": {
     "gecko": {
