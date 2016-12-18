@@ -9,9 +9,17 @@ class Content {
     };
 
     textNodeHandler: TextNodeHandler;
+    settings: Settings;
 
-    constructor(textNodeHandler: TextNodeHandler) {
+    constructor(textNodeHandler: TextNodeHandler, settings: Settings) {
         this.textNodeHandler = textNodeHandler;
+        this.settings = settings;
+    }
+
+    processDocument(document: Document): void {
+        if (this.settings.enableHighlighting) {
+            this.injectMarkup(document);
+        }
     }
 
     injectMarkup(node: Node): void {

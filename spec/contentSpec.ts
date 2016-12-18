@@ -4,12 +4,16 @@
 describe('content', function() {
     let textNodeHandler: TextNodeHandler;
     let rootElement;
-    let content;
+    let content: Content;
+    let settings: Settings;
 
     beforeEach(function() {
         textNodeHandler = new TextNodeHandler(null, null);
         rootElement = document.createElement('div');
-        content = new Content(textNodeHandler);
+        settings = new Settings();
+        settings.enableHighlighting = true;
+        settings.timeout = 123;
+        content = new Content(textNodeHandler, settings);
 
         textNodeHandler.injectMarkup = function(node: Node): Array<HTMLElement> {
             if (node.textContent === 'Replaced with 2') {
@@ -23,6 +27,34 @@ describe('content', function() {
             }
             return [];
         };
+    });
+
+    describe('processDocument', function() {
+        beforeEach(function() {
+            spyOn(content, 'injectMarkup');
+        });
+
+        describe('highlighting is enabled', function() {
+            beforeEach(function() {
+                settings.enableHighlighting = true;
+                content.processDocument(document);
+            });
+
+            it('injects markup', function() {
+                expect(content.injectMarkup).toHaveBeenCalledWith(document);
+            });
+        });
+
+        describe('highlighting is disabled', function() {
+            beforeEach(function() {
+                settings.enableHighlighting = false;
+                content.processDocument(document);
+            });
+
+            it('does not inject markup', function() {
+                expect(content.injectMarkup).not.toHaveBeenCalledWith(document);
+            });
+        });
     });
 
     describe('one text node', function() {
