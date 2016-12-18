@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Word Highlighter",
   "version": "0.0.7",
-  "permissions": ["storage"],
+  "permissions": ["storage", "contextMenus"],
   "applications": {
     "gecko": {
       "strict_min_version": "50.0"
