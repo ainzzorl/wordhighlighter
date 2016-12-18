@@ -10,6 +10,7 @@ class Content {
 
     textNodeHandler: TextNodeHandler;
     settings: Settings;
+    startTime: number;
 
     constructor(textNodeHandler: TextNodeHandler, settings: Settings) {
         this.textNodeHandler = textNodeHandler;
@@ -18,11 +19,16 @@ class Content {
 
     processDocument(document: Document): void {
         if (this.settings.enableHighlighting) {
+            this.startTime = performance.now();
             this.injectMarkup(document);
         }
     }
 
     injectMarkup(node: Node): void {
+        if (this.isTimeout()) {
+            console.log('Terminating because of the timeout');
+            return;
+        }
         if (this.isBlacklisted(node)) {
             return;
         }
@@ -44,6 +50,12 @@ class Content {
             }
             child = <HTMLElement> child.nextSibling;
         }
+    }
+
+    isTimeout(): boolean {
+        let now = performance.now();
+        let seconds = (now - this.startTime) / 1000;
+        return seconds > this.settings.timeout;
     }
 
     private isBlacklisted(node: Node): void {

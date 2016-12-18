@@ -14,6 +14,9 @@ describe('content', function() {
         settings.enableHighlighting = true;
         settings.timeout = 123;
         content = new Content(textNodeHandler, settings);
+        content.isTimeout = function() {
+            return false;
+        };
 
         textNodeHandler.injectMarkup = function(node: Node): Array<HTMLElement> {
             if (node.textContent === 'Replaced with 2') {
@@ -54,6 +57,31 @@ describe('content', function() {
             it('does not inject markup', function() {
                 expect(content.injectMarkup).not.toHaveBeenCalledWith(document);
             });
+        });
+
+        describe('initializing time', function() {
+            beforeEach(function() {
+                content.processDocument(document);
+            });
+
+            it('initializes time', function() {
+                expect(content.startTime).not.toBeNull();
+            });
+        });
+    });
+
+    describe('timeout', function() {
+        beforeEach(function() {
+            content.isTimeout = function() {
+                return true;
+            };
+            rootElement.innerHTML = '<child>Replaced with 2</child>';
+            content.injectMarkup(rootElement);
+        });
+
+        it('does not inject markup', function() {
+            expect(rootElement.innerHTML).toEqual(
+                '<child>Replaced with 2</child>');
         });
     });
 
