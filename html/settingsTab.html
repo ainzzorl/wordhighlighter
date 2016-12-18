@@ -1,5 +1,5 @@
 <div ng-controller="settingsController">
-  <form ng-show="settings" name="settingsForm" ng-submit="save()">
+  <form ng-show="settings" name="settingsForm" ng-submit="save()" novalidate>
     <div class="form-group">
       <label for="enable-highlighting">Enable highlighting:</label>
       <input type="checkbox" ng-model="settings.enableHighlighting"/>
