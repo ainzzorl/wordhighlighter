@@ -5,10 +5,11 @@
 // TODO: use synced storage
 // TODO: unit test
 class DAO {
+
     getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
+        let self: DAO = this;
         chrome.storage.local.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
-            let dictionary: Array<DictionaryEntry> = result.dictionary;
-            callback(result.dictionary);
+            callback(self.deserializeDictionary(result.dictionary));
         });
     }
 
@@ -46,26 +47,33 @@ class DAO {
     }
 
     addEntry(value: string, description: string, strictMatch: boolean, callback: (newEntry: DictionaryEntry) => void): void {
+        let self: DAO = this;
         chrome.storage.local.get(['dictionary', 'idSequenceNumber'],
-                function(result: { dictionary: Array<DictionaryEntry>, idSequenceNumber: number }) {
+                function(result: { dictionary: Array<any>, idSequenceNumber: number }) {
             let now: Date = new Date();
-            let entry: DictionaryEntry = new DictionaryEntry(
-                result.idSequenceNumber, value, description, now, now, strictMatch
-            );
+            let entry = {
+                id: result.idSequenceNumber,
+                value: value,
+                description: description,
+                strictMatch: strictMatch,
+                createdAt: now,
+                updatedAt: now
+            };
             result.dictionary.push(entry);
             chrome.storage.local.set({ dictionary: result.dictionary, idSequenceNumber: result.idSequenceNumber + 1 }, function() {
                 console.debug('Word ' + entry.value + ' has been added to the storages');
-                callback(entry);
+                callback(self.serializeDictionaryEntry(entry));
             });
         });
     }
 
     saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
+        let self: DAO = this;
         let needsToGenerateIds = dictionary.filter(function(dictionaryEntry: DictionaryEntry) {
             return !dictionaryEntry.id;
         });
         if (needsToGenerateIds.length === 0) {
-            chrome.storage.local.set({ dictionary: dictionary }, function() {
+            chrome.storage.local.set({ dictionary: self.serializeDictionary(dictionary) }, function() {
                 console.debug('Saved dictionary');
                 callback();
             });
@@ -76,7 +84,7 @@ class DAO {
             needsToGenerateIds.forEach(function(dictionaryEntry: DictionaryEntry) {
                 dictionaryEntry.id = idSequenceNumber++;
             });
-            chrome.storage.local.set({ idSequenceNumber: idSequenceNumber, dictionary: dictionary }, function() {
+            chrome.storage.local.set({ idSequenceNumber: idSequenceNumber, dictionary: self.serializeDictionary(dictionary) }, function() {
                 console.log('Saved the dictionary. New id sequence number: ' + idSequenceNumber);
                 callback();
             });
@@ -88,5 +96,41 @@ class DAO {
             console.log('Saved the settings');
             callback();
         });
+    }
+
+    deserializeDictionary(input: Array<any>): Array<DictionaryEntry> {
+        if (input === null) {
+            return null;
+        }
+        return input.map(this.deserializeDictionaryEntry);
+    }
+
+    deserializeDictionaryEntry(input: any): DictionaryEntry {
+        return new DictionaryEntry(
+            input['id'],
+            input['value'],
+            input['description'],
+            input['createdAt'],
+            input['updatedAt'],
+            input['strictMatch']
+        );
+    }
+
+    serializeDictionary(input: Array<DictionaryEntry>): Array<any> {
+        if (input === null) {
+            return null;
+        }
+        return input.map(this.serializeDictionaryEntry);
+    }
+
+    serializeDictionaryEntry(input: DictionaryEntry): any {
+        return {
+            id: input.id,
+            value: input.value,
+            description: input.description,
+            createdAt: input.createdAt,
+            updatedAt: input.updatedAt,
+            strictMatch: input.strictMatch
+        };
     }
 }
