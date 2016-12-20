@@ -3,11 +3,6 @@
   "name": "Word Highlighter",
   "version": "0.0.8",
   "permissions": ["storage", "contextMenus"],
-  "applications": {
-    "gecko": {
-      "strict_min_version": "50.0"
-    }
-  },
   "background": {
     "scripts": [ "lib.js", "scripts/background-script.js" ]
   },
