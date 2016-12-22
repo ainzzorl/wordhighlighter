@@ -12,15 +12,17 @@
     <link rel="stylesheet" href="../css/main-dialog.css">
   </head>
   <body>
-    <ul class="nav nav-tabs">
-      <li ng-click="currentTab = 'words'" ng-class="{active: (currentTab === 'words')}"><a href="#">Words</a></li>
-      <li ng-click="currentTab = 'import'" ng-class="{active: (currentTab === 'import')}"><a href="#">Import</a></li>
-      <li ng-click="currentTab = 'settings'" ng-class="{active: (currentTab === 'settings')}"><a href="#">Settings</a></li>
-    </ul>
-    <div ng-switch="currentTab">
-      <div ng-switch-when="words"><div ng-include="'wordsTab.html'"></div></div>
-      <div ng-switch-when="import"><div ng-include="'importTab.html'"></div></div>
-      <div ng-switch-when="settings"><div ng-include="'settingsTab.html'"></div></div>
+    <div class="content">
+      <ul class="nav nav-tabs">
+        <li ng-click="currentTab = 'words'" ng-class="{active: (currentTab === 'words')}"><a href="#">Words</a></li>
+        <li ng-click="currentTab = 'import'" ng-class="{active: (currentTab === 'import')}"><a href="#">Import</a></li>
+        <li ng-click="currentTab = 'settings'" ng-class="{active: (currentTab === 'settings')}"><a href="#">Settings</a></li>
+      </ul>
+      <div ng-switch="currentTab">
+        <div ng-switch-when="words"><div ng-include="'wordsTab.html'"></div></div>
+        <div ng-switch-when="import"><div ng-include="'importTab.html'"></div></div>
+        <div ng-switch-when="settings"><div ng-include="'settingsTab.html'"></div></div>
+      </div>
     </div>
   </body>
 </html>

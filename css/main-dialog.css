@@ -18,6 +18,11 @@ body {
     min-width: 400px;
 }
 
+.content {
+    max-width: 380px;
+    min-width: 380px;
+}
+
 .words-form-input {
     max-width: 94%;
     margin-left: 3%;
@@ -29,8 +34,8 @@ body {
 }
 
 #words-table {
-    width: 100%;
-    min-width: 100%;
+    max-width: 380px;
+    min-width: 380px;
 }
 
 #words-table .control-column {
