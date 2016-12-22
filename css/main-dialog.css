@@ -1,8 +1,8 @@
-#new-word-form .form-group {
-    margin-bottom: 0px;
+#new-word-form {
+    margin-left: 5px;
 }
 
-#new-word-form {
+#new-word-form .form-group {
     margin-bottom: 5px;
 }
 
@@ -21,16 +21,10 @@ body {
 .content {
     max-width: 380px;
     min-width: 380px;
-}
-
-.words-form-input {
-    max-width: 94%;
-    margin-left: 3%;
-    margin-right: 3%;
-}
-
-#new-word-strict-match-checkbox {
-    margin-left: 3%;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 
 #words-table {
@@ -45,11 +39,6 @@ body {
 
 #words-table .strict-match-column {
     width: 15px;
-}
-
-#add-word-button {
-    margin-left: 3%;
-    margin-top: 5px;
 }
 
 #import-data-row {

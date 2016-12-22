@@ -1,32 +1,40 @@
 <div ng-controller="wordsController">
   <form name="newWordForm" id="new-word-form" ng-submit="onAddNewWordClicked()" novalidate>
-    <div class="form-group">
-      <label for="new-word-value">Word:</label>
-      <br>
-      <input
-        ng-model="newWord.value"
-        name="value"
-        minlength="3"
-        type="text"
-        class="form-control words-form-input"
-        required/>
-      <div ng-show="newWordForm.$submitted" class="form-validation-error">
-        <div ng-show="newWordForm.value.$error.required">Required</div>
-        <div ng-show="newWordForm.value.$error.minlength">Must be 3 characters or longer</div>
+    <div class="form-group row">
+      <label for="new-word-value" class="col-xs-3 col-form-label">Word:</label>
+      <div class="col-xs-9">
+        <input
+          ng-model="newWord.value"
+          name="value"
+          minlength="3"
+          type="text"
+          class="form-control"
+          required/>
+        <div ng-show="newWordForm.$submitted" class="form-validation-error">
+          <div ng-show="newWordForm.value.$error.required">Required</div>
+          <div ng-show="newWordForm.value.$error.minlength">Must be 3 characters or longer</div>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <label for="new-word-description">Description (optional):</label>
-      <br>
-      <!-- TODO: text area -->
-      <input ng-model="newWord.description" type="text" class="form-control words-form-input"/>
+    <div class="form-group row">
+      <label for="new-word-description" class="col-xs-3 col-form-label">Description (optional):</label>
+      <div class="col-xs-9">
+        <!-- TODO: text area -->
+        <input ng-model="newWord.description" type="text" class="form-control"/>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="new-word-strict-match">Use strict match (optional):</label>
-      <br>
-      <input id="new-word-strict-match-checkbox" ng-model="newWord.strictMatch" type="checkbox">
+    <div class="form-group row">
+      <label for="new-word-strict-match" class="col-xs-3 col-form-label">Use strict match (optional):</label>
+      <div class="col-xs-9">
+        <input id="new-word-strict-match-checkbox" ng-model="newWord.strictMatch" type="checkbox">
+      </div>
     </div>
-    <button id="add-word-button" type="submit" class="btn btn-primary">Add</button>
+    <div class="form-group row">
+      <div class="col-xs-3">&nbsp;</div> <!-- offset-* doesn't work with xs' -->
+      <div class="col-xs-9">
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+    </div>
   </form>
 
   <div class="alert alert-danger" ng-show="showAddingDupeError">
