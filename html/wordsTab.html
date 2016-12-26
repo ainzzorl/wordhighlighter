@@ -56,8 +56,8 @@
       <td title="'Description'" sortable="'description'" ng-switch="dictionaryEntry.isEditing" ng-form="description" class="description-column">
         <span ng-switch-default class="editable-text" ng-bind-html="dictionaryEntry.description | toSafeHtml"></span>
         <div class="controls" ng-switch-when="true">
-          <input type="text" name="description" ng-model="dictionaryEntry.description" class="editable-input form-control input-sm"
-          />
+          <textarea name="description" ng-model="dictionaryEntry.description" class="editable-input form-control input-sm">
+          </textarea>
         </div>
       </td>
       <td title="'Strict Match'" sortable="'strictMatch'" ng-switch="dictionaryEntry.isEditing" class="strict-match-column" ng-form="strictMatch">
