@@ -1,41 +1,53 @@
-<div class="container" ng-controller="importController">
+<div id="import-tab" ng-controller="importController">
     <div class="row">
-        <p>Enter the words you want to import to the text area below. Format: word;description, one per line. Descriptions are optional</p>
+        <div class="col-xs-12">
+            <p>Enter the words you want to import to the text area below. Format: word;description, one per line. Descriptions are optional.</p>
+        </div>
     </div>
 
     <div class="row">
-        <form>
-            <div class="alert alert-danger row" ng-show="dupes && dupes.length > 0">
-                The input contains duplicates: {{ dupes.join(', ') }}
-            </div>
-
-            <div class="alert alert-success row" ng-show="showInputSuccessConfirmation">
-                The import has succeeded!
-            </div>
-
-            <div class="row input-group" ng-hide="showConfirmationDialog">
-                <div class="col-sm-3 input-group-btn">
-                    <button class="btn btn-primary" ng-click="showConfirmationDialog = true">Import</button>
+        <div class="col-xs-12">
+            <form>
+                <div class="alert alert-danger row" ng-show="dupes && dupes.length > 0">
+                    The input contains duplicates: {{ dupes.join(', ') }}
                 </div>
-                <div class="col-sm-9">
-                    <select class="form-control" ng-model="importInput.mode">
-                        <option value="{{MODE_KEEP}}">Keep existing</option>
-                        <option value="{{MODE_OVERWRITE}}">Overwrite existing</option>
-                        <option value="{{MODE_REPLACE}}">Replace the current database</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row" ng-show="showConfirmationDialog">
-                <p>Are you sure you want to perform the import? This operation cannot be undone.</p>
-                <div class="col-sm-3 input-group-btn">
-                    <button ng-click="showConfirmationDialog = false; onImportClicked()" class="btn btn-primary">Confirm</button>
-                    <button ng-click="showConfirmationDialog = false" class="btn btn-default">Cancel</button>
-                </div>
-            </div>
 
-            <div id="import-data-row" class="row">
-                <textarea id="import-data" rows="4" cols="50" ng-model="importInput.data"></textarea>
-            </div>
-        </form>
+                <div class="alert alert-success row" ng-show="showInputSuccessConfirmation">
+                    The import has succeeded!
+                </div>
+
+                <div class="row" ng-hide="showConfirmationDialog">
+                    <div class="col-xs-3">
+                        <button class="btn btn-primary" ng-click="showConfirmationDialog = true">Import</button>
+                    </div>
+                    <div class="col-xs-9">
+                        <select class="form-control" ng-model="importInput.mode">
+                            <option value="{{MODE_KEEP}}">Keep existing</option>
+                            <option value="{{MODE_OVERWRITE}}">Overwrite existing</option>
+                            <option value="{{MODE_REPLACE}}">Replace the current database</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" ng-show="showConfirmationDialog">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p>Are you sure you want to perform the import? This operation cannot be undone.</p>
+                            </div>
+                        </div>
+                        <div class="row input-group-btn">
+                            <div class="col-xs-3">
+                                <button ng-click="showConfirmationDialog = false; onImportClicked()" class="btn btn-primary">Confirm</button>
+                                <button ng-click="showConfirmationDialog = false" class="btn btn-default">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="import-data-row" class="row">
+                    <textarea id="import-data" rows="4" cols="50" ng-model="importInput.data"></textarea>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
