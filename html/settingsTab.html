@@ -1,19 +1,27 @@
 <div ng-controller="settingsController">
-  <form ng-show="settings" name="settingsForm" ng-submit="save()" novalidate>
-    <div class="form-group">
-      <label for="enable-highlighting">Enable highlighting:</label>
-      <input type="checkbox" ng-model="settings.enableHighlighting"/>
-    </div>
-    <div class="form-group">
-      <label for="timeout">Timeout:</label>
-      <input name="timeout" ng-model="settings.timeout" type="number" size="3" required/>
-      <div class="form-validation-error">
-        <div ng-show="settingsForm.timeout.$error.required">Required</div>
-        <div ng-show="settingsForm.timeout.$error.number">Not valid number</div>
+  <form id="settings-form" ng-show="settings" name="settingsForm" ng-submit="save()" novalidate>
+    <div class="form-group row">
+      <label for="enable-highlighting" class="col-xs-3 col-form-label">Enable highlighting:</label>
+      <div class="col-xs-9">
+        <input type="checkbox" ng-model="settings.enableHighlighting"/>
       </div>
     </div>
-    <div class="form-group">
-      <button type="submit" ng-disabled="settingsForm.$invalid" class="btn btn-primary">Save</button>
+    <div class="form-group row">
+      <label for="timeout" class="col-xs-3 col-form-label">Timeout:</label>
+      <div class="col-xs-9">
+        <input name="timeout" ng-model="settings.timeout" type="number" size="3" required/>
+        <div class="form-validation-error">
+          <div ng-show="settingsForm.timeout.$error.required">Required</div>
+          <div ng-show="settingsForm.timeout.$error.number">Not valid number</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-xs-3">&nbsp;</div>
+      <!-- offset-* doesn't work with xs' -->
+      <div class="col-xs-9">
+        <button type="submit" ng-disabled="settingsForm.$invalid" class="btn btn-primary">Save</button>
+      </div>
     </div>
   </form>
 </div>

@@ -57,6 +57,11 @@ body {
     margin-left: 15px;
  }
 
+#settings-form {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
 .form-validation-error {
     color: red;
 }
