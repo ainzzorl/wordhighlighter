@@ -90,7 +90,7 @@ describe('textNodeHandler', function() {
                     + 'source'
                     + '<div class="highlighted-word-tooltip">'
                     + '<p class="">word</p>'
-                    + '<div>description</div>'
+                    + '<div class="highlighted-word-description">description</div>'
                     + '</div>'
                     + '</span>');
             });

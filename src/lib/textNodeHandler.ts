@@ -134,7 +134,7 @@ class TextNodeHandler {
 
     private tooltipContent(entry: DictionaryEntry) {
         let wrappedDescription = entry.description ?
-            '<div>' + entry.description + '</div>' : '';
+            '<div class="highlighted-word-description">' + entry.description + '</div>' : '';
         let wordClass = entry.description ? '' : 'highlighted-word-title-no-description';
         return '<div class="highlighted-word-tooltip">'
                 + '<p class="' + wordClass + '">' + entry.value + '</p>'

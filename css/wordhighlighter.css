@@ -40,3 +40,7 @@
     padding-bottom: 0px;
     margin-bottom: 0px;
 }
+
+.highlighted-word .highlighted-word-tooltip .highlighted-word-description {
+     white-space: pre-wrap;
+}
