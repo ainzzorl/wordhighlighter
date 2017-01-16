@@ -1,7 +1,11 @@
 <div id="import-tab" ng-controller="importController">
     <div class="row">
         <div class="col-xs-12">
-            <p>Enter the words you want to import to the text area below. Format: word;description, one per line. Descriptions are optional.</p>
+            <p>
+                To bulk import words, enter the words and, optionally, descriptions to the text area below.
+                Choose an import option and press the button.
+            </p>
+            <p>Format: <i>word;description</i>, one entry per line.</p>
         </div>
     </div>
 
@@ -22,9 +26,9 @@
                     </div>
                     <div class="col-xs-9">
                         <select class="form-control" ng-model="importInput.mode">
-                            <option value="{{MODE_KEEP}}">Keep existing</option>
-                            <option value="{{MODE_OVERWRITE}}">Overwrite existing</option>
-                            <option value="{{MODE_REPLACE}}">Replace the current database</option>
+                            <option value="{{MODE_KEEP}}">If the word already exists, keep it</option>
+                            <option value="{{MODE_OVERWRITE}}">If the word already exists, replace it</option>
+                            <option value="{{MODE_REPLACE}}">Delete everything and import</option>
                         </select>
                     </div>
                 </div>
