@@ -1,13 +1,22 @@
 <div ng-controller="settingsController">
   <form id="settings-form" ng-show="settings" name="settingsForm" ng-submit="save()" novalidate>
     <div class="form-group row">
-      <label for="enable-highlighting" class="col-xs-3 col-form-label">Enable highlighting:</label>
+      <label for="enable-highlighting" class="col-xs-3 col-form-label">
+        <a href="#" data-toggle="tooltip" title="Disables word highlighting if unchecked.">
+          Enable highlighting:
+        </a>
+      </label>
       <div class="col-xs-9">
         <input type="checkbox" ng-model="settings.enableHighlighting"/>
       </div>
     </div>
     <div class="form-group row">
-      <label for="timeout" class="col-xs-3 col-form-label">Timeout:</label>
+      <label for="timeout" class="col-xs-3 col-form-label">
+        <a href="#" data-toggle="tooltip"
+           title="If the list of words is long and the page is big, highlighting all words can be rather slow. The timeout guarantees that Word Highlighter won't slow your browser down too much.">
+          Timeout (seconds):
+        </a>
+      </label>
       <div class="col-xs-9">
         <input name="timeout" ng-model="settings.timeout" type="number" size="3" required/>
         <div class="form-validation-error">
