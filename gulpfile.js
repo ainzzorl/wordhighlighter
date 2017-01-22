@@ -29,7 +29,7 @@ gulp.task('copy-icons', function () {
 
 gulp.task('copy-fonts', function () {
     return gulp.src(['node_modules/bootstrap/dist/fonts/**/*'])
-        .pipe(gulp.dest('build/fonts'));
+        .pipe(gulp.dest('build/thirdparty/fonts'));
 });
 
 gulp.task('copy-css', function () {
@@ -37,10 +37,20 @@ gulp.task('copy-css', function () {
         .pipe(gulp.dest('build/css'));
 });
 
-gulp.task('copy-static-content', ['copy-html', 'copy-icons', 'copy-fonts', 'copy-css'], function () {
-    return gulp.src(['manifest.json', 'node_modules/angular/angular.min.js',
-                    'node_modules/ng-table/bundles/ng-table.min.js', 'node_modules/ng-table/bundles/ng-table.min.css',
-                    'node_modules/bootstrap/dist/js/bootstrap.min.js', 'node_modules/bootstrap/dist/css/bootstrap.min.css'])
+gulp.task('copy-third-party-css', function () {
+    return gulp.src(['node_modules/ng-table/bundles/ng-table.min.css', 'node_modules/bootstrap/dist/css/bootstrap.min.css'])
+        .pipe(gulp.dest('build/thirdparty/css'));
+});
+
+gulp.task('copy-third-party-js', function () {
+    return gulp.src(['node_modules/angular/angular.min.js',
+                    'node_modules/ng-table/bundles/ng-table.min.js',
+                    'node_modules/bootstrap/dist/js/bootstrap.min.js'])
+        .pipe(gulp.dest('build/thirdparty/js'));
+});
+
+gulp.task('copy-static-content', ['copy-html', 'copy-icons', 'copy-fonts', 'copy-css', 'copy-third-party-css', 'copy-third-party-js'], function () {
+    return gulp.src(['manifest.json'])
         .pipe(gulp.dest('build'));
 });
 
