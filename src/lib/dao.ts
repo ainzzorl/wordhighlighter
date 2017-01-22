@@ -22,12 +22,14 @@ class DAO {
     }
 
     getSettings(callback: (settings: Settings) => void): void {
-        chrome.storage.local.get('settings', function(result: { settings: Settings }) {
-            callback(result.settings);
+        let self: DAO = this;
+        chrome.storage.local.get('settings', function(result: { settings: any }) {
+            callback(self.deserializeSettings(result.settings));
         });
     }
 
     init() {
+        let self: DAO = this;
         chrome.storage.local.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
             if (!result.dictionary) {
                 chrome.storage.local.set({ dictionary: [] }, function() {
@@ -46,8 +48,8 @@ class DAO {
             if (!result.settings) {
                 let settings = new Settings();
                 settings.enableHighlighting = true;
-                settings.timeout = this.DEFAULT_TIMEOUT;
-                chrome.storage.local.set({ settings: settings }, function() {
+                settings.timeout = self.DEFAULT_TIMEOUT;
+                chrome.storage.local.set({ settings: self.serializeSettings(settings) }, function() {
                     WHLogger.log('Initialized the settings');
                 });
             }
@@ -100,7 +102,7 @@ class DAO {
     }
 
     saveSettings(settings: Settings, callback: () => void): void {
-        chrome.storage.local.set({ settings: settings }, function() {
+        chrome.storage.local.set({ settings: this.serializeSettings(settings) }, function() {
             WHLogger.log('Saved the settings');
             callback();
         });
@@ -124,6 +126,13 @@ class DAO {
         );
     }
 
+    private deserializeSettings(input: any): Settings {
+        let settings: Settings = new Settings();
+        settings.timeout = input.timeout;
+        settings.enableHighlighting  = input.enableHighlighting;
+        return settings;
+    }
+
     private serializeDictionary(input: Array<DictionaryEntry>): Array<any> {
         if (input === null) {
             return null;
@@ -139,6 +148,13 @@ class DAO {
             createdAt: input.createdAt,
             updatedAt: input.updatedAt,
             strictMatch: input.strictMatch
+        };
+    }
+
+    private serializeSettings(input: Settings) {
+        return {
+            timeout: input.timeout,
+            enableHighlighting: input.enableHighlighting
         };
     }
 }
