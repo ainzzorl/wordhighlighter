@@ -73,7 +73,7 @@ gulp.task('browserify-imports', [], function() {
         .pipe(browserify({
             insertGlobals : true
         }))
-        .pipe(gulp.dest('./build'))
+        .pipe(gulp.dest('./build/js/'))
 });
 
 gulp.task('tslint', function() {
@@ -120,14 +120,14 @@ gulp.task('concat-lib', ['compile-src'], function() {
     return gulp
         .src(['build/lib/*.js'])
         .pipe(concat('lib.js'))
-        .pipe(gulp.dest('./build/'));
+        .pipe(gulp.dest('./build/js/'));
 });
 
 gulp.task('concat-main-dialog', ['compile-src'], function() {
     return gulp
         .src(['build/mainDialog/*.js'])
         .pipe(concat('mainDialog.js'))
-        .pipe(gulp.dest('./build/'));
+        .pipe(gulp.dest('./build/js/'));
 });
 
 gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dialog'], function(done) {
