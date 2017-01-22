@@ -44,8 +44,7 @@ gulp.task('copy-third-party-css', function () {
 
 gulp.task('copy-third-party-js', function () {
     return gulp.src(['node_modules/angular/angular.min.js',
-                    'node_modules/ng-table/bundles/ng-table.min.js',
-                    'node_modules/bootstrap/dist/js/bootstrap.min.js'])
+                    'node_modules/ng-table/bundles/ng-table.min.js'])
         .pipe(gulp.dest('build/thirdparty/js'));
 });
 
