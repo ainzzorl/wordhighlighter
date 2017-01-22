@@ -2,6 +2,8 @@
 ///<reference path="../lib/content.ts" />
 ///<reference path="../lib/logger.ts" />
 
+// Content script: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Content_scripts
+
 let timeStart = performance.now();
 WHLogger.log('Processing URL ' + document.URL);
 // TODO: read dictionary and settings at once.

@@ -3,9 +3,16 @@
 ///<reference path="logger.ts" />
 ///<reference path="settings.ts" />
 
-// TODO: use synced storage
-// TODO: unit test
+/**
+ * Data Access Object.
+ * Handles all interactions with the storage.
+ *
+ * TODO: use sync storage
+ * TODO: unit test
+ */
 class DAO {
+
+    private DEFAULT_TIMEOUT: number = 3;
 
     getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
         let self: DAO = this;
@@ -39,7 +46,7 @@ class DAO {
             if (!result.settings) {
                 let settings = new Settings();
                 settings.enableHighlighting = true;
-                settings.timeout = 3;
+                settings.timeout = this.DEFAULT_TIMEOUT;
                 chrome.storage.local.set({ settings: settings }, function() {
                     WHLogger.log('Initialized the settings');
                 });
@@ -99,14 +106,14 @@ class DAO {
         });
     }
 
-    deserializeDictionary(input: Array<any>): Array<DictionaryEntry> {
+    private deserializeDictionary(input: Array<any>): Array<DictionaryEntry> {
         if (input === null) {
             return null;
         }
         return input.map(this.deserializeDictionaryEntry);
     }
 
-    deserializeDictionaryEntry(input: any): DictionaryEntry {
+    private deserializeDictionaryEntry(input: any): DictionaryEntry {
         return new DictionaryEntry(
             input['id'],
             input['value'],
@@ -117,14 +124,14 @@ class DAO {
         );
     }
 
-    serializeDictionary(input: Array<DictionaryEntry>): Array<any> {
+    private serializeDictionary(input: Array<DictionaryEntry>): Array<any> {
         if (input === null) {
             return null;
         }
         return input.map(this.serializeDictionaryEntry);
     }
 
-    serializeDictionaryEntry(input: DictionaryEntry): any {
+    private serializeDictionaryEntry(input: DictionaryEntry): any {
         return {
             id: input.id,
             value: input.value,

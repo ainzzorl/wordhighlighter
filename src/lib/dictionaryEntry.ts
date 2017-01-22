@@ -1,3 +1,6 @@
+/**
+ * A persistent entry in the dictionary.
+ */
 class DictionaryEntry {
     id: number; // TODO: getter/setter
     value: string;

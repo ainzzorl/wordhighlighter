@@ -1,6 +1,8 @@
 ///<reference path="../lib/dao.ts" />
 ///<reference path="../lib/logger.ts" />
 
+const DEFAULT_TAB = 'words';
+
 let app = angular.module('mainDialog', ['ngTable']);
 
 app.service('dao', function() {
@@ -9,7 +11,7 @@ app.service('dao', function() {
 
 app
 .run(function($rootScope: any) {
-    $rootScope.currentTab = 'words';
+    $rootScope.currentTab = DEFAULT_TAB;
 });
 
 // The code below is an ugly workaround for a bug.

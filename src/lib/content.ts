@@ -1,6 +1,9 @@
 ///<reference path="logger.ts" />
 ///<reference path="textNodeHandler.ts" />
 
+/**
+ * Implements content script logic: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Content_scripts
+ */
 class Content {
     private BLACKLISTED_TAGS: any = {
         'SCRIPT': true,
@@ -9,9 +12,9 @@ class Content {
         'TITLE': true
     };
 
-    textNodeHandler: TextNodeHandler;
-    settings: Settings;
-    startTime: number;
+    private textNodeHandler: TextNodeHandler;
+    private settings: Settings;
+    startTime: number; // TODO: must be private
 
     constructor(textNodeHandler: TextNodeHandler, settings: Settings) {
         this.textNodeHandler = textNodeHandler;

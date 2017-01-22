@@ -2,9 +2,12 @@
 ///<reference path="dictionaryEntry.ts" />
 ///<reference path="matchResultEntry.ts" />
 
-
+/**
+ * Handles text notes.
+ * Injects markup into them.
+ */
 class TextNodeHandler {
-    IGNORED_PREFIXES = ['a ', 'an ', 'to '];
+    private IGNORED_PREFIXES = ['a ', 'an ', 'to '];
 
     dictionary: Array<DictionaryEntry>;
     stemmer: Stemmer;
@@ -21,6 +24,7 @@ class TextNodeHandler {
         }
     }
 
+    // TODO: explain
     injectMarkup(node: Node): Array<HTMLElement> {
         let matchResults = this.findMatches(node.textContent);
         let html = '';
