@@ -120,6 +120,12 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dia
         }, done).start();
 });
 
+gulp.task('clean-pre-package', function () {
+    var clean = require('gulp-clean');
+    return gulp.src('build/spec', {read: false})
+        .pipe(clean());
+});
+
 // TODO: optimize: some tasks are called twice
 gulp.task('release', function(callback) {
     var runSequence = require('run-sequence');
@@ -127,6 +133,7 @@ gulp.task('release', function(callback) {
               ['copy-static-content', 'compile-src', 'compile-spec', 'browserify-imports', 'tslint'],
               ['concat-lib', 'concat-main-dialog'],
               'spec',
+              'clean-pre-package',
               callback);
 });
 
