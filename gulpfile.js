@@ -3,6 +3,13 @@ var ts = require('gulp-typescript');
 var tsProjectSrc = ts.createProject('tsconfig-src.json');
 var tsProjectSpec = ts.createProject('tsconfig-spec.json');
 var concat = require('gulp-concat');
+var gutil = require('gulp-util');
+
+function onTsCompilationError(error) {
+    var log = gutil.log, colors = gutil.colors;
+    log('TypeScript compilation exited with ' + colors.red(error));
+    process.exit(1);
+}
 
 gulp.task('clean', function () {
     var clean = require('gulp-clean');
@@ -40,12 +47,14 @@ gulp.task('copy-static-content', ['copy-html', 'copy-icons', 'copy-fonts', 'copy
 gulp.task('compile-src', function () {
     return tsProjectSrc.src()
         .pipe(tsProjectSrc())
+        .on('error', onTsCompilationError)
         .js.pipe(gulp.dest('build'));
 });
 
 gulp.task('compile-spec', function () {
     return tsProjectSpec.src()
             .pipe(tsProjectSpec())
+            .on('error', onTsCompilationError)
             .js.pipe(gulp.dest('build/spec'));
 });
 
