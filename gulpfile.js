@@ -131,7 +131,7 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dia
 
 gulp.task('clean-pre-package', function () {
     var clean = require('gulp-clean');
-    return gulp.src('build/spec', {read: false})
+    return gulp.src(['build/spec', 'build/lib'], {read: false})
         .pipe(clean());
 });
 
