@@ -1,4 +1,5 @@
 ///<reference path="dao.ts" />
+///<reference path="logger.ts" />
 
 class Background {
     dao: DAO;
@@ -14,7 +15,7 @@ class Background {
     // TODO: skip dupes?
     addWord(value: string): void {
         this.dao.addEntry(value, '', false, function() {
-            console.log('Word ' + value + ' has been added to the dictionary through the context menu');
+            WHLogger.log('Word ' + value + ' has been added to the dictionary through the context menu');
         });
     }
 }

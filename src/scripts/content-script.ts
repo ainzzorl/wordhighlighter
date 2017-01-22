@@ -1,8 +1,9 @@
 ///<reference path="../lib/dao.ts" />
 ///<reference path="../lib/content.ts" />
+///<reference path="../lib/logger.ts" />
 
 let timeStart = performance.now();
-console.log('Processing URL ' + document.URL);
+WHLogger.log('Processing URL ' + document.URL);
 // TODO: read dictionary and settings at once.
 new DAO().getDictionary(function(dictionary: Array<DictionaryEntry>) {
     new DAO().getSettings(function(settings: Settings) {
@@ -16,6 +17,6 @@ new DAO().getDictionary(function(dictionary: Array<DictionaryEntry>) {
         content.processDocument(document);
         let timeEnd = performance.now();
         let seconds = (timeEnd - timeStart) / 1000;
-        console.log('Finished processing ' + document.URL + ' in ' + seconds.toFixed(2) + ' seconds');
+        WHLogger.log('Finished processing ' + document.URL + ' in ' + seconds.toFixed(2) + ' seconds');
     });
 });

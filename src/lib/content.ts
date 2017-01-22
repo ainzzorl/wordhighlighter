@@ -1,3 +1,4 @@
+///<reference path="logger.ts" />
 ///<reference path="textNodeHandler.ts" />
 
 class Content {
@@ -26,7 +27,7 @@ class Content {
 
     injectMarkup(node: Node): void {
         if (this.isTimeout()) {
-            console.log('Terminating because of the timeout');
+            WHLogger.log('Terminating because of the timeout');
             return;
         }
         if (this.isBlacklisted(node)) {

@@ -1,4 +1,5 @@
 ///<reference path="../lib/dao.ts" />
+///<reference path="../lib/logger.ts" />
 
 let app = angular.module('mainDialog', ['ngTable']);
 
@@ -26,9 +27,9 @@ app
 .run(function($window: any) {
     angular.element($window).bind('scroll', function() {
         if (this.pageYOffset === 0 && this.pageYOffset !== currentYOffset && currentYOffset > 10) {
-            console.debug('Strange scroll has been detected');
+            WHLogger.log('Strange scroll has been detected');
             $window.scrollTo(currentXOffset, currentYOffset);
-            console.debug('Reset scroll to ' + currentXOffset + ', ' + currentYOffset);
+            WHLogger.log('Reset scroll to ' + currentXOffset + ', ' + currentYOffset);
         }
         currentXOffset = this.pageXOffset;
         currentYOffset = this.pageYOffset;

@@ -1,5 +1,6 @@
 ///<reference path="../../node_modules/@types/chrome/index.d.ts" />
 ///<reference path="dictionaryEntry.ts" />
+///<reference path="logger.ts" />
 ///<reference path="settings.ts" />
 
 // TODO: use synced storage
@@ -23,14 +24,14 @@ class DAO {
         chrome.storage.local.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
             if (!result.dictionary) {
                 chrome.storage.local.set({ dictionary: [] }, function() {
-                    console.log('Initialized the dictionary');
+                    WHLogger.log('Initialized the dictionary');
                 });
             }
         });
         chrome.storage.local.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
             if (!result.idSequenceNumber) {
                 chrome.storage.local.set({ idSequenceNumber: 1 }, function() {
-                    console.log('Initialized the id sequence');
+                    WHLogger.log('Initialized the id sequence');
                 });
             }
         });
@@ -40,7 +41,7 @@ class DAO {
                 settings.enableHighlighting = true;
                 settings.timeout = 3;
                 chrome.storage.local.set({ settings: settings }, function() {
-                    console.log('Initialized the settings');
+                    WHLogger.log('Initialized the settings');
                 });
             }
         });
@@ -61,7 +62,7 @@ class DAO {
             };
             result.dictionary.push(entry);
             chrome.storage.local.set({ dictionary: result.dictionary, idSequenceNumber: result.idSequenceNumber + 1 }, function() {
-                console.debug('Word ' + entry.value + ' has been added to the storages');
+                WHLogger.log('Word ' + entry.value + ' has been added to the storages');
                 callback(self.serializeDictionaryEntry(entry));
             });
         });
@@ -74,7 +75,7 @@ class DAO {
         });
         if (needsToGenerateIds.length === 0) {
             chrome.storage.local.set({ dictionary: self.serializeDictionary(dictionary) }, function() {
-                console.debug('Saved dictionary');
+                WHLogger.log('Saved dictionary');
                 callback();
             });
             return;
@@ -85,7 +86,7 @@ class DAO {
                 dictionaryEntry.id = idSequenceNumber++;
             });
             chrome.storage.local.set({ idSequenceNumber: idSequenceNumber, dictionary: self.serializeDictionary(dictionary) }, function() {
-                console.log('Saved the dictionary. New id sequence number: ' + idSequenceNumber);
+                WHLogger.log('Saved the dictionary. New id sequence number: ' + idSequenceNumber);
                 callback();
             });
         });
@@ -93,7 +94,7 @@ class DAO {
 
     saveSettings(settings: Settings, callback: () => void): void {
         chrome.storage.local.set({ settings: settings }, function() {
-            console.log('Saved the settings');
+            WHLogger.log('Saved the settings');
             callback();
         });
     }
