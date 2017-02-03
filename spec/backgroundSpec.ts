@@ -21,19 +21,41 @@ describe('background', function() {
     });
 
     describe('addWord', function() {
-        beforeEach(function() {
+        let background;
+
+        beforeEach(() => {
             dao = {
                 addEntry(value: string, description: string, strictMatch: boolean, callback: (dictionaryEntry: DictionaryEntry) => void): void {
                     callback(new DictionaryEntry(1, value, description, new Date(), new Date(), strictMatch));
+                },
+                getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
+                    callback([
+                        new DictionaryEntry(1, 'existingWord', '', null, null)
+                    ]);
                 }
             };
             spyOn(dao, 'addEntry').and.callThrough();
-            let background = new Background(dao);
-            background.addWord('test-value');
+            background = new Background(dao);
         });
 
-        it('adds the word', function() {
-            expect(dao.addEntry).toHaveBeenCalledWith('test-value', '', false, jasmine.any(Function));
+        describe('not duplicate', () => {
+            beforeEach(() => {
+                background.addWord('differentWord');
+            });
+
+            it('adds the word', () => {
+                expect(dao.addEntry).toHaveBeenCalledWith('differentWord', '', false, jasmine.any(Function));
+            });
+        });
+
+        describe('duplicate', () => {
+            beforeEach(() => {
+                background.addWord('existingWord');
+            });
+
+            it('does not add the word', () => {
+                expect(dao.addEntry).not.toHaveBeenCalledWith('existingWord', '', false, jasmine.any(Function));
+            });
         });
     });
 });
