@@ -12,6 +12,14 @@
         "forin": true,
         "indent": [true, "spaces"],
         "label-position": true,
+        "max-line-length": [true, 200],
+        "member-ordering": [
+            true,
+            "public-before-private",
+            "static-before-instance",
+            "variables-before-functions"
+        ],
+        "no-arg": true,
         "no-duplicate-variable": true,
         "no-eval": true,
         "no-internal-module": true,

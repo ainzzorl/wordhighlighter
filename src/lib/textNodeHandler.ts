@@ -7,13 +7,13 @@
  * Injects markup into them.
  */
 class TextNodeHandler {
-    private IGNORED_PREFIXES = ['a ', 'an ', 'to '];
-
     dictionary: Array<DictionaryEntry>;
     stemmer: Stemmer;
     dictionaryStemMap: any;
     strictMatchMap: any;
     contentWordStems: any; // TODO: cleanup to release memory
+
+    private IGNORED_PREFIXES = ['a ', 'an ', 'to '];
 
     constructor(dictionary: Array<DictionaryEntry>, stemmer: Stemmer) {
         this.dictionary = dictionary;

@@ -5,6 +5,8 @@
  * Implements content script logic: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Content_scripts
  */
 class Content {
+    startTime: number; // TODO: must be private
+
     private BLACKLISTED_TAGS: any = {
         'SCRIPT': true,
         'NOSCRIPT': true,
@@ -14,7 +16,6 @@ class Content {
 
     private textNodeHandler: TextNodeHandler;
     private settings: Settings;
-    startTime: number; // TODO: must be private
 
     constructor(textNodeHandler: TextNodeHandler, settings: Settings) {
         this.textNodeHandler = textNodeHandler;
