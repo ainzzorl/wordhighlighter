@@ -59,7 +59,7 @@ class DAO {
     addEntry(value: string, description: string, strictMatch: boolean, callback: (newEntry: DictionaryEntry) => void): void {
         let self: DAO = this;
         chrome.storage.local.get(['dictionary', 'idSequenceNumber'],
-                function(result: { dictionary: Array<any>, idSequenceNumber: number }) {
+                                 function(result: { dictionary: Array<any>, idSequenceNumber: number }) {
             let now: Date = new Date();
             let entry = {
                 id: result.idSequenceNumber,

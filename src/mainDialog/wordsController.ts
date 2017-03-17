@@ -16,12 +16,15 @@ angular
     $scope.load = function() {
         dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
             $scope.dictionary = dictionary;
-            $scope.tableParams = new NgTableParams({
-                count: 1000000000 // hide pager
-            }, {
-                dataset: $scope.dictionary,
-                counts: [] // hide page sizes
-            });
+            $scope.tableParams = new NgTableParams(
+                {
+                    count: 1000000000 // hide pager
+                },
+                {
+                    dataset: $scope.dictionary,
+                    counts: [] // hide page sizes
+                }
+            );
             $scope.originalData = angular.copy($scope.dictionary);
             $scope.$apply();
         });
@@ -62,7 +65,7 @@ angular
         if ($scope.isDupe(dictionaryEntry.value, dictionaryEntry.id)) {
             dictionaryEntry.isDupe = true;
             return;
-        };
+        }
         let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
         if (changed(dictionaryEntry, originalRow)) {
             dictionaryEntry.updatedAt = new Date();

@@ -234,11 +234,14 @@ describe('importController', function() {
         });
 
         it('saves the dictionary', function() {
-            expect(dao.saveDictionary).toHaveBeenCalledWith([
-                new DictionaryEntry(null, 'old', 'old - desc', null, null),
-                new DictionaryEntry(null, 'both', 'both old - desc', null, null),
-                new DictionaryEntry(null, 'new', 'new - desc', null, null)
-            ], jasmine.any(Function));
+            expect(dao.saveDictionary).toHaveBeenCalledWith(
+                [
+                    new DictionaryEntry(null, 'old', 'old - desc', null, null),
+                    new DictionaryEntry(null, 'both', 'both old - desc', null, null),
+                    new DictionaryEntry(null, 'new', 'new - desc', null, null)
+                ],
+                jasmine.any(Function)
+            );
         });
 
         it('shows confirmation', function() {
@@ -271,11 +274,14 @@ describe('importController', function() {
         });
 
         it('saves the dictionary', function() {
-            expect(dao.saveDictionary).toHaveBeenCalledWith([
-                new DictionaryEntry(null, 'old', 'old - desc', null, null),
-                new DictionaryEntry(null, 'both', 'both new - desc', null, null),
-                new DictionaryEntry(null, 'new', 'new - desc', null, null)
-            ], jasmine.any(Function));
+            expect(dao.saveDictionary).toHaveBeenCalledWith(
+                [
+                    new DictionaryEntry(null, 'old', 'old - desc', null, null),
+                    new DictionaryEntry(null, 'both', 'both new - desc', null, null),
+                    new DictionaryEntry(null, 'new', 'new - desc', null, null)
+                ],
+                jasmine.any(Function)
+            );
         });
 
         it('shows confirmation', function() {

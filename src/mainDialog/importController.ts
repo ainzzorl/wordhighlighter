@@ -87,7 +87,7 @@ angular
                 });
                 if (!exists) {
                     dictionary.push(newEntry);
-                };
+                }
             });
             dao.saveDictionary(dictionary, onSuccess);
         });
@@ -102,11 +102,11 @@ angular
                         exists = true;
                         existingEntry.description = newEntry.description;
                         existingEntry.updatedAt = newEntry.updatedAt;
-                    };
+                    }
                 });
                 if (!exists) {
                     dictionary.push(newEntry);
-                };
+                }
             });
             dao.saveDictionary(dictionary, onSuccess);
         });

@@ -1,5 +1,11 @@
 {
     "rules": {
+        "align": [
+            true,
+            "parameters",
+            "arguments",
+            "statements"
+        ],
         "class-name": true,
         "comment-format": [true, "check-space"],
         "indent": [true, "spaces"],
