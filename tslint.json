@@ -9,6 +9,7 @@
         "class-name": true,
         "comment-format": [true, "check-space"],
         "eofline": true,
+        "forin": true,
         "indent": [true, "spaces"],
         "no-duplicate-variable": true,
         "no-eval": true,
