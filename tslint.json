@@ -20,14 +20,31 @@
             "variables-before-functions"
         ],
         "no-arg": true,
+        "no-construct": true,
         "no-duplicate-variable": true,
         "no-eval": true,
         "no-internal-module": true,
+        "no-shadowed-variable": true,
+        "no-switch-case-fall-through": true,
         "no-trailing-whitespace": true,
+        "no-unused-expression": true,
         "no-var-keyword": true,
-        "one-line": [true, "check-open-brace", "check-whitespace"],
+        "one-line": [
+            true,
+            "check-open-brace",
+            "check-catch",
+            "check-else",
+            "check-whitespace"
+        ],
         "quotemark": [true, "single"],
         "semicolon": true,
+        "trailing-comma": [
+            true,
+            {
+                "multiline": "never",
+                "singleline": "never"
+            }
+        ],
         "triple-equals": [true, "allow-null-check"],
         "typedef-whitespace": [true, {
             "call-signature": "nospace",

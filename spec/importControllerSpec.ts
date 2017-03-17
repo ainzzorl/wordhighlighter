@@ -161,7 +161,7 @@ describe('importController', function() {
                     new DictionaryEntry(null, 'word 2', '', null, null),
                     new DictionaryEntry(null, 'word 1', '', null, null),
                     new DictionaryEntry(null, 'word 2', '', null, null),
-                    new DictionaryEntry(null, 'word 3', '', null, null),
+                    new DictionaryEntry(null, 'word 3', '', null, null)
                 ];
                 result = $scope.getDuplicateEntries(input);
             });
@@ -178,7 +178,7 @@ describe('importController', function() {
                 let input = [
                     new DictionaryEntry(null, 'word 1', '', null, null),
                     new DictionaryEntry(null, 'word 2', '', null, null),
-                    new DictionaryEntry(null, 'word 3', '', null, null),
+                    new DictionaryEntry(null, 'word 3', '', null, null)
                 ];
                 result = $scope.getDuplicateEntries(input);
             });
