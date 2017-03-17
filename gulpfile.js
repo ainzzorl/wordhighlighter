@@ -76,43 +76,12 @@ gulp.task('browserify-imports', [], function() {
         .pipe(gulp.dest('./build/js/'))
 });
 
+// Lint rules are specified in tslint.json
 gulp.task('tslint', function() {
     var tslint = require('gulp-tslint');
     return gulp.src(['src/**/*.ts', 'spec/**/*.ts'])
         .pipe(tslint({
-            formatter: 'verbose',
-            configuration: {
-                'rules': {
-                    'class-name': true,
-                    'comment-format': [true, 'check-space'],
-                    'indent': [true, 'spaces'],
-                    'no-duplicate-variable': true,
-                    'no-eval': true,
-                    'no-internal-module': true,
-                    'no-trailing-whitespace': true,
-                    'no-var-keyword': true,
-                    'one-line': [true, 'check-open-brace', 'check-whitespace'],
-                    'quotemark': [true, 'single'],
-                    'semicolon': true,
-                    'triple-equals': [true, 'allow-null-check'],
-                    'typedef-whitespace': [true, {
-                        'call-signature': 'nospace',
-                        'index-signature': 'nospace',
-                        'parameter': 'nospace',
-                        'property-declaration': 'nospace',
-                        'variable-declaration': 'nospace'
-                    }],
-                    'variable-name': [true, 'ban-keywords'],
-                    'whitespace': [true,
-                        'check-branch',
-                        'check-decl',
-                        'check-operator',
-                        'check-separator',
-                        'check-type'
-                    ]
-                }
-            }
-        }))
+            formatter: 'verbose'}))
         .pipe(tslint.report())
 });
 
