@@ -3,7 +3,7 @@
     font-weight: bold;
     font-style: italic;
     position: relative;
-    display: inline-block;
+    display: inline-block !important;
 }
 
 .highlighted-word .highlighted-word-tooltip {
