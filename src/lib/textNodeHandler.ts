@@ -140,10 +140,10 @@ class TextNodeHandler {
         let wrappedDescription = entry.description ?
             '<div class="highlighted-word-description">' + entry.description + '</div>' : '';
         let wordClass = entry.description ? '' : 'highlighted-word-title-no-description';
-        return '<div class="highlighted-word-tooltip">'
+        return '<div class="highlighted-word-tooltip-wrapper"><div class="highlighted-word-tooltip">'
                 + '<p class="' + wordClass + '">' + entry.value + '</p>'
                 + wrappedDescription
-                + '</div>';
+                + '</div></div>';
     }
 
     private calculateIndexes(): void {

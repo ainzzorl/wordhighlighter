@@ -88,9 +88,11 @@ describe('textNodeHandler', function() {
                 expect(result).toEqual(
                     '<span class="highlighted-word">'
                     + 'source'
+                    + '<div class="highlighted-word-tooltip-wrapper">'
                     + '<div class="highlighted-word-tooltip">'
                     + '<p class="">word</p>'
                     + '<div class="highlighted-word-description">description</div>'
+                    + '</div>'
                     + '</div>'
                     + '</span>');
             });
@@ -107,8 +109,10 @@ describe('textNodeHandler', function() {
                 expect(result).toEqual(
                     '<span class="highlighted-word">'
                     + 'source'
+                    + '<div class="highlighted-word-tooltip-wrapper">'
                     + '<div class="highlighted-word-tooltip">'
                     + '<p class="highlighted-word-title-no-description">word</p>'
+                    + '</div>'
                     + '</div>'
                     + '</span>');
             });

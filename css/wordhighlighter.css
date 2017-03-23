@@ -2,7 +2,6 @@
     background-color: yellow;
     font-weight: bold;
     font-style: italic;
-    position: relative;
     display: inline-block !important;
 }
 
@@ -20,10 +19,10 @@
 
     /* Position the tooltip */
     position: absolute;
+    display: block;
     z-index: 1000;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -60px;
+    bottom: 1.5em;
+    margin-left: -70px;
 }
 
 .highlighted-word .highlighted-word-tooltip p {
@@ -43,4 +42,12 @@
 
 .highlighted-word .highlighted-word-tooltip .highlighted-word-description {
      white-space: pre-wrap;
+}
+
+/*
+    Helps displaying tooltips if parent's overflow=hidden.
+*/
+.highlighted-word .highlighted-word-tooltip-wrapper {
+    position: absolute;
+    visibility: hidden;
 }
