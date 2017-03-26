@@ -87,7 +87,7 @@ gulp.task('tslint', function() {
 
 gulp.task('concat-lib', ['compile-src'], function() {
     return gulp
-        .src(['build/lib/*.js'])
+        .src(['build/lib/**/*.js'])
         .pipe(concat('lib.js'))
         .pipe(gulp.dest('./build/js/'));
 });

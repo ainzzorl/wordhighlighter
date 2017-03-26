@@ -1,6 +1,6 @@
 {
     "files": [
-        "src/lib/*.ts", "src/mainDialog/*.ts", "src/scripts/*.ts"
+        "src/lib/**/*.ts", "src/mainDialog/*.ts", "src/scripts/*.ts"
     ],
     "compilerOptions": {
         "noImplicitAny": true,

@@ -2,6 +2,7 @@
 ///<reference path="../src/lib/textNodeHandler.ts" />
 ///<reference path="../src/lib/dao.ts" />
 ///<reference path="../src/lib/dictionaryEntry.ts" />
+///<reference path="../src/lib/matching/matchResultEntry.ts" />
 
 describe('textNodeHandler', function() {
     let handler: TextNodeHandler;

@@ -1,12 +1,12 @@
-///<reference path="matching/stemmer.ts" />
-///<reference path="dictionaryEntry.ts" />
-///<reference path="matching/matchResultEntry.ts" />
+///<reference path="stemmer.ts" />
+///<reference path="matchResultEntry.ts" />
+///<reference path="../dictionaryEntry.ts" />
 
-/**
- * Handles text notes.
- * Injects markup into them.
- */
-class TextNodeHandler {
+interface MatchFinder {
+    findMatches(input: string): Array<MatchResultEntry>;
+}
+
+class MatchFinderImpl implements MatchFinder {
     dictionary: Array<DictionaryEntry>;
     stemmer: Stemmer;
     dictionaryStemMap: any;
@@ -22,25 +22,6 @@ class TextNodeHandler {
         if (stemmer) {
             this.calculateIndexes();
         }
-    }
-
-    // TODO: explain
-    injectMarkup(node: Node): Array<HTMLElement> {
-        let matchResults = this.findMatches(node.textContent);
-        let html = '';
-        if (matchResults.length === 1 && !matchResults[0].matchOf) {
-            return null;
-        }
-        for (let i = 0; i < matchResults.length; ++i) {
-            if (matchResults[i].matchOf) {
-                html += this.wrap(matchResults[i].value, matchResults[i].matchOf);
-            } else {
-                html += matchResults[i].value;
-            }
-        }
-        let newNode = document.createElement('doesnotmatter');
-        newNode.innerHTML = html;
-        return Array.prototype.slice.call(newNode.childNodes);
     }
 
     // TODO: too complex, simplify.
@@ -107,7 +88,7 @@ class TextNodeHandler {
         return result;
     }
 
-    findMatchForWord(word: string): DictionaryEntry {
+    private findMatchForWord(word: string): DictionaryEntry {
         let strictMatch = <DictionaryEntry> this.strictMatchMap[word.toLowerCase()];
         if (strictMatch && strictMatch.value) {
             return strictMatch;
@@ -125,25 +106,8 @@ class TextNodeHandler {
         return (result && result.value) ? result : null;
     }
 
-    wrap(word: string, entry: DictionaryEntry) {
-        return '<span class="highlighted-word">'
-                + word
-                + this.tooltipContent(entry)
-                + '</span>';
-    }
-
     private isWordCharacter(char: string) {
         return char[0] >= 'a' && char[0] <= 'z' || char[0] >= 'A' && char[0] <= 'Z';
-    }
-
-    private tooltipContent(entry: DictionaryEntry) {
-        let wrappedDescription = entry.description ?
-            '<div class="highlighted-word-description">' + entry.description + '</div>' : '';
-        let wordClass = entry.description ? '' : 'highlighted-word-title-no-description';
-        return '<div class="highlighted-word-tooltip-wrapper"><div class="highlighted-word-tooltip">'
-                + '<p class="' + wordClass + '">' + entry.value + '</p>'
-                + wrappedDescription
-                + '</div></div>';
     }
 
     private calculateIndexes(): void {
