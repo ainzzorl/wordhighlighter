@@ -1,6 +1,6 @@
 {
     "files": [
-        "spec/*.ts", "spec/matching/*.ts"
+        "spec/*.ts", "spec/matching/*.ts", "spec/dom/*.ts"
     ],
     "compilerOptions": {
         "target": "es5"
