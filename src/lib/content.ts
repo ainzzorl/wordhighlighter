@@ -1,5 +1,7 @@
 ///<reference path="logger.ts" />
-///<reference path="textNodeHandler.ts" />
+///<reference path="./dom/highlightInjector.ts" />
+///<reference path="./dom/domTraversal.ts" />
+///<reference path="./matching/matchFinder.ts" />
 
 /**
  * Implements content script logic: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Content_scripts
@@ -7,54 +9,31 @@
 class Content {
     startTime: number; // TODO: must be private
 
-    private BLACKLISTED_TAGS: any = {
-        'SCRIPT': true,
-        'NOSCRIPT': true,
-        'STYLE': true,
-        'TITLE': true
-    };
-
-    private textNodeHandler: TextNodeHandler;
     private settings: Settings;
+    private domTraversal: DomTraversal;
+    private highlightInjector: HighlightInjector;
+    private matchFinder: MatchFinder;
 
-    constructor(textNodeHandler: TextNodeHandler, settings: Settings) {
-        this.textNodeHandler = textNodeHandler;
+    constructor(settings: Settings, domTraversal: DomTraversal, highlightInjector: HighlightInjector, matchFinder: MatchFinder) {
         this.settings = settings;
+        this.domTraversal = domTraversal;
+        this.highlightInjector = highlightInjector;
+        this.matchFinder = matchFinder;
     }
 
-    processDocument(document: Document): void {
-        if (this.settings.enableHighlighting) {
-            this.startTime = performance.now();
-            this.injectMarkup(document);
-        }
-    }
-
-    injectMarkup(node: Node): void {
-        if (this.isTimeout()) {
-            WHLogger.log('Terminating because of the timeout');
+    processDocument(root: Node): void {
+        if (!this.settings.enableHighlighting) {
             return;
         }
-        if (this.isBlacklisted(node)) {
-            return;
-        }
-        let child = node.firstChild;
-        while (child) {
-            if (child.nodeType === Node.TEXT_NODE) {
-                let replacement = this.textNodeHandler.injectMarkup(child);
-                if (replacement) {
-                    for (let i = 0; i < replacement.length; ++i) {
-                        node.insertBefore(replacement[i], child);
-                    }
-                    let next = child.nextSibling;
-                    node.removeChild(child);
-                    child = next;
-                    continue;
-                }
-            } else {
-                this.injectMarkup(child);
-            }
-            child = <HTMLElement> child.nextSibling;
-        }
+        this.startTime = performance.now();
+        let content: Content = this;
+        this.domTraversal.traverseEligibleTextNodes(
+            root,
+            function(node: Text) {
+                content.onFound(content, node);
+            },
+            this.onFinished
+        );
     }
 
     isTimeout(): boolean {
@@ -63,7 +42,14 @@ class Content {
         return seconds > this.settings.timeout;
     }
 
-    private isBlacklisted(node: Node): void {
-        return this.BLACKLISTED_TAGS[(<HTMLElement>node).tagName];
+    private onFound(content: Content, node: Text): void {
+        if (content.isTimeout()) {
+            WHLogger.log('Terminating because of the timeout');
+            content.domTraversal.stop();
+        }
+        content.highlightInjector.inject(node, content.matchFinder.findMatches(node.textContent));
+    }
+
+    private onFinished(): void {
     }
 }

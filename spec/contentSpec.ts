@@ -1,67 +1,77 @@
 ///<reference path="../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../src/lib/content.ts" />
+///<reference path="../src/lib/settings.ts" />
 
 describe('content', function() {
-    let textNodeHandler: TextNodeHandler;
     let rootElement;
     let content: Content;
     let settings: Settings;
+    let domTraversal: DomTraversal;
+    let highlightInjector: HighlightInjector;
+    let matchFinder: MatchFinder;
+
+    let matchResult1: Array<MatchResultEntry>;
+    let matchResult2: Array<MatchResultEntry>;
 
     beforeEach(function() {
-        textNodeHandler = new TextNodeHandler(null, null);
         rootElement = document.createElement('div');
+        rootElement.innerHTML = '<span>Child 1</span><span>Child 2</span>';
         settings = new Settings();
         settings.enableHighlighting = true;
         settings.timeout = 123;
-        content = new Content(textNodeHandler, settings);
-        content.isTimeout = function() {
-            return false;
-        };
-
-        textNodeHandler.injectMarkup = function(node: Node): Array<HTMLElement> {
-            if (node.textContent === 'Replaced with 2') {
-                return [
-                    createSpan('span1'),
-                    createSpan('span2')
-                ];
+        domTraversal = new DomTraversal();
+        highlightInjector = {
+            inject(textNode: Node, matchResult: Array<MatchResultEntry>) {
             }
-            if (node.textContent === 'Does not match') {
+        };
+        spyOn(highlightInjector, 'inject');
+        matchResult1 = [];
+        matchResult2 = [];
+        matchFinder = {
+            findMatches(input: string): Array<MatchResultEntry> {
+                if (input === 'Child 1') {
+                    return matchResult1;
+                }
+                if (input === 'Child 2') {
+                    return matchResult2;
+                }
                 return null;
             }
-            return [];
+        };
+
+        content = new Content(settings, domTraversal, highlightInjector, matchFinder);
+        content.isTimeout = function() {
+            return false;
         };
     });
 
     describe('processDocument', function() {
-        beforeEach(function() {
-            spyOn(content, 'injectMarkup');
-        });
-
         describe('highlighting is enabled', function() {
             beforeEach(function() {
                 settings.enableHighlighting = true;
-                content.processDocument(document);
+                content.processDocument(rootElement);
             });
 
             it('injects markup', function() {
-                expect(content.injectMarkup).toHaveBeenCalledWith(document);
+                expect(highlightInjector.inject).toHaveBeenCalledWith(jasmine.any(Object), matchResult1); // TODO: verify actual text value
+                expect(highlightInjector.inject).toHaveBeenCalledWith(jasmine.any(Object), matchResult2);
             });
         });
 
         describe('highlighting is disabled', function() {
             beforeEach(function() {
                 settings.enableHighlighting = false;
-                content.processDocument(document);
+                content.processDocument(rootElement);
             });
 
             it('does not inject markup', function() {
-                expect(content.injectMarkup).not.toHaveBeenCalledWith(document);
+                expect(highlightInjector.inject).not.toHaveBeenCalled();
             });
         });
 
         describe('initializing time', function() {
             beforeEach(function() {
-                content.processDocument(document);
+                content.processDocument(rootElement);
             });
 
             it('initializes time', function() {
@@ -75,64 +85,12 @@ describe('content', function() {
             content.isTimeout = function() {
                 return true;
             };
-            rootElement.innerHTML = '<child>Replaced with 2</child>';
-            content.injectMarkup(rootElement);
+            settings.enableHighlighting = true;
+            content.processDocument(rootElement);
         });
 
         it('does not inject markup', function() {
-            expect(rootElement.innerHTML).toEqual(
-                '<child>Replaced with 2</child>');
+            expect(highlightInjector.inject).toHaveBeenCalledTimes(1); // not 2!
         });
     });
-
-    describe('one text node', function() {
-        describe('match', function() {
-            beforeEach(function() {
-                rootElement.innerHTML = '<child>Replaced with 2</child>';
-                content.injectMarkup(rootElement);
-            });
-
-            it('marks up the text', function() {
-                expect(rootElement.innerHTML).toEqual(
-                    '<child><span>span1</span><span>span2</span></child>');
-            });
-        });
-
-        describe('no match', function() {
-            beforeEach(function() {
-                rootElement.innerHTML = '<child>Does not match</child>';
-                content.injectMarkup(rootElement);
-            });
-
-            it('does not do anything', function() {
-                expect(rootElement.innerHTML).toEqual(
-                    '<child>Does not match</child>');
-            });
-        });
-    });
-
-    describe('blacklisted tags', function() {
-        beforeEach(function() {
-            rootElement.innerHTML =
-                '<child>'
-                + '<not-blacklisted>Replaced with 2</not-blacklisted>'
-                + '<script>Replaced with 2</script>'
-                + '</child>';
-            content.injectMarkup(rootElement);
-        });
-
-        it('ignores the blacklisted tag', function() {
-            expect(rootElement.innerHTML).toEqual(
-                '<child>'
-                + '<not-blacklisted><span>span1</span><span>span2</span></not-blacklisted>'
-                + '<script>Replaced with 2</script>'
-                + '</child>');
-        });
-    });
-
-    function createSpan(value) {
-        let span = document.createElement('span');
-        span.innerHTML = value;
-        return span;
-    }
 });
