@@ -1,9 +1,13 @@
 ///<reference path="../dictionaryEntry.ts" />
 
+/**
+ * Class responsible for generating highlights for a word.
+ */
 class HighlightGenerator {
     /**
-     * Given a word and a dictionary entry matching it,
-     * generate a chunk of HTML highlighting this word.
+     * Generate a chunk of HTML highlighting the word.
+     * @param word Word that needs to be highlighted.
+     * @param dictionaryEntry Dictionary entry matching the word.
      */
     generate(word: string, dictionaryEntry: DictionaryEntry) {
         return '<span class="highlighted-word">'
