@@ -24,7 +24,7 @@ class DomTraversal {
         let child = node.firstChild;
         while (child) {
             if (child.nodeType === Node.TEXT_NODE) {
-                onFound(<Text>node);
+                onFound(<Text>child);
             } else {
                 this.traverse(child, onFound);
             }
