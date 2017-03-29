@@ -2,95 +2,87 @@
 ///<reference path="../src/lib/content.ts" />
 ///<reference path="../src/lib/settings.ts" />
 
+// This is not a "unit" but rather an integration test,
+// verifying the highlighting functionality end-to-end.
+// Most dependencies are not stubbed.
 describe('content', function() {
-    let rootElement;
     let content: Content;
     let settings: Settings;
-    let domTraversal: DomTraversal;
-    let highlightInjector: HighlightInjector;
-    let matchFinder: MatchFinder;
 
-    let matchResult1: Array<MatchResultEntry>;
-    let matchResult2: Array<MatchResultEntry>;
+    // jasmine.getFixtures() is added by jasmine-jquery and is not in the type definition.
+    // Using this "any" variable to suppress compiler warnings.
+    let j: any = jasmine;
 
     beforeEach(function() {
-        rootElement = document.createElement('div');
-        rootElement.innerHTML = '<span>Child 1</span><span>Child 2</span>';
-        settings = new Settings();
-        settings.enableHighlighting = true;
-        settings.timeout = 123;
-        domTraversal = new DomTraversal();
-        highlightInjector = {
-            inject(textNode: Node, matchResult: Array<MatchResultEntry>) {
-            }
-        };
-        spyOn(highlightInjector, 'inject');
-        matchResult1 = [];
-        matchResult2 = [];
-        matchFinder = {
-            findMatches(input: string): Array<MatchResultEntry> {
-                if (input === 'Child 1') {
-                    return matchResult1;
-                }
-                if (input === 'Child 2') {
-                    return matchResult2;
-                }
-                return null;
-            }
-        };
-
-        content = new Content(settings, domTraversal, highlightInjector, matchFinder);
-        content.isTimeout = function() {
-            return false;
-        };
+        j.getFixtures().fixturesPath = 'base/spec/fixtures';
     });
 
     describe('processDocument', function() {
-        describe('highlighting is enabled', function() {
-            beforeEach(function() {
-                settings.enableHighlighting = true;
-                content.processDocument(rootElement);
-            });
+        function parseDocument(path: string): Document {
+            return new DOMParser().parseFromString(readFixture(path), 'application/xml');
+        }
 
-            it('injects markup', function() {
-                expect(highlightInjector.inject).toHaveBeenCalledWith(jasmine.any(Object), matchResult1); // TODO: verify actual text value
-                expect(highlightInjector.inject).toHaveBeenCalledWith(jasmine.any(Object), matchResult2);
-            });
-        });
+        function readFixture(path: string): string {
+            return j.getFixtures().read(path);
+        }
 
-        describe('highlighting is disabled', function() {
-            beforeEach(function() {
-                settings.enableHighlighting = false;
-                content.processDocument(rootElement);
-            });
+        function createDictionary(words: Array<string>): Array<DictionaryEntry> {
+            let dictionary = [];
+            for (let i = 0; i < words.length; ++i) {
+                dictionary.push(new DictionaryEntry(i + 1, words[i], words[i] + ' - description', new Date(), new Date()));
+            }
+            return dictionary;
+        }
 
-            it('does not inject markup', function() {
-                expect(highlightInjector.inject).not.toHaveBeenCalled();
-            });
-        });
-
-        describe('initializing time', function() {
-            beforeEach(function() {
-                content.processDocument(rootElement);
-            });
-
-            it('initializes time', function() {
-                expect(content.startTime).not.toBeNull();
-            });
-        });
-    });
-
-    describe('timeout', function() {
         beforeEach(function() {
+            settings = new Settings();
+            settings.enableHighlighting = true;
+            settings.timeout = 123;
+
+            let highlightGenerator = new HighlightGenerator();
+            // Stubbing the generator to make tests independent of the actual markup format
+            // which can change fairly often.
+            highlightGenerator.generate = function(word: string, dictionaryEntry: DictionaryEntry) {
+                // If we don't set xmlns, it'll generate one automatically.
+                // Setting it empty makes it easier to compare.
+                return '<span xmlns="">' + word + '<div xmlns="">Description: ' + dictionaryEntry.description + '</div></span>';
+            };
+            let highlightInjector = new HighlightInjectorImpl(highlightGenerator);
+
+            let wnd: any = window;
+            let stemmer: Stemmer = wnd.stemmer;
+            let matchFinder = new MatchFinderImpl(createDictionary(['people', 'profit']), stemmer);
+            let domTraversal = new DomTraversal();
+
+            content = new Content(settings, domTraversal, highlightInjector, matchFinder);
+        });
+
+        function doTest(testName: string) {
+            let doc = parseDocument('content-test-' + testName + '-input.html');
+            let expectedOutput = readFixture('content-test-' + testName + '-expected.html');
+            content.processDocument(doc);
+            let actualOutput = new XMLSerializer().serializeToString(doc.documentElement);
+            expect(actualOutput).toEqual(expectedOutput);
+        }
+
+        it('injects highlights', () => {
+            doTest('basic');
+        });
+
+        it('ignores blacklisted elements', () => {
+            doTest('blacklisting');
+        });
+
+        it('does not highlight anything is highlighting is disabled', () => {
+            settings.enableHighlighting = false;
+            doTest('disabled');
+        });
+
+        it('highlights only the first word if it times out immediately', () => {
             content.isTimeout = function() {
                 return true;
             };
-            settings.enableHighlighting = true;
-            content.processDocument(rootElement);
-        });
-
-        it('does not inject markup', function() {
-            expect(highlightInjector.inject).toHaveBeenCalledTimes(1); // not 2!
+            doTest('timeout');
         });
     });
 });

@@ -99,7 +99,7 @@ gulp.task('concat-main-dialog', ['compile-src'], function() {
         .pipe(gulp.dest('./build/js/'));
 });
 
-gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dialog'], function(done) {
+gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dialog', 'browserify-imports'], function(done) {
     var Server = require('karma').Server;
     return new Server({
         configFile: __dirname + '/karma.conf.js',

@@ -46,7 +46,12 @@ class DomTraversal {
         }
     }
 
-    private isBlacklisted(node: Node): void {
-        return this.BLACKLISTED_TAGS[(<HTMLElement>node).tagName];
+    private isBlacklisted(node: Node): boolean {
+        let tagName = (<HTMLElement>node).tagName;
+        if (tagName) {
+            return this.BLACKLISTED_TAGS[tagName.toUpperCase()];
+        } else {
+            return false;
+        }
     }
 }

@@ -43,11 +43,11 @@ class Content {
     }
 
     private onFound(content: Content, node: Text): void {
+        content.highlightInjector.inject(node, content.matchFinder.findMatches(node.textContent));
         if (content.isTimeout()) {
             WHLogger.log('Terminating because of the timeout');
             content.domTraversal.stop();
         }
-        content.highlightInjector.inject(node, content.matchFinder.findMatches(node.textContent));
     }
 
     private onFinished(): void {
