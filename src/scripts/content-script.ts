@@ -1,6 +1,6 @@
-///<reference path="../lib/dao.ts" />
 ///<reference path="../lib/content.ts" />
-///<reference path="../lib/logger.ts" />
+///<reference path="../lib/common/dao.ts" />
+///<reference path="../lib/common/logger.ts" />
 
 // Content script: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Content_scripts
 

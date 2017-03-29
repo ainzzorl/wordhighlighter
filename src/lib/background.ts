@@ -1,5 +1,5 @@
-///<reference path="dao.ts" />
-///<reference path="logger.ts" />
+///<reference path="common/dao.ts" />
+///<reference path="common/logger.ts" />
 
 /**
  * Implements background logic: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Background_scripts

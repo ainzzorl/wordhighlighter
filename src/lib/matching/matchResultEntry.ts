@@ -1,4 +1,4 @@
-///<reference path="../dictionaryEntry.ts" />
+///<reference path="../common/dictionaryEntry.ts" />
 
 /**
  * A result of a matching request.

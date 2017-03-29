@@ -1,5 +1,5 @@
-///<reference path="../lib/dao.ts" />
-///<reference path="../lib/logger.ts" />
+///<reference path="../lib/common/dao.ts" />
+///<reference path="../lib/common/logger.ts" />
 
 const DEFAULT_TAB = 'words';
 

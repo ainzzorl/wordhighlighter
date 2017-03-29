@@ -1,5 +1,5 @@
-///<reference path="../lib/dao.ts" />
-///<reference path="../lib/dictionaryEntry.ts" />
+///<reference path="../lib/common/dao.ts" />
+///<reference path="../lib/common/dictionaryEntry.ts" />
 
 angular
 .module('mainDialog')

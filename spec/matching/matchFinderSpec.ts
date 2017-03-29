@@ -1,7 +1,7 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../../src/lib/matching/matchFinder.ts" />
 ///<reference path="../../src/lib/matching/matchResultEntry.ts" />
-///<reference path="../../src/lib/dictionaryEntry.ts" />
+///<reference path="../../src/lib/common/dictionaryEntry.ts" />
 
 // TODO: consider using real stemmer
 describe('MatchFinder', function() {

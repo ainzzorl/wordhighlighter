@@ -1,8 +1,8 @@
-///<reference path="logger.ts" />
 ///<reference path="./dom/highlightInjector.ts" />
 ///<reference path="./dom/domTraversal.ts" />
 ///<reference path="./matching/matchFinder.ts" />
-///<reference path="./settings.ts" />
+///<reference path="common/logger.ts" />
+///<reference path="common/settings.ts" />
 
 /**
  * Implements content script logic: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Content_scripts

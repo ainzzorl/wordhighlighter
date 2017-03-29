@@ -1,6 +1,6 @@
 ///<reference path="../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../node_modules/@types/angular/index.d.ts" />
-///<reference path="../src/lib/dictionaryEntry.ts" />
+///<reference path="../src/lib/common/dictionaryEntry.ts" />
 
 declare let inject: any;
 

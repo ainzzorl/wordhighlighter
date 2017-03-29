@@ -1,5 +1,5 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts" />
-///<reference path="../../src/lib/dictionaryEntry.ts" />
+///<reference path="../../src/lib/common/dictionaryEntry.ts" />
 ///<reference path="../../src/lib/dom/highlightGenerator.ts" />
 
 describe('highlightGenerator', function() {

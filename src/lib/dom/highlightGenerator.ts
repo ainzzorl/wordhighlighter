@@ -1,4 +1,4 @@
-///<reference path="../dictionaryEntry.ts" />
+///<reference path="../common/dictionaryEntry.ts" />
 
 /**
  * Class responsible for generating highlights for a word.

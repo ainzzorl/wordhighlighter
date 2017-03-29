@@ -1,5 +1,5 @@
 ///<reference path="../lib/background.ts" />
-///<reference path="../lib/dao.ts" />
+///<reference path="../lib/common/dao.ts" />
 
 // Background script: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Background_scripts
 

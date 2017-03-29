@@ -1,6 +1,6 @@
 ///<reference path="stemmer.ts" />
 ///<reference path="matchResultEntry.ts" />
-///<reference path="../dictionaryEntry.ts" />
+///<reference path="../common/dictionaryEntry.ts" />
 
 interface MatchFinder {
     findMatches(input: string): Array<MatchResultEntry>;

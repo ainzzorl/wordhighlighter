@@ -1,6 +1,6 @@
 ///<reference path="../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../src/lib/content.ts" />
-///<reference path="../src/lib/settings.ts" />
+///<reference path="../src/lib/common/settings.ts" />
 
 // This is not a "unit" but rather an integration test,
 // verifying the highlighting functionality end-to-end.

@@ -1,4 +1,4 @@
-///<reference path="../lib/dao.ts" />
+///<reference path="../lib/common/dao.ts" />
 
 angular
 .module('mainDialog')
