@@ -37,7 +37,7 @@ class Content {
         );
     }
 
-    isTimeout(): boolean {
+    private isTimeout(): boolean {
         let now = performance.now();
         let seconds = (now - this.startTime) / 1000;
         return seconds > this.settings.timeout;

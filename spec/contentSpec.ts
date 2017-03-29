@@ -78,10 +78,8 @@ describe('content', function() {
             doTest('disabled');
         });
 
-        it('highlights only the first word if it times out immediately', () => {
-            content.isTimeout = function() {
-                return true;
-            };
+        it('does not highlight anything if it times out', () => {
+            settings.timeout = 0;
             doTest('timeout');
         });
     });
