@@ -18,6 +18,20 @@ describe('content', function() {
     });
 
     describe('processDocument', function() {
+        let matchFinder: MatchFinder;
+        let highlightInjector: HighlightInjector;
+        let highlightGenerator: HighlightGenerator;
+
+        beforeEach(() => {
+            settings = new Settings();
+            let wnd: any = window;
+            let stemmer: Stemmer = wnd.stemmer;
+            highlightGenerator = new HighlightGenerator();
+            matchFinder = new MatchFinderImpl(createDictionary(['people', 'profit']), stemmer);
+            highlightInjector = new HighlightInjectorImpl(highlightGenerator);
+            content = new Content(settings, highlightInjector, matchFinder);
+        });
+
         function parseDocument(path: string): Document {
             return new DOMParser().parseFromString(readFixture(path), 'application/xml');
         }
@@ -34,29 +48,6 @@ describe('content', function() {
             return dictionary;
         }
 
-        beforeEach(function() {
-            settings = new Settings();
-            settings.enableHighlighting = true;
-            settings.timeout = 123;
-
-            let highlightGenerator = new HighlightGenerator();
-            // Stubbing the generator to make tests independent of the actual markup format
-            // which can change fairly often.
-            highlightGenerator.generate = function(word: string, dictionaryEntry: DictionaryEntry) {
-                // If we don't set xmlns, it'll generate one automatically.
-                // Setting it empty makes it easier to compare.
-                return '<span xmlns="">' + word + '<div xmlns="">Description: ' + dictionaryEntry.description + '</div></span>';
-            };
-            let highlightInjector = new HighlightInjectorImpl(highlightGenerator);
-
-            let wnd: any = window;
-            let stemmer: Stemmer = wnd.stemmer;
-            let matchFinder = new MatchFinderImpl(createDictionary(['people', 'profit']), stemmer);
-            let domTraversal = new DomTraversal();
-
-            content = new Content(settings, domTraversal, highlightInjector, matchFinder);
-        });
-
         function doTest(testName: string) {
             let doc = parseDocument('content-test-' + testName + '-input.html');
             let expectedOutput = readFixture('content-test-' + testName + '-expected.html');
@@ -65,22 +56,58 @@ describe('content', function() {
             expect(actualOutput).toEqual(expectedOutput);
         }
 
-        it('injects highlights', () => {
-            doTest('basic');
+        describe('highlighting', () => {
+            beforeEach(function() {
+                settings.enableHighlighting = true;
+                settings.enablePageStats = false;
+                settings.timeout = 123;
+
+                // Stubbing the generator to make tests independent of the actual markup format
+                // which can change fairly often.
+                highlightGenerator.generate = function(word: string, dictionaryEntry: DictionaryEntry) {
+                    // If we don't set xmlns, it'll generate one automatically.
+                    // Setting it empty makes it easier to compare.
+                    return '<span xmlns="">' + word + '<div xmlns="">Description: ' + dictionaryEntry.description + '</div></span>';
+                };
+            });
+
+            it('injects highlights', () => {
+                doTest('basic');
+            });
+
+            it('ignores blacklisted elements', () => {
+                doTest('blacklisting');
+            });
+
+            it('does not highlight anything is highlighting is disabled', () => {
+                settings.enableHighlighting = false;
+                doTest('disabled');
+            });
+
+            it('does not highlight anything if it times out', () => {
+                settings.timeout = 0;
+                doTest('timeout');
+            });
         });
 
-        it('ignores blacklisted elements', () => {
-            doTest('blacklisting');
-        });
+        describe('page stats', () => {
+            beforeEach(function() {
+                settings.enableHighlighting = true;
+                settings.enablePageStats = true;
+                settings.timeout = 123;
 
-        it('does not highlight anything is highlighting is disabled', () => {
-            settings.enableHighlighting = false;
-            doTest('disabled');
-        });
+                // Stubbing the generator to not highlight words anyhow
+                // to make it easier to test stats only.
+                highlightGenerator.generate = function(word: string, dictionaryEntry: DictionaryEntry) {
+                    return word;
+                };
+            });
 
-        it('does not highlight anything if it times out', () => {
-            settings.timeout = 0;
-            doTest('timeout');
+            it('injects page stats', () => {
+                doTest('stats-present');
+            });
+
+            // TODO: does not inject if nothing is highlighted.
         });
     });
 });

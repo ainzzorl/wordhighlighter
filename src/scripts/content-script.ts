@@ -13,12 +13,11 @@ new DAO().getDictionary(function(dictionary: Array<DictionaryEntry>) {
         let wnd: any = window;
         let stemmer: Stemmer = wnd.stemmer;
 
-        // TODO: should not initialize stems if markup injection is disabled
-        let domTraversal = new DomTraversal();
         let highlightInjector = new HighlightInjectorImpl(new HighlightGenerator());
+        // TODO: should not initialize stems if markup injection is disabled
         let matchFinder = new MatchFinderImpl(dictionary, stemmer);
 
-        let content = new Content(settings, domTraversal, highlightInjector, matchFinder);
+        let content = new Content(settings, highlightInjector, matchFinder);
         content.processDocument(document);
         let timeEnd = performance.now();
         let seconds = (timeEnd - timeStart) / 1000;

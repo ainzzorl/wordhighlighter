@@ -18,7 +18,7 @@ class DomTraversal {
      * @param onFinished Callback called once the traversal has finished.
      */
     traverseEligibleTextNodes(root: Node, onFound: (node: Text) => void, onFinished: () => void): void {
-        this.traverse(root, onFound, onFinished);
+        this.traverse(root, onFound);
         onFinished();
     }
 
@@ -30,9 +30,8 @@ class DomTraversal {
         this.stopped = true;
     }
 
-    private traverse(node: Node, onFound: (node: Text) => void, onFinished: () => void): void {
+    private traverse(node: Node, onFound: (node: Text) => void): void {
         if (this.stopped || this.isBlacklisted(node)) {
-            onFinished();
             return;
         }
         let child = node.firstChild;
@@ -40,7 +39,7 @@ class DomTraversal {
             if (child.nodeType === Node.TEXT_NODE) {
                 onFound(<Text>child);
             } else {
-                this.traverse(child, onFound, onFinished);
+                this.traverse(child, onFound);
             }
             child = child.nextSibling;
         }

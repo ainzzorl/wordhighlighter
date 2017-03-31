@@ -48,6 +48,7 @@ class DAO {
             if (!result.settings) {
                 let settings = new Settings();
                 settings.enableHighlighting = true;
+                settings.enablePageStats = true;
                 settings.timeout = self.DEFAULT_TIMEOUT;
                 chrome.storage.local.set({ settings: self.serializeSettings(settings) }, function() {
                     WHLogger.log('Initialized the settings');
@@ -130,6 +131,11 @@ class DAO {
         let settings: Settings = new Settings();
         settings.timeout = input.timeout;
         settings.enableHighlighting  = input.enableHighlighting;
+        if (input.enablePageStats === undefined) {
+            // Was created before stats was implemented.
+            input.enablePageStats = true;
+        }
+        settings.enablePageStats = input.enablePageStats;
         return settings;
     }
 
@@ -154,7 +160,8 @@ class DAO {
     private serializeSettings(input: Settings) {
         return {
             timeout: input.timeout,
-            enableHighlighting: input.enableHighlighting
+            enableHighlighting: input.enableHighlighting,
+            enablePageStats: input.enablePageStats
         };
     }
 }
