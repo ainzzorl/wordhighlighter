@@ -67,3 +67,10 @@
 #word-highlighter-per-word-stats {
     display: none;
 }
+
+#word-highlighter-page-stats-close {
+    float: right;
+    display: block;
+    padding: 2px 5px;
+    background:#ccc;
+}

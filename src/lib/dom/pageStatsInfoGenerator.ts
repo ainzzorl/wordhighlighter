@@ -12,6 +12,7 @@ class PageStatsInfoGenerator {
      */
     generate(stats: PageStats): HTMLElement {
         let html = '<div id="word-highlighter-page-stats">';
+        html += this.generateCloseButton();
         html += this.generateAggregates(stats);
         html += this.generatePerWordDetails(stats);
         html += '</div>';
@@ -37,5 +38,10 @@ class PageStatsInfoGenerator {
             + '<p>Unique matching words: ' + stats.getTotalAppearedWords() + '</p>'
             + '<p>Total matches: ' + stats.getTotalAppearances() + '</p>'
             + '</div>';
+    }
+
+    private generateCloseButton(): string {
+        return '<span id="word-highlighter-page-stats-close"'
+            + ' onclick="document.getElementById(\'word-highlighter-page-stats\').style.display = \'none\'">x</span>';
     }
 }
