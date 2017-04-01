@@ -21,7 +21,7 @@ class PageStatsInfoGenerator {
     }
 
     private generatePerWordDetails(stats: PageStats): string {
-        return '<div>'
+        return '<div id="word-highlighter-per-word-stats">'
             + stats.getWordAppearanceStats()
                 .sort((a1, a2) => { return a2.count - a1.count; })
                 .reduce(
@@ -33,7 +33,7 @@ class PageStatsInfoGenerator {
     }
 
     private generateAggregates(stats: PageStats): string {
-        return '<div>'
+        return '<div onclick="document.getElementById(\'word-highlighter-per-word-stats\').style.display = \'block\'">'
             + '<p>Unique matching words: ' + stats.getTotalAppearedWords() + '</p>'
             + '<p>Total matches: ' + stats.getTotalAppearances() + '</p>'
             + '</div>';

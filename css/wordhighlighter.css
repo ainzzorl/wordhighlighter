@@ -63,3 +63,7 @@
     border-color: black;
     border-style: solid;
 }
+
+#word-highlighter-per-word-stats {
+    display: none;
+}
