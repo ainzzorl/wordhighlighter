@@ -12,11 +12,30 @@ class PageStatsInfoGenerator {
      */
     generate(stats: PageStats): HTMLElement {
         let html = '<div id="word-highlighter-page-stats">';
-        html += '<p>Unique matching words: ' + stats.getTotalAppearedWords() + '</p>';
-        html += '<p>Total matches: ' + stats.getTotalAppearances() + '</p>';
+        html += this.generateAggregates(stats);
+        html += this.generatePerWordDetails(stats);
         html += '</div>';
         let result = document.createElement('div');
         result.innerHTML = html;
         return result;
+    }
+
+    private generatePerWordDetails(stats: PageStats): string {
+        return '<div>'
+            + stats.getWordAppearanceStats()
+                .sort((a1, a2) => { return a2.count - a1.count; })
+                .reduce(
+                    (acc, wordStats) => {
+                        return acc + '<p>' + wordStats.dictionaryEntry.value + ':' + wordStats.count + '</p>';
+                    },
+                    '')
+            + '</div>';
+    }
+
+    private generateAggregates(stats: PageStats): string {
+        return '<div>'
+            + '<p>Unique matching words: ' + stats.getTotalAppearedWords() + '</p>'
+            + '<p>Total matches: ' + stats.getTotalAppearances() + '</p>'
+            + '</div>';
     }
 }
