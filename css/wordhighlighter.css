@@ -59,4 +59,7 @@
     bottom: 0;
     right: 0;
     z-index: 999;
+    background: white;
+    border-color: black;
+    border-style: solid;
 }
