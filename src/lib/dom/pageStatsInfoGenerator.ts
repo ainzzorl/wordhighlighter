@@ -11,7 +11,10 @@ class PageStatsInfoGenerator {
      * @param stats Page stats.
      */
     generate(stats: PageStats): HTMLElement {
-        let html = '<div id="word-highlighter-page-stats"><p>Word Highlighter Page Statistics</p></div>';
+        let html = '<div id="word-highlighter-page-stats">';
+        html += '<p>Unique matching words: ' + stats.getTotalAppearedWords() + '</p>';
+        html += '<p>Total matches: ' + stats.getTotalAppearances() + '</p>';
+        html += '</div>';
         let result = document.createElement('div');
         result.innerHTML = html;
         return result;
