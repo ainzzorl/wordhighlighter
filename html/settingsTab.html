@@ -1,6 +1,16 @@
 <div ng-controller="settingsController">
   <form id="settings-form" ng-show="settings" name="settingsForm" ng-submit="save()" novalidate>
     <div class="form-group row">
+      <label for="enable-page-stats" class="col-xs-3 col-form-label">
+        <a href="#" data-toggle="tooltip" title="The popup in the bottom right corner of the page.">
+          Enable page load stats:
+        </a>
+      </label>
+      <div class="col-xs-9">
+        <input type="checkbox" ng-model="settings.enablePageStats"/>
+      </div>
+    </div>
+    <div class="form-group row">
       <label for="enable-highlighting" class="col-xs-3 col-form-label">
         <a href="#" data-toggle="tooltip" title="Disables word highlighting if unchecked.">
           Enable highlighting:

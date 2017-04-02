@@ -47,6 +47,7 @@ describe('settingsController', function() {
             $scope.settings = new Settings();
             $scope.settings.timeout = 456;
             $scope.settings.enableHighlighting = false;
+            $scope.settings.enablePageStats = false;
             $scope.save();
         });
 
