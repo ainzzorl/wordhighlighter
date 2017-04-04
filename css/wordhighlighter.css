@@ -58,10 +58,23 @@
     position: fixed;
     bottom: 0;
     right: 0;
+    min-width: 150px;
     z-index: 999;
-    background: white;
+    font-size: 16px !important;
+    font-style: normal;
+    font-weight: normal;
+    font-family: initial;
+    background: lightblue;
     border-color: black;
     border-style: solid;
+    padding: 3px;
+    line-height: 120% !important;
+    opacity: 0.4;
+    display: inline-block;
+}
+
+#word-highlighter-page-stats p {
+    margin-bottom: 0px !important;
 }
 
 #word-highlighter-per-word-stats {
@@ -73,4 +86,13 @@
     display: block;
     padding: 2px 5px;
     background:#ccc;
+}
+
+.word-highlighter-stats-aggregate {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.word-highlighter-page-stats-header {
+    font-style: italic;
 }

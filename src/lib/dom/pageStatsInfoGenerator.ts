@@ -35,8 +35,9 @@ class PageStatsInfoGenerator {
 
     private generateAggregates(stats: PageStats): string {
         return '<div onclick="document.getElementById(\'word-highlighter-per-word-stats\').style.display = \'block\'">'
-            + '<p>Unique matching words: ' + stats.getTotalAppearedWords() + '</p>'
-            + '<p>Total matches: ' + stats.getTotalAppearances() + '</p>'
+            + '<p class="word-highlighter-page-stats-header">Highlighted</p>'
+            + '<p><span class="word-highlighter-stats-aggregate">' + stats.getTotalAppearedWords() + '</span> words</p>'
+            + '<p><span class="word-highlighter-stats-aggregate">' + stats.getTotalAppearedWords() + '</span> times</p>'
             + '</div>';
     }
 
