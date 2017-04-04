@@ -61,7 +61,7 @@ class Content {
     }
 
     private onFinished(content: Content, doc: Document): void {
-        if (content.settings.enablePageStats) {
+        if (content.settings.enablePageStats && content.pageStats.getTotalAppearances() > 0) {
             this.injectPageStatsInfo(content, doc);
         }
     }

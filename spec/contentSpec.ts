@@ -103,11 +103,13 @@ describe('content', function() {
                 };
             });
 
-            it('injects page stats', () => {
+            it('injects page stats is anything is highlighted', () => {
                 doTest('stats-present');
             });
 
-            // TODO: does not inject if nothing is highlighted.
+            it('does not injects page stats if there\'s nothing to highlight', () => {
+                doTest('stats-absent');
+            });
         });
     });
 });
