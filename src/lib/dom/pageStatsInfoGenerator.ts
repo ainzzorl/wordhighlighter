@@ -37,7 +37,7 @@ class PageStatsInfoGenerator {
         return '<div onclick="document.getElementById(\'word-highlighter-per-word-stats\').style.display = \'block\'">'
             + '<p class="word-highlighter-page-stats-header">Highlighted</p>'
             + '<p><span class="word-highlighter-stats-aggregate">' + stats.getTotalAppearedWords() + '</span> words</p>'
-            + '<p><span class="word-highlighter-stats-aggregate">' + stats.getTotalAppearedWords() + '</span> times</p>'
+            + '<p><span class="word-highlighter-stats-aggregate">' + stats.getTotalAppearances() + '</span> times</p>'
             + '</div>';
     }
 
