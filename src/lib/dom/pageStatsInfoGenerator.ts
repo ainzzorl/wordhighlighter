@@ -27,7 +27,10 @@ class PageStatsInfoGenerator {
                 .sort((a1, a2) => { return a2.count - a1.count; })
                 .reduce(
                     (acc, wordStats) => {
-                        return acc + '<p>' + wordStats.dictionaryEntry.value + ':' + wordStats.count + '</p>';
+                        return acc + '<div>'
+                            + '<div class="word-highlighter-per-word-stats-value">' + wordStats.dictionaryEntry.value + '</div>'
+                            + '<div class="word-highlighter-per-word-stats-count">' + wordStats.count + '</div>'
+                            + '</div>';
                     },
                     '')
             + '</div>';

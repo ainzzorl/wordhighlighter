@@ -81,6 +81,16 @@
     display: none;
 }
 
+.word-highlighter-per-word-stats-value {
+    width: 75%;
+    float: left;
+}
+
+.word-highlighter-per-word-stats-count {
+    width: 25%;
+    float: left;
+}
+
 #word-highlighter-page-stats-close {
     float: right;
     display: block;
