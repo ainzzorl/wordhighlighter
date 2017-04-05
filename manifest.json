@@ -22,5 +22,10 @@
   },
   "icons": {
     "32": "icons/icon-32.png"
+  },
+  "applications": {
+    "gecko": {
+      "id": "wordhighlighter@wordhighlighter.com"
+    }
   }
 }
