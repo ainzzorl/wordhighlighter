@@ -15,6 +15,7 @@ class PageStatsInfoGenerator {
         html += this.generateCloseButton();
         html += this.generateAggregates(stats);
         html += this.generatePerWordDetails(stats);
+        html += this.generateTip();
         html += '</div>';
         let result = document.createElement('div');
         result.innerHTML = html;
@@ -47,5 +48,9 @@ class PageStatsInfoGenerator {
     private generateCloseButton(): string {
         return '<span id="word-highlighter-page-stats-close"'
             + ' onclick="document.getElementById(\'word-highlighter-page-stats\').style.display = \'none\'">x</span>';
+    }
+
+    private generateTip(): string {
+        return '<div id="word-highlighter-page-stats-tip">Tip: you can disable this popup in settings.</div>';
     }
 }
