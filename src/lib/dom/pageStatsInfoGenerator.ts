@@ -38,10 +38,10 @@ class PageStatsInfoGenerator {
     }
 
     private generateAggregates(stats: PageStats): string {
-        return '<div onclick="document.getElementById(\'word-highlighter-per-word-stats\').style.display = \'block\'">'
+        return '<div>'
             + '<p class="word-highlighter-page-stats-header">Highlighted</p>'
-            + '<p><span class="word-highlighter-stats-aggregate">' + stats.getTotalAppearedWords() + '</span> words</p>'
-            + '<p><span class="word-highlighter-stats-aggregate">' + stats.getTotalAppearances() + '</span> times</p>'
+            + '<p><a onclick="' + this.generateDisplayPerWordStatsFunction() + '"><span class="word-highlighter-stats-aggregate">' + stats.getTotalAppearedWords() + '</span> words</p></a>'
+            + '<p><a onclick="' + this.generateDisplayPerWordStatsFunction() + '"><span class="word-highlighter-stats-aggregate">' + stats.getTotalAppearances() + '</span> times</p></a>'
             + '</div>';
     }
 
@@ -52,5 +52,9 @@ class PageStatsInfoGenerator {
 
     private generateTip(): string {
         return '<div id="word-highlighter-page-stats-tip">Tip: you can disable this popup in settings.</div>';
+    }
+
+    private generateDisplayPerWordStatsFunction(): string {
+        return 'document.getElementById(\'word-highlighter-per-word-stats\').style.display = \'block\'';
     }
 }
