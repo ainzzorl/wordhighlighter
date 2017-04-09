@@ -68,7 +68,6 @@
     border-color: black;
     border-style: solid;
     padding: 3px;
-    line-height: 120% !important;
     opacity: 0.4;
     display: inline-block;
 }
@@ -76,6 +75,7 @@
 #word-highlighter-page-stats p {
     margin-bottom: 0px !important;
     margin-top: 0px !important;
+    line-height: 120% !important;
 }
 
 #word-highlighter-per-word-stats {
