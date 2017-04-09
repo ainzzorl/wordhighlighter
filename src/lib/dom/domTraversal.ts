@@ -1,5 +1,5 @@
 /**
- * Class responsible for traversing DOM objects and finding eligible nodes.
+ * Class responsible for traversing DOM objects and finding text nodes eligible for highlight injection.
  */
 class DomTraversal {
     private stopped = false;

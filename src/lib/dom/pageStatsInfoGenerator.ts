@@ -3,7 +3,8 @@
 
 /**
  * Class responsible for generating page stats info (displayed in the right bottom corner).
- * There's no spec for this class: it's pure presentation.
+ *
+ * There's no spec for this class: it's pure presentation. It is tested by end-to-end tests.
  */
 class PageStatsInfoGenerator {
     /**
@@ -50,6 +51,7 @@ class PageStatsInfoGenerator {
             + ' onclick="document.getElementById(\'word-highlighter-page-stats\').style.display = \'none\'">x</span>';
     }
 
+    // Encourage users who find the popup annoying to disable the feature rather than uninstall the plugin altogether.
     private generateTip(): string {
         return '<div id="word-highlighter-page-stats-tip">Tip: you can disable this popup in settings.</div>';
     }

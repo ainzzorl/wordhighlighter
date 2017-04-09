@@ -2,7 +2,14 @@
 ///<reference path="matchResultEntry.ts" />
 ///<reference path="../common/dictionaryEntry.ts" />
 
+/**
+ * Matching logic.
+ */
 interface MatchFinder {
+    /**
+     * Detect matches in a string.
+     * @param input Text string.
+     */
     findMatches(input: string): Array<MatchResultEntry>;
 }
 
