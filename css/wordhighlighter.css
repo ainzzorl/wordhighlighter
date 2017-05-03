@@ -80,6 +80,7 @@
 
 #word-highlighter-page-stats a {
     color: #0000ff;
+    text-decoration: unset;
 }
 
 #word-highlighter-per-word-stats {
