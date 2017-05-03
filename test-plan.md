@@ -8,6 +8,7 @@ Open the main dialog, go to "Import", insert the text below, select "Delete ever
 
 filibuster;an irregular military adventurer.
 comment;a verbal or written remark expressing an opinion or reaction.
+programmer;A programmer, computer programmer, developer, dev, coder, or software engineer is a person who creates computer software.
 
 ### Websites
 https://www.merriam-webster.com/dictionary/filibuster
@@ -15,3 +16,6 @@ https://www.merriam-webster.com/dictionary/filibuster
 
 https://reddit.com
 * Verify that popups are on top.
+
+http://www.hanselman.com/blog/YouAreNotYourCode.aspx
+* Verify the look of the page stats popup.

@@ -78,6 +78,10 @@
     line-height: 120% !important;
 }
 
+#word-highlighter-page-stats a {
+    color: #0000ff;
+}
+
 #word-highlighter-per-word-stats {
     display: none;
 }
