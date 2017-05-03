@@ -67,6 +67,7 @@
     background: lightblue;
     border-color: black;
     border-style: solid;
+    border-width: 2px;
     padding: 3px;
     opacity: 0.4;
     display: inline-block;
