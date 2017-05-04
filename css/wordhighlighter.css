@@ -16,6 +16,7 @@
     font-size: 16px;
     font-style: normal;
     font-weight: normal;
+    font-variant: initial;
     line-height: initial;
     font-family: initial;
 
@@ -64,6 +65,7 @@
     font-style: normal;
     font-weight: normal;
     font-family: initial;
+    font-variant: initial;
     background: lightblue;
     border-color: black;
     border-style: solid;
