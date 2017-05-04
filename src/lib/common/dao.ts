@@ -13,42 +13,31 @@ class DAO {
 
     private DEFAULT_TIMEOUT: number = 3;
 
-    private storage: chrome.storage.StorageArea = chrome.storage.sync;
+    private storage: chrome.storage.StorageArea;
 
     getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
         let self: DAO = this;
         self.storage.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
-            if (result !== undefined) {
-                callback(self.deserializeDictionary(result.dictionary));
-            } else {
-                WHLogger.log('Switching to local storage');
-                self.storage = chrome.storage.local;
-                self.getDictionary(callback);
-            }
+            callback(self.deserializeDictionary(result.dictionary));
         });
     }
 
     getSettings(callback: (settings: Settings) => void): void {
         let self: DAO = this;
         self.storage.get('settings', function(result: { settings: any }) {
-            if (result !== undefined) {
-                callback(self.deserializeSettings(result.settings));
-            } else {
-                WHLogger.log('Switching to local storage');
-                self.storage = chrome.storage.local;
-                self.getSettings(callback);
-            }
+            callback(self.deserializeSettings(result.settings));
         });
     }
 
     init() {
         let self: DAO = this;
-        chrome.storage.sync.get('anything', function(syncVerification) {
-            if (syncVerification !== undefined) {
-                WHLogger.log('Using sync storage');
+        chrome.storage.sync.get('anything', function(result) {
+            if (result !== undefined) {
+                self.storage = chrome.storage.sync;
+                console.log('Using sync storage');
                 // TODO: migrate data from local store.
             } else {
-                WHLogger.log('Using local storage');
+                console.log('Using local storage');
                 self.storage = chrome.storage.local;
             }
             self.storage.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
@@ -81,7 +70,8 @@ class DAO {
 
     addEntry(value: string, description: string, strictMatch: boolean, callback: (newEntry: DictionaryEntry) => void): void {
         let self: DAO = this;
-        self.storage.get(['dictionary', 'idSequenceNumber'], (result: { dictionary: Array<any>, idSequenceNumber: number }) => {
+        self.storage.get(['dictionary', 'idSequenceNumber'],
+                                 function(result: { dictionary: Array<any>, idSequenceNumber: number }) {
             let now: Date = new Date();
             let entry = {
                 id: result.idSequenceNumber,
