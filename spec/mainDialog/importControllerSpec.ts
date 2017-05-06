@@ -160,16 +160,15 @@ describe('importController', function() {
                     new DictionaryEntry(null, 'word 1', '', null, null),
                     new DictionaryEntry(null, 'word 2', '', null, null),
                     new DictionaryEntry(null, 'word 1', '', null, null),
-                    new DictionaryEntry(null, 'word 2', '', null, null),
+                    new DictionaryEntry(null, 'WoRd 2', '', null, null),
                     new DictionaryEntry(null, 'word 3', '', null, null)
                 ];
                 result = $scope.getDuplicateEntries(input);
             });
 
             it ('detects duplicates', function() {
-                expect(result.length).toEqual(2);
-                expect(result.indexOf('word 1') >= 0).toBe(true);
-                expect(result.indexOf('word 2') >= 0).toBe(true);
+                let lowercaseSortedResult = result.map((r: string) => { return r.toLowerCase(); } ).sort();
+                expect(lowercaseSortedResult).toEqual(['word 1', 'word 2']);
             });
         });
 
