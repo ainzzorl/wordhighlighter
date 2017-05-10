@@ -62,6 +62,10 @@ body {
     margin-left: 5px;
 }
 
+#timeout-input-box {
+    width: 3em;
+}
+
 .form-validation-error {
     color: red;
 }

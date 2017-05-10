@@ -28,7 +28,7 @@
         </a>
       </label>
       <div class="col-xs-9">
-        <input name="timeout" ng-model="settings.timeout" type="number" size="3" required/>
+        <input id="timeout-input-box" name="timeout" ng-model="settings.timeout" type="number" required/>
         <div class="form-validation-error">
           <div ng-show="settingsForm.timeout.$error.required">Required</div>
           <div ng-show="settingsForm.timeout.$error.number">Not valid number</div>
