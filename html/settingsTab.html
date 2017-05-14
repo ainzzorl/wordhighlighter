@@ -1,33 +1,33 @@
 <div ng-controller="settingsController">
   <form id="settings-form" ng-show="settings" name="settingsForm" ng-submit="save()" novalidate>
     <div class="form-group row">
-      <label for="enable-page-stats" class="col-xs-3 col-form-label">
+      <label for="enable-page-stats" class="col-xs-6 col-form-label">
         <a href="#" data-toggle="tooltip" title="The popup in the bottom right corner of the page.">
           Enable page load stats:
         </a>
       </label>
-      <div class="col-xs-9">
+      <div class="col-xs-6">
         <input type="checkbox" ng-model="settings.enablePageStats"/>
       </div>
     </div>
     <div class="form-group row">
-      <label for="enable-highlighting" class="col-xs-3 col-form-label">
+      <label for="enable-highlighting" class="col-xs-6 col-form-label">
         <a href="#" data-toggle="tooltip" title="Disables word highlighting if unchecked.">
           Enable highlighting:
         </a>
       </label>
-      <div class="col-xs-9">
+      <div class="col-xs-6">
         <input type="checkbox" ng-model="settings.enableHighlighting"/>
       </div>
     </div>
     <div class="form-group row">
-      <label for="timeout" class="col-xs-3 col-form-label">
+      <label for="timeout" class="col-xs-6 col-form-label">
         <a href="#" data-toggle="tooltip"
            title="If the list of words is long and the page is big, highlighting all words can be rather slow. The timeout guarantees that Word Highlighter won't slow your browser down too much.">
           Timeout (seconds):
         </a>
       </label>
-      <div class="col-xs-9">
+      <div class="col-xs-6">
         <input id="timeout-input-box" name="timeout" ng-model="settings.timeout" type="number" required/>
         <div class="form-validation-error">
           <div ng-show="settingsForm.timeout.$error.required">Required</div>
@@ -36,9 +36,9 @@
       </div>
     </div>
     <div class="form-group row">
-      <div class="col-xs-3">&nbsp;</div>
+      <div class="col-xs-6">&nbsp;</div>
       <!-- offset-* doesn't work with xs' -->
-      <div class="col-xs-9">
+      <div class="col-xs-6">
         <button type="submit" ng-disabled="settingsForm.$invalid" class="btn btn-primary">
           Save
           <i ng-show="isSaving" class="fa fa-spinner fa-spin"></i>
