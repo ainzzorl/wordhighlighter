@@ -24,6 +24,7 @@
     "angular": "^1.5.9",
     "angular-mocks": "^1.5.9",
     "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
     "gulp-clean": "^0.3.2",

@@ -28,7 +28,7 @@ gulp.task('copy-icons', function () {
 });
 
 gulp.task('copy-fonts', function () {
-    return gulp.src(['node_modules/bootstrap/dist/fonts/**/*'])
+    return gulp.src(['node_modules/bootstrap/dist/fonts/**/*', 'node_modules/font-awesome/fonts/*'])
         .pipe(gulp.dest('build/thirdparty/fonts'));
 });
 
@@ -38,7 +38,7 @@ gulp.task('copy-css', function () {
 });
 
 gulp.task('copy-third-party-css', function () {
-    return gulp.src(['node_modules/ng-table/bundles/ng-table.min.css', 'node_modules/bootstrap/dist/css/bootstrap.min.css'])
+    return gulp.src(['node_modules/ng-table/bundles/ng-table.min.css', 'node_modules/bootstrap/dist/css/bootstrap.min.css', 'node_modules/font-awesome/css/font-awesome.min.css'])
         .pipe(gulp.dest('build/thirdparty/css'));
 });
 
