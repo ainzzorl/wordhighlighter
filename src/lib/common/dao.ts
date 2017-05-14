@@ -7,7 +7,7 @@
  * Data Access Object.
  * Handles all interactions with the storage.
  *
- * TODO: use sync storage
+ * TODO: consider using sync storage.
  * TODO: unit test
  */
 class DAO {

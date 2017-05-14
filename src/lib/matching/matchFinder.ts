@@ -31,8 +31,8 @@ class MatchFinderImpl implements MatchFinder {
         }
     }
 
-    // TODO: too complex, simplify.
-    // Possibly by adding a special char at the end.
+    // Detect words matching the dictionary in the input.
+    // TODO: too complex, simplify, possibly by adding a special char at the end.
     findMatches(input: string): Array<MatchResultEntry> {
         let result: Array<MatchResultEntry> = [];
         let currentWord = '';
