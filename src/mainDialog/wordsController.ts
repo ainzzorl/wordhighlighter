@@ -68,7 +68,7 @@ angular
         }
         let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
         if (changed(dictionaryEntry, originalRow)) {
-            dictionaryEntry.updatedAt = new Date();
+            dictionaryEntry.touch();
             dao.saveDictionary($scope.dictionary, function() {});
         }
         angular.extend(originalRow, dictionaryEntry);

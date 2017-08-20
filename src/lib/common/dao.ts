@@ -62,14 +62,14 @@ class DAO {
         chrome.storage.local.get(['dictionary', 'idSequenceNumber'],
                                  function(result: { dictionary: Array<any>, idSequenceNumber: number }) {
             let now: Date = new Date();
-            let entry = {
-                id: result.idSequenceNumber,
-                value: value,
-                description: description,
-                strictMatch: strictMatch,
-                createdAt: now,
-                updatedAt: now
-            };
+            let entry = new DictionaryEntry(
+                result.idSequenceNumber,
+                value,
+                description,
+                now,
+                now,
+                strictMatch
+            );
             result.dictionary.push(entry);
             chrome.storage.local.set({ dictionary: result.dictionary, idSequenceNumber: result.idSequenceNumber + 1 }, function() {
                 WHLogger.log('Word ' + entry.value + ' has been added to the storages');
