@@ -8,49 +8,54 @@
  * Handles all interactions with the storage.
  *
  * TODO: consider using sync storage.
- * TODO: unit test
  */
 class DAO {
 
-    private DEFAULT_TIMEOUT: number = 3;
+    public DEFAULT_TIMEOUT: number = 3;
+
+    private store: chrome.storage.StorageArea;
+
+    constructor(_store: chrome.storage.StorageArea = undefined) {
+        this.store = _store || chrome.storage.local;
+    }
 
     getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
         let self: DAO = this;
-        chrome.storage.local.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
+        self.store.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
             callback(self.deserializeDictionary(result.dictionary));
         });
     }
 
     getSettings(callback: (settings: Settings) => void): void {
         let self: DAO = this;
-        chrome.storage.local.get('settings', function(result: { settings: any }) {
+        self.store.get('settings', function(result: { settings: any }) {
             callback(self.deserializeSettings(result.settings));
         });
     }
 
     init() {
         let self: DAO = this;
-        chrome.storage.local.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
+        self.store.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
             if (!result.dictionary) {
-                chrome.storage.local.set({ dictionary: [] }, function() {
+                self.store.set({ dictionary: [] }, function() {
                     WHLogger.log('Initialized the dictionary');
                 });
             }
         });
-        chrome.storage.local.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
+        self.store.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
             if (!result.idSequenceNumber) {
-                chrome.storage.local.set({ idSequenceNumber: 1 }, function() {
+                self.store.set({ idSequenceNumber: 1 }, function() {
                     WHLogger.log('Initialized the id sequence');
                 });
             }
         });
-        chrome.storage.local.get('settings', function(result: { settings: Settings }) {
+        self.store.get('settings', function(result: { settings: Settings }) {
             if (!result.settings) {
                 let settings = new Settings();
                 settings.enableHighlighting = true;
                 settings.enablePageStats = true;
                 settings.timeout = self.DEFAULT_TIMEOUT;
-                chrome.storage.local.set({ settings: self.serializeSettings(settings) }, function() {
+                self.store.set({ settings: self.serializeSettings(settings) }, function() {
                     WHLogger.log('Initialized the settings');
                 });
             }
@@ -59,8 +64,9 @@ class DAO {
 
     addEntry(value: string, description: string, strictMatch: boolean, callback: (newEntry: DictionaryEntry) => void): void {
         let self: DAO = this;
-        chrome.storage.local.get(['dictionary', 'idSequenceNumber'],
-                                 function(result: { dictionary: Array<any>, idSequenceNumber: number }) {
+        self.store.get(['dictionary', 'idSequenceNumber'],
+                       function(result: { dictionary: Array<any>, idSequenceNumber: number }) {
+            let dictionary = self.deserializeDictionary(result.dictionary);
             let now: Date = new Date();
             let entry = new DictionaryEntry(
                 result.idSequenceNumber,
@@ -70,8 +76,8 @@ class DAO {
                 now,
                 strictMatch
             );
-            result.dictionary.push(entry);
-            chrome.storage.local.set({ dictionary: result.dictionary, idSequenceNumber: result.idSequenceNumber + 1 }, function() {
+            dictionary.push(entry);
+            self.store.set({ dictionary: self.serializeDictionary(dictionary), idSequenceNumber: result.idSequenceNumber + 1 }, function() {
                 WHLogger.log('Word ' + entry.value + ' has been added to the storages');
                 callback(self.serializeDictionaryEntry(entry));
             });
@@ -84,18 +90,18 @@ class DAO {
             return !dictionaryEntry.id;
         });
         if (needsToGenerateIds.length === 0) {
-            chrome.storage.local.set({ dictionary: self.serializeDictionary(dictionary) }, function() {
+            self.store.set({ dictionary: self.serializeDictionary(dictionary) }, function() {
                 WHLogger.log('Saved dictionary');
                 callback();
             });
             return;
         }
-        chrome.storage.local.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
+        self.store.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
             let idSequenceNumber = result.idSequenceNumber;
             needsToGenerateIds.forEach(function(dictionaryEntry: DictionaryEntry) {
                 dictionaryEntry.id = idSequenceNumber++;
             });
-            chrome.storage.local.set({ idSequenceNumber: idSequenceNumber, dictionary: self.serializeDictionary(dictionary) }, function() {
+            self.store.set({ idSequenceNumber: idSequenceNumber, dictionary: self.serializeDictionary(dictionary) }, function() {
                 WHLogger.log('Saved the dictionary. New id sequence number: ' + idSequenceNumber);
                 callback();
             });
@@ -103,7 +109,7 @@ class DAO {
     }
 
     saveSettings(settings: Settings, callback: () => void): void {
-        chrome.storage.local.set({ settings: this.serializeSettings(settings) }, function() {
+        this.store.set({ settings: this.serializeSettings(settings) }, function() {
             WHLogger.log('Saved the settings');
             callback();
         });
