@@ -57,9 +57,7 @@ describe('DAO', function() {
             dao.getSettings((settings: Settings) => {
                 received = true;
                 expect(settings).not.toBeNull();
-                expect(settings.timeout).toEqual(dao.DEFAULT_TIMEOUT);
-                expect(settings.enableHighlighting).toEqual(true);
-                expect(settings.enablePageStats).toEqual(true);
+                expect(settings).toEqual(Settings.DEFAULT);
             });
             if (!received) {
                 fail('Did not receive the settings');

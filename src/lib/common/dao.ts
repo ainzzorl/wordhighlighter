@@ -11,8 +11,6 @@
  */
 class DAO {
 
-    public DEFAULT_TIMEOUT: number = 3;
-
     private store: chrome.storage.StorageArea;
 
     constructor(_store: chrome.storage.StorageArea = undefined) {
@@ -51,10 +49,7 @@ class DAO {
         });
         self.store.get('settings', function(result: { settings: Settings }) {
             if (!result.settings) {
-                let settings = new Settings();
-                settings.enableHighlighting = true;
-                settings.enablePageStats = true;
-                settings.timeout = self.DEFAULT_TIMEOUT;
+                let settings = Settings.DEFAULT;
                 self.store.set({ settings: self.serializeSettings(settings) }, function() {
                     WHLogger.log('Initialized the settings');
                 });
@@ -139,7 +134,7 @@ class DAO {
         settings.enableHighlighting  = input.enableHighlighting;
         if (input.enablePageStats === undefined) {
             // Was created before stats was implemented.
-            input.enablePageStats = true;
+            input.enablePageStats = Settings.DEFAULT_ENABLE_PAGE_STATS;
         }
         settings.enablePageStats = input.enablePageStats;
         return settings;
