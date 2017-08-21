@@ -10,6 +10,11 @@
  * TODO: consider using sync storage.
  */
 class DAO {
+    private static readonly KEYS = {
+        dictionary: 'dictionary',
+        settings: 'settings',
+        idSequenceNumber: 'idSequenceNumber'
+    };
 
     private store: chrome.storage.StorageArea;
 
@@ -17,50 +22,30 @@ class DAO {
         this.store = _store || chrome.storage.local;
     }
 
+    init() {
+        this.initDictionary();
+        this.initIdSequence();
+        this.initSettings();
+    }
+
     getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
         let self: DAO = this;
-        self.store.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
+        self.store.get(DAO.KEYS.dictionary, (result: { dictionary: Array<any> }) => {
             callback(self.deserializeDictionary(result.dictionary));
         });
     }
 
     getSettings(callback: (settings: Settings) => void): void {
         let self: DAO = this;
-        self.store.get('settings', function(result: { settings: any }) {
+        self.store.get(DAO.KEYS.settings, (result: { settings: any }) => {
             callback(self.deserializeSettings(result.settings));
-        });
-    }
-
-    init() {
-        let self: DAO = this;
-        self.store.get('dictionary', function(result: { dictionary: Array<DictionaryEntry> }) {
-            if (!result.dictionary) {
-                self.store.set({ dictionary: [] }, function() {
-                    WHLogger.log('Initialized the dictionary');
-                });
-            }
-        });
-        self.store.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
-            if (!result.idSequenceNumber) {
-                self.store.set({ idSequenceNumber: 1 }, function() {
-                    WHLogger.log('Initialized the id sequence');
-                });
-            }
-        });
-        self.store.get('settings', function(result: { settings: Settings }) {
-            if (!result.settings) {
-                let settings = Settings.DEFAULT;
-                self.store.set({ settings: self.serializeSettings(settings) }, function() {
-                    WHLogger.log('Initialized the settings');
-                });
-            }
         });
     }
 
     addEntry(value: string, description: string, strictMatch: boolean, callback: (newEntry: DictionaryEntry) => void): void {
         let self: DAO = this;
-        self.store.get(['dictionary', 'idSequenceNumber'],
-                       function(result: { dictionary: Array<any>, idSequenceNumber: number }) {
+        self.store.get([DAO.KEYS.dictionary, DAO.KEYS.idSequenceNumber],
+                       (result: { dictionary: Array<any>, idSequenceNumber: number }) => {
             let dictionary = self.deserializeDictionary(result.dictionary);
             let now: Date = new Date();
             let entry = new DictionaryEntry(
@@ -72,7 +57,7 @@ class DAO {
                 strictMatch
             );
             dictionary.push(entry);
-            self.store.set({ dictionary: self.serializeDictionary(dictionary), idSequenceNumber: result.idSequenceNumber + 1 }, function() {
+            self.store.set({ dictionary: self.serializeDictionary(dictionary), idSequenceNumber: result.idSequenceNumber + 1 }, () => {
                 WHLogger.log('Word ' + entry.value + ' has been added to the storages');
                 callback(self.serializeDictionaryEntry(entry));
             });
@@ -81,22 +66,22 @@ class DAO {
 
     saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
         let self: DAO = this;
-        let needsToGenerateIds = dictionary.filter(function(dictionaryEntry: DictionaryEntry) {
+        let entriesWithNoIds = dictionary.filter((dictionaryEntry: DictionaryEntry) => {
             return !dictionaryEntry.id;
         });
-        if (needsToGenerateIds.length === 0) {
-            self.store.set({ dictionary: self.serializeDictionary(dictionary) }, function() {
+        if (entriesWithNoIds.length === 0) {
+            self.store.set({ dictionary: self.serializeDictionary(dictionary) }, () => {
                 WHLogger.log('Saved dictionary');
                 callback();
             });
             return;
         }
-        self.store.get('idSequenceNumber', function(result: { idSequenceNumber: number }) {
+        self.store.get(DAO.KEYS.idSequenceNumber, (result: { idSequenceNumber: number }) => {
             let idSequenceNumber = result.idSequenceNumber;
-            needsToGenerateIds.forEach(function(dictionaryEntry: DictionaryEntry) {
+            entriesWithNoIds.forEach((dictionaryEntry: DictionaryEntry) => {
                 dictionaryEntry.id = idSequenceNumber++;
             });
-            self.store.set({ idSequenceNumber: idSequenceNumber, dictionary: self.serializeDictionary(dictionary) }, function() {
+            self.store.set({ idSequenceNumber: idSequenceNumber, dictionary: self.serializeDictionary(dictionary) }, () => {
                 WHLogger.log('Saved the dictionary. New id sequence number: ' + idSequenceNumber);
                 callback();
             });
@@ -104,9 +89,43 @@ class DAO {
     }
 
     saveSettings(settings: Settings, callback: () => void): void {
-        this.store.set({ settings: this.serializeSettings(settings) }, function() {
+        this.store.set({ settings: this.serializeSettings(settings) }, () => {
             WHLogger.log('Saved the settings');
             callback();
+        });
+    }
+
+    private initDictionary() {
+        let self: DAO = this;
+        self.store.get(DAO.KEYS.dictionary, (result: { dictionary: Array<any> }) => {
+            if (!result.dictionary) {
+                self.store.set({ dictionary: [] }, () => {
+                    WHLogger.log('Initialized the dictionary');
+                });
+            }
+        });
+    }
+
+    private initSettings() {
+        let self: DAO = this;
+        self.store.get(DAO.KEYS.settings, (result: { settings: Settings }) => {
+            if (!result.settings) {
+                let settings = Settings.DEFAULT;
+                self.store.set({ settings: self.serializeSettings(settings) }, () => {
+                    WHLogger.log('Initialized the settings');
+                });
+            }
+        });
+    }
+
+    private initIdSequence() {
+        let self: DAO = this;
+        self.store.get(DAO.KEYS.idSequenceNumber, (result: { idSequenceNumber: number }) => {
+            if (!result.idSequenceNumber) {
+                self.store.set({ idSequenceNumber: 1 }, () => {
+                    WHLogger.log('Initialized the id sequence');
+                });
+            }
         });
     }
 

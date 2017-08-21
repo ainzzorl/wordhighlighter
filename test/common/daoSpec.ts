@@ -1,16 +1,15 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts" />
-///<reference path="../../src/lib/dom/domTraversal.ts" />
 
-describe('DAO', function() {
+describe('DAO', () => {
     let dao: DAO;
     let store: any = {};
 
-    beforeEach(function() {
+    beforeEach(() => {
         dao = new DAO(<chrome.storage.StorageArea> store);
         stubStore();
     });
 
-    describe('dictionary', function() {
+    describe('dictionary', () => {
         it('creates, reads and updates the dictionary', () => {
             dao.init();
             dao.addEntry('value1', 'description1', true, () => {});
@@ -50,7 +49,7 @@ describe('DAO', function() {
         });
     });
 
-    describe('settings', function() {
+    describe('settings', () => {
         it('creates, reads and updates settings', () => {
             dao.init();
             let received = false;
