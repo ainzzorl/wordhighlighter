@@ -6,7 +6,7 @@ class DictionaryEntry {
     private _value: string;
     private _description: string;
     private _createdAt: Date;
-    private _updatedAt: Date; // TODO: touch() method
+    private _updatedAt: Date;
     private _strictMatch: boolean;
 
     constructor(id: number, value: string, description: string, createdAt: Date, updatedAt: Date, strictMatch: boolean = false) {
