@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var ts = require('gulp-typescript');
 var tsProjectSrc = ts.createProject('tsconfig-src.json');
-var tsProjectSpec = ts.createProject('tsconfig-spec.json');
+var tsProjectTest = ts.createProject('tsconfig-test.json');
 var concat = require('gulp-concat');
 var gutil = require('gulp-util');
 
@@ -60,11 +60,11 @@ gulp.task('compile-src', function () {
         .js.pipe(gulp.dest('build'));
 });
 
-gulp.task('compile-spec', function () {
-    return tsProjectSpec.src()
-            .pipe(tsProjectSpec())
+gulp.task('compile-test', function () {
+    return tsProjectTest.src()
+            .pipe(tsProjectTest())
             .on('error', onTsCompilationError)
-            .js.pipe(gulp.dest('build/spec'));
+            .js.pipe(gulp.dest('build/test'));
 });
 
 gulp.task('browserify-imports', [], function() {
@@ -79,7 +79,7 @@ gulp.task('browserify-imports', [], function() {
 // Lint rules are specified in tslint.json
 gulp.task('tslint', function() {
     var tslint = require('gulp-tslint');
-    return gulp.src(['src/**/*.ts', 'spec/**/*.ts'])
+    return gulp.src(['src/**/*.ts', 'test/**/*.ts'])
         .pipe(tslint({
             formatter: 'verbose'}))
         .pipe(tslint.report())
@@ -99,7 +99,7 @@ gulp.task('concat-main-dialog', ['compile-src'], function() {
         .pipe(gulp.dest('./build/js/'));
 });
 
-gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dialog', 'browserify-imports'], function(done) {
+gulp.task('test', ['compile-src', 'compile-test', 'concat-lib', 'concat-main-dialog', 'browserify-imports'], function(done) {
     var Server = require('karma').Server;
     return new Server({
         configFile: __dirname + '/karma.conf.js',
@@ -109,7 +109,7 @@ gulp.task('spec', ['compile-src', 'compile-spec', 'concat-lib', 'concat-main-dia
 
 gulp.task('clean-pre-package', function () {
     var clean = require('gulp-clean');
-    return gulp.src(['build/spec', 'build/lib', 'build/mainDialog'], {read: false})
+    return gulp.src(['build/test', 'build/lib', 'build/mainDialog'], {read: false})
         .pipe(clean());
 });
 
@@ -117,9 +117,9 @@ gulp.task('clean-pre-package', function () {
 gulp.task('release', function(callback) {
     var runSequence = require('run-sequence');
     runSequence('clean',
-              ['copy-static-content', 'compile-src', 'compile-spec', 'browserify-imports', 'tslint'],
+              ['copy-static-content', 'compile-src', 'compile-test', 'browserify-imports', 'tslint'],
               ['concat-lib', 'concat-main-dialog'],
-              'spec',
+              'test',
               'clean-pre-package',
               callback);
 });

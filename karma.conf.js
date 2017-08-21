@@ -15,11 +15,11 @@ module.exports = function(config) {
       'build/js/imports.js',
       'build/js/lib.js',
       'build/js/mainDialog.js',
-      'build/spec/**/*.js',
+      'build/test/**/*.js',
 
       // Fixtures
       {
-        pattern: 'spec/fixtures/*',
+        pattern: 'test/fixtures/*',
         watched:  true,
         served:   true,
         included: false

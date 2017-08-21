@@ -14,7 +14,7 @@ describe('content', function() {
     let j: any = jasmine;
 
     beforeEach(function() {
-        j.getFixtures().fixturesPath = 'base/spec/fixtures';
+        j.getFixtures().fixturesPath = 'base/test/fixtures';
     });
 
     describe('processDocument', function() {
