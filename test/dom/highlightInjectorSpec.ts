@@ -2,23 +2,23 @@
 ///<reference path="../../src/lib/dom/highlightInjector.ts" />
 ///<reference path="../../src/lib/dom/highlightGenerator.ts" />
 
-describe('highlightInjector', function() {
+describe('highlightInjector', () => {
     let highlightInjector: HighlightInjector;
     let highlightGenerator: HighlightGenerator;
 
-    beforeEach(function() {
+    beforeEach(() => {
         highlightGenerator = new HighlightGenerator();
-        highlightGenerator.generate = function(word: string, dictionaryEntry: DictionaryEntry) {
+        highlightGenerator.generate = (word: string, dictionaryEntry: DictionaryEntry) => {
             return '(' + word + '-' + (dictionaryEntry ? dictionaryEntry.value : 'null') + ')';
         };
         highlightInjector = new HighlightInjectorImpl(highlightGenerator);
     });
 
-    describe('inject', function() {
+    describe('inject', () => {
         let rootNode: HTMLElement;
         let textNode: Text;
 
-        beforeEach(function() {
+        beforeEach(() => {
             rootNode = document.createElement('div');
             textNode = document.createTextNode('Internet for people, not profit');
             rootNode.appendChild(textNode);
@@ -33,9 +33,8 @@ describe('highlightInjector', function() {
             highlightInjector.inject(textNode, matchResult);
         });
 
-        it('injects markup', function() {
-            expect(rootNode.innerHTML).toEqual(
-                'Internet for (people-People), not (profit-Profit)');
+        it('injects markup', () => {
+            expect(rootNode.innerHTML).toEqual('Internet for (people-People), not (profit-Profit)');
         });
     });
 });

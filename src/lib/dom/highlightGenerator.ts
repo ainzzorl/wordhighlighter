@@ -10,19 +10,18 @@ class HighlightGenerator {
      * @param dictionaryEntry Dictionary entry matching the word.
      */
     generate(word: string, dictionaryEntry: DictionaryEntry) {
-        return '<span class="highlighted-word">'
-                + word
-                + this.tooltipContent(dictionaryEntry)
-                + '</span>';
+        return `<span class="highlighted-word">${word}${this.tooltipContent(dictionaryEntry)}</span>`;
     }
 
     private tooltipContent(entry: DictionaryEntry) {
         let wrappedDescription = entry.description ?
-            '<div class="highlighted-word-description">' + entry.description + '</div>' : '';
+            `<div class="highlighted-word-description">${entry.description}</div>` : '';
         let wordClass = entry.description ? '' : 'highlighted-word-title-no-description';
-        return '<div class="highlighted-word-tooltip-wrapper"><div class="highlighted-word-tooltip">'
-                + '<p class="' + wordClass + '">' + entry.value + '</p>'
-                + wrappedDescription
-                + '</div></div>';
+        return `<div class="highlighted-word-tooltip-wrapper">
+                    <div class="highlighted-word-tooltip">
+                        <p class="${wordClass}">${entry.value}</p>
+                        ${wrappedDescription}
+                    </div>
+                </div>`;
     }
 }

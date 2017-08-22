@@ -49,15 +49,16 @@ class Content {
     }
 
     private onFound(content: Content, node: Text): void {
+        if (content.isTimeout()) {
+            WHLogger.log('Terminating because of the timeout');
+            content.domTraversal.stop();
+            return;
+        }
         let matches = content.matchFinder.findMatches(node.textContent);
         content.highlightInjector.inject(node, matches);
         matches
             .filter((match: MatchResultEntry) => match.matchOf)
             .forEach((match: MatchResultEntry) => this.pageStats.registerMatch(match.matchOf));
-        if (content.isTimeout()) {
-            WHLogger.log('Terminating because of the timeout');
-            content.domTraversal.stop();
-        }
     }
 
     private onFinished(content: Content, doc: Document): void {

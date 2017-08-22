@@ -1,6 +1,6 @@
 {
     "files": [
-        "test/*.ts", "test/matching/*.ts", "test/dom/*.ts", "test/stats/*.ts", "test/mainDialog/*.ts", "test/common/*.ts"
+        "test/support/*.ts", "test/*.ts", "test/matching/*.ts", "test/dom/*.ts", "test/stats/*.ts", "test/mainDialog/*.ts", "test/common/*.ts"
     ],
     "compilerOptions": {
         "target": "es5"

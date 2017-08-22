@@ -37,7 +37,10 @@ class DomTraversal {
         let child = node.firstChild;
         while (child) {
             if (child.nodeType === Node.TEXT_NODE) {
-                onFound(<Text>child);
+                let textNode = <Text>child;
+                if (textNode.textContent.trim().length > 0) {
+                    onFound(textNode);
+                }
             } else {
                 this.traverse(child, onFound);
             }
@@ -47,10 +50,6 @@ class DomTraversal {
 
     private isBlacklisted(node: Node): boolean {
         let tagName = (<HTMLElement>node).tagName;
-        if (tagName) {
-            return this.BLACKLISTED_TAGS[tagName.toUpperCase()];
-        } else {
-            return false;
-        }
+        return tagName && this.BLACKLISTED_TAGS[tagName.toUpperCase()];
     }
 }
