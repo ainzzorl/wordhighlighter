@@ -1,5 +1,6 @@
 ///<reference path="stemmer.ts" />
 ///<reference path="matchResultEntry.ts" />
+///<reference path="token.ts" />
 ///<reference path="../common/dictionaryEntry.ts" />
 
 /**
@@ -32,66 +33,44 @@ class MatchFinderImpl implements MatchFinder {
     }
 
     // Detect words matching the dictionary in the input.
-    // TODO: too complex, simplify, possibly by adding a special char at the end.
     findMatches(input: string): Array<MatchResultEntry> {
         let result: Array<MatchResultEntry> = [];
-        let currentWord = '';
         let currentNoMatch = '';
+        this.tokenize(input).forEach((token: Token) => {
+            if (!token.isWord) {
+                currentNoMatch += token.value;
+                return;
+            }
+            let match = this.findMatchForWord(token.value);
+            if (!match) {
+                currentNoMatch += token.value;
+                return;
+            }
+            this.pushMatchIfNotEmpty(result, currentNoMatch, null);
+            this.pushMatchIfNotEmpty(result, token.value, match);
+            currentNoMatch = '';
+        });
+        this.pushMatchIfNotEmpty(result, currentNoMatch, null);
+        return result;
+    }
+
+    private tokenize(input: String): Array<Token> {
+        let result: Array<Token> = [];
+        let currentWord = '';
+        let currentNonWord = '';
         for (let i = 0; i < input.length; ++i) {
             if (this.isWordCharacter(input[i])) {
+                this.pushTokenIfNotEmpty(result, currentNonWord, false);
+                currentNonWord = '';
                 currentWord += input[i];
             } else {
-                if (currentWord.length > 0) {
-                    let match = this.findMatchForWord(currentWord);
-                    if (match) {
-                        if (currentNoMatch.length > 0) {
-                            result.push({
-                                value: currentNoMatch,
-                                matchOf: null
-                            });
-                        }
-                        result.push({
-                            value: currentWord,
-                            matchOf: match
-                        });
-                        currentNoMatch = input[i];
-                        currentWord = '';
-                    } else {
-                        currentNoMatch += currentWord + input[i];
-                        currentWord = '';
-                    }
-                } else {
-                    currentNoMatch += input[i];
-                }
+                this.pushTokenIfNotEmpty(result, currentWord, true);
+                currentWord = '';
+                currentNonWord += input[i];
             }
         }
-        if (currentWord.length > 0) {
-            let match = this.findMatchForWord(currentWord);
-            if (match) {
-                if (currentNoMatch.length > 0) {
-                    result.push({
-                        value: currentNoMatch,
-                        matchOf: null
-                    });
-                }
-                result.push({
-                    value: currentWord,
-                    matchOf: match
-                });
-            } else {
-                result.push({
-                    value: currentNoMatch + currentWord,
-                    matchOf: null
-                });
-            }
-        } else {
-            if (currentNoMatch.length > 0) {
-                result.push({
-                    value: currentNoMatch,
-                    matchOf: null
-                });
-            }
-        }
+        this.pushTokenIfNotEmpty(result, currentNonWord, false);
+        this.pushTokenIfNotEmpty(result, currentWord, true);
         return result;
     }
 
@@ -141,5 +120,23 @@ class MatchFinderImpl implements MatchFinder {
             }
         });
         return result;
+    }
+
+    private pushMatchIfNotEmpty(result: Array<MatchResultEntry>, value: string, matchOf: DictionaryEntry) {
+        if (value.length > 0) {
+            result.push({
+                value: value,
+                matchOf: matchOf
+            });
+        }
+    }
+
+    private pushTokenIfNotEmpty(result: Array<Token>, value: string, isWord: boolean) {
+        if (value.length > 0) {
+            result.push({
+                value: value,
+                isWord: isWord
+            });
+        }
     }
 }

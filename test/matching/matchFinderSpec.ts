@@ -4,15 +4,15 @@
 ///<reference path="../../src/lib/common/dictionaryEntry.ts" />
 
 // TODO: consider using real stemmer
-describe('MatchFinder', function() {
+describe('MatchFinder', () => {
     let matchFinder: MatchFinder;
     let stemmer: Stemmer;
     let dictionary: Array<DictionaryEntry>;
     let matchResult: Array<MatchResultEntry>;
 
-    describe('findMatches', function() {
-        describe('multiple words in the input', function() {
-            beforeEach(function() {
+    describe('findMatches', () => {
+        describe('multiple words in the input', () => {
+            beforeEach(() => {
                 stemmer = {
                     stem: function(word) {
                         return word;
@@ -24,12 +24,12 @@ describe('MatchFinder', function() {
                 matchFinder = new MatchFinderImpl(dictionary, stemmer);
             });
 
-            describe('1 match in the middle', function() {
-                beforeEach(function() {
+            describe('1 match in the middle', () => {
+                beforeEach(() => {
                     matchResult = matchFinder.findMatches('Internet for people, not');
                 });
 
-                it('finds the match', function() {
+                it('finds the match', () => {
                     expect(matchResult.length).toEqual(3);
                     expect(matchResult[0].value).toEqual('Internet for ');
                     expect(matchResult[0].matchOf).toBeNull();
@@ -40,36 +40,36 @@ describe('MatchFinder', function() {
                 });
             });
 
-            describe('no match', function() {
-                beforeEach(function() {
+            describe('no match', () => {
+                beforeEach(() => {
                     matchResult = matchFinder.findMatches('Text that does not match');
                 });
 
-                it('detects that there is no match', function() {
+                it('detects that there is no match', () => {
                     expect(matchResult.length).toEqual(1);
                     expect(matchResult[0].value).toEqual('Text that does not match');
                     expect(matchResult[0].matchOf).toBeNull();
                 });
             });
 
-            describe('all string is a match', function() {
-                beforeEach(function() {
+            describe('all string is a match', () => {
+                beforeEach(() => {
                     matchResult = matchFinder.findMatches('people');
                 });
 
-                it('finds the match', function() {
+                it('finds the match', () => {
                     expect(matchResult.length).toEqual(1);
                     expect(matchResult[0].value).toEqual('people');
                     expect(matchResult[0].matchOf.value).toEqual('people');
                 });
             });
 
-            describe('match in the beginning', function() {
-                beforeEach(function() {
+            describe('match in the beginning', () => {
+                beforeEach(() => {
                     matchResult = matchFinder.findMatches('people and');
                 });
 
-                it('finds the match', function() {
+                it('finds the match', () => {
                     expect(matchResult.length).toEqual(2);
                     expect(matchResult[0].value).toEqual('people');
                     expect(matchResult[0].matchOf.value).toEqual('people');
@@ -78,12 +78,12 @@ describe('MatchFinder', function() {
                 });
             });
 
-            describe('match in the end', function() {
-                beforeEach(function() {
+            describe('match in the end', () => {
+                beforeEach(() => {
                     matchResult = matchFinder.findMatches('not profit');
                 });
 
-                it('finds the match', function() {
+                it('finds the match', () => {
                     expect(matchResult.length).toEqual(2);
                     expect(matchResult[0].value).toEqual('not ');
                     expect(matchResult[0].matchOf).toBeNull();
@@ -93,8 +93,8 @@ describe('MatchFinder', function() {
             });
         });
 
-        describe('one words in the input', function() {
-            beforeEach(function() {
+        describe('one words in the input', () => {
+            beforeEach(() => {
                 dictionary = [];
                 dictionary.push(new DictionaryEntry(1, 'advent', '', new Date(), new Date()));
                 dictionary.push(new DictionaryEntry(2, 'something', '', new Date(), new Date()));
@@ -125,38 +125,38 @@ describe('MatchFinder', function() {
                 return result[0].matchOf ? result[0].matchOf.value : null;
             }
 
-            describe('stem matching', function() {
-                it('finds exact match', function() {
+            describe('stem matching', () => {
+                it('finds exact match', () => {
                     expect(findWordMatch('advent')).toEqual('advent');
                 });
 
-                it('finds stem match', function() {
+                it('finds stem match', () => {
                     expect(findWordMatch('advents')).toEqual('advent');
                 });
 
-                it('detects no match', function() {
+                it('detects no match', () => {
                     expect(findWordMatch('adventure')).toBeNull();
                 });
 
-                it('ignores "to" at the beginning', function() {
+                it('ignores "to" at the beginning', () => {
                     expect(findWordMatch('hamper')).toEqual('To hamper');
                 });
 
-                it('does not ignore "to" elsewhere', function() {
+                it('does not ignore "to" elsewhere', () => {
                     expect(findWordMatch('go')).toBeNull();
                 });
             });
 
-            describe('strict matching', function() {
-                it('finds exact match', function() {
+            describe('strict matching', () => {
+                it('finds exact match', () => {
                     expect(findWordMatch('contention')).toEqual('Contention');
                 });
 
-                it('ignores case', function() {
+                it('ignores case', () => {
                     expect(findWordMatch('cOnTeNtIoN')).toEqual('Contention');
                 });
 
-                it('does not find stem match', function() {
+                it('does not find stem match', () => {
                     expect(findWordMatch('content')).toBeNull();
                 });
             });
