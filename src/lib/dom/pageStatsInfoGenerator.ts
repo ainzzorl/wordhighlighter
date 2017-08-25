@@ -32,7 +32,7 @@ class PageStatsInfoGenerator {
                         let res = acc
                             + `<div>
                                 <div class="word-highlighter-per-word-stats-value">${wordStats.dictionaryEntry.value}</div>
-                                <div class="word-highlighter-per-word-stats-count">${wordStats.count}</div>'
+                                <div class="word-highlighter-per-word-stats-count">${wordStats.count}</div>
                                </div>`;
                         return res;
                     },
