@@ -64,6 +64,7 @@ class Content {
     private onFinished(content: Content, doc: Document): void {
         if (content.settings.enablePageStats && content.pageStats.totalAppearances > 0) {
             this.injectPageStatsInfo(content, doc);
+            this.addEventListeners(doc);
         }
     }
 
@@ -76,5 +77,23 @@ class Content {
         for (let i = 0; i < bodyNodes.length; ++i) {
             bodyNodes[i].appendChild(content.pageStatsInfoGenerator.generate(content.pageStats));
         }
+    }
+
+    // TODO: unit test
+    private addEventListeners(doc: Document): void {
+        for (let element of <Node[]><any>doc.querySelectorAll('#word-highlighter-page-stats a')) {
+            element.addEventListener('click', () => { this.expandPageStats(doc); }, true);
+        }
+        doc.getElementById('word-highlighter-page-stats-close').addEventListener('click', () => {
+            this.dismissPageStats(doc);
+        });
+    }
+
+    private expandPageStats(doc: Document): void {
+        doc.getElementById('word-highlighter-per-word-stats').style.display = 'block';
+    }
+
+    private dismissPageStats(doc: Document): void {
+        doc.getElementById('word-highlighter-page-stats').style.display = 'none';
     }
 }

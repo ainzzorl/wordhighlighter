@@ -46,7 +46,7 @@ class PageStatsInfoGenerator {
                         Highlighted
                     </p>
                     <p>
-                        <a onclick="${this.generateDisplayPerWordStatsFunction()}">
+                        <a>
                             <span class="word-highlighter-stats-aggregate">
                                 ${stats.totalAppearedWords}
                             </span>
@@ -54,7 +54,7 @@ class PageStatsInfoGenerator {
                         </a>
                     </p>
                     <p>
-                        <a onclick="${this.generateDisplayPerWordStatsFunction()}">
+                        <a>
                             <span class="word-highlighter-stats-aggregate">
                                 ${stats.totalAppearances}
                             </span>
@@ -65,18 +65,11 @@ class PageStatsInfoGenerator {
     }
 
     private generateCloseButton(): string {
-        return `<span id="word-highlighter-page-stats-close"
-                      onclick="document.getElementById('word-highlighter-page-stats').style.display='none'">
-                      x
-                </span>`;
+        return '<span id="word-highlighter-page-stats-close">x</span>';
     }
 
     // Encourage users who find the popup annoying to disable the feature rather than uninstall the plugin altogether.
     private generateTip(): string {
         return '<div id="word-highlighter-page-stats-tip">Tip: you can disable this popup in settings.</div>';
-    }
-
-    private generateDisplayPerWordStatsFunction(): string {
-        return 'document.getElementById(\'word-highlighter-per-word-stats\').style.display = \'block\'';
     }
 }
