@@ -28,7 +28,7 @@ class PageStats {
     /**
      * Returns a list of (dictionary entry, number of appearances) stats.
      */
-    getWordAppearanceStats(): Array<WordAppeances> {
+    get wordAppearanceStats(): Array<WordAppeances> {
         let counts = this.counts;
         let entries = this.entries;
         return Object.keys(this.entries)
@@ -43,14 +43,14 @@ class PageStats {
     /**
      * Total number of dictionary words appearing on the page.
      */
-    getTotalAppearedWords(): number {
+    get totalAppearedWords(): number {
         return Object.keys(this.entries).length;
     }
 
     /**
      * Total number number of dictionary word appearances on the page.
      */
-    getTotalAppearances(): number {
+    get totalAppearances(): number {
         return this.totalApparances;
     }
 }

@@ -25,7 +25,7 @@ class PageStatsInfoGenerator {
 
     private generatePerWordDetails(stats: PageStats): string {
         return '<div id="word-highlighter-per-word-stats">'
-            + stats.getWordAppearanceStats()
+            + stats.wordAppearanceStats
                 .sort((a1, a2) => { return a2.count - a1.count; })
                 .reduce(
                     (acc, wordStats) => {
@@ -48,7 +48,7 @@ class PageStatsInfoGenerator {
                     <p>
                         <a onclick="${this.generateDisplayPerWordStatsFunction()}">
                             <span class="word-highlighter-stats-aggregate">
-                                ${stats.getTotalAppearedWords()}
+                                ${stats.totalAppearedWords}
                             </span>
                             words
                         </a>
@@ -56,7 +56,7 @@ class PageStatsInfoGenerator {
                     <p>
                         <a onclick="${this.generateDisplayPerWordStatsFunction()}">
                             <span class="word-highlighter-stats-aggregate">
-                                ${stats.getTotalAppearances()}
+                                ${stats.totalAppearances}
                             </span>
                             times
                         </a>
