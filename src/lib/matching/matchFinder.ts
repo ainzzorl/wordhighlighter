@@ -93,7 +93,9 @@ class MatchFinderImpl implements MatchFinder {
     }
 
     private isWordCharacter(char: string) {
-        return char[0] >= 'a' && char[0] <= 'z' || char[0] >= 'A' && char[0] <= 'Z';
+        return char[0] >= 'a' && char[0] <= 'z'
+                || char[0] >= 'A' && char[0] <= 'Z'
+                || char[0] >= '0' && char[0] <= '9';
     }
 
     private calculateIndexes(): void {
