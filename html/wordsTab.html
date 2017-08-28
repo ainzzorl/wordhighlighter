@@ -64,7 +64,7 @@
           </textarea>
         </div>
       </td>
-      <td title="'Strict Match'" sortable="'strictMatch'" ng-switch="dictionaryEntry.isEditing" class="strict-match-column" ng-form="strictMatch">
+      <td title="'Strict'" sortable="'strictMatch'" ng-switch="dictionaryEntry.isEditing" class="strict-match-column" ng-form="strictMatch">
         <span ng-switch-default>{{dictionaryEntry.strictMatch ? 'Yes' : 'No'}}</span>
         <div class="controls" ng-switch-when="true">
           <input type="checkbox" name="strictMatch" ng-model="dictionaryEntry.strictMatch" class="form-control" />
