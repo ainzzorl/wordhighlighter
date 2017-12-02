@@ -62,6 +62,10 @@ class DictionaryEntry {
         return this._strictMatch;
     }
 
+    set strictMatch(_strictMatch: boolean) {
+        this._strictMatch = _strictMatch;
+    }
+
     touch(): void {
         this._updatedAt = new Date();
     }
