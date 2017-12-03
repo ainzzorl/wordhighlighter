@@ -2,6 +2,8 @@
 ///<reference path="dictionaryEntry.ts" />
 ///<reference path="logger.ts" />
 ///<reference path="settings.ts" />
+///<reference path="../highlightingLog/highlightingLog.ts" />
+///<reference path="../highlightingLog/highlightingLogEntry.ts" />
 
 /**
  * Data Access Object.
@@ -13,7 +15,8 @@ class DAO {
     private static readonly KEYS = {
         dictionary: 'dictionary',
         settings: 'settings',
-        idSequenceNumber: 'idSequenceNumber'
+        idSequenceNumber: 'idSequenceNumber',
+        highlightingLog: 'highlightingLog'
     };
 
     private store: chrome.storage.StorageArea;
@@ -26,6 +29,7 @@ class DAO {
         this.initDictionary();
         this.initIdSequence();
         this.initSettings();
+        this.initHighlightingLog();
     }
 
     getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
@@ -39,6 +43,13 @@ class DAO {
         let self: DAO = this;
         self.store.get(DAO.KEYS.settings, (result: { settings: any }) => {
             callback(self.deserializeSettings(result.settings));
+        });
+    }
+
+    getHighlightingLog(callback: (highlightingLog: HighlightingLog) => void): void {
+        let self: DAO = this;
+        self.store.get(DAO.KEYS.highlightingLog, (result: { highlightingLog: Array<any> }) => {
+            callback(self.deserializeHighlightingLog(result.highlightingLog));
         });
     }
 
@@ -95,6 +106,13 @@ class DAO {
         });
     }
 
+    saveHighlightingLog(highlightingLog: HighlightingLog, callback: () => void): void {
+        this.store.set({ highlightingLog: this.serializeHighlightingLog(highlightingLog) }, () => {
+            WHLogger.log('Saved the highlighting log');
+            callback();
+        });
+    }
+
     private initDictionary() {
         let self: DAO = this;
         self.store.get(DAO.KEYS.dictionary, (result: { dictionary: Array<any> }) => {
@@ -129,6 +147,17 @@ class DAO {
         });
     }
 
+    private initHighlightingLog() {
+        let self: DAO = this;
+        self.store.get(DAO.KEYS.highlightingLog, (result: { highlightingLog: HighlightingLog }) => {
+            if (!result.highlightingLog) {
+                self.store.set({ highlightingLog: self.serializeHighlightingLog(new HighlightingLog()) }, () => {
+                    WHLogger.log('Initialized the highlighting log');
+                });
+            }
+        });
+    }
+
     private deserializeDictionary(input: Array<any>): Array<DictionaryEntry> {
         if (input === null) {
             return null;
@@ -144,6 +173,24 @@ class DAO {
             input['createdAt'],
             input['updatedAt'],
             input['strictMatch']
+        );
+    }
+
+    private deserializeHighlightingLog(input: Array<any>): HighlightingLog {
+        return new HighlightingLog(input.map(this.deserializeHighlightingLogEntry));
+    }
+
+    private deserializeHighlightingLogEntry(input: any): HighlightingLogEntry {
+        return new HighlightingLogEntry(
+            input['url'],
+            new Date(input['date']),
+            input['highlights'].reduce(
+                (result: any, h: any) => {
+                    result[h[0]] = h[1];
+                    return result;
+                },
+                {}
+            )
         );
     }
 
@@ -182,6 +229,18 @@ class DAO {
             timeout: input.timeout,
             enableHighlighting: input.enableHighlighting,
             enablePageStats: input.enablePageStats
+        };
+    }
+
+    private serializeHighlightingLog(input: HighlightingLog): Array<any> {
+        return input.entries.map(this.serializeHighlightingLogEntry);
+    }
+
+    private serializeHighlightingLogEntry(input: HighlightingLogEntry): any {
+        return {
+            url: input.url,
+            date: input.date.getTime(),
+            highlights: Object.keys(input.highlights).map((k: any) => { return [k, input.highlights[k]]; } )
         };
     }
 }

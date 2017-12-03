@@ -1,6 +1,7 @@
 ///<reference path="../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../src/lib/content.ts" />
 ///<reference path="../src/lib/common/settings.ts" />
+///<reference path="../src/lib/highlightingLog/highlightingLog.ts" />
 
 // This is not a "unit" but rather an integration test,
 // verifying the highlighting functionality end-to-end.
@@ -21,6 +22,8 @@ describe('content', function() {
         let matchFinder: MatchFinder;
         let highlightInjector: HighlightInjector;
         let highlightGenerator: HighlightGenerator;
+        let dao: any;
+        let highlightingLog: HighlightingLog;
 
         beforeEach(() => {
             settings = new Settings();
@@ -29,12 +32,14 @@ describe('content', function() {
             highlightGenerator = new HighlightGenerator();
             matchFinder = new MatchFinderImpl(createDictionary(['people', 'profit']), stemmer);
             highlightInjector = new HighlightInjectorImpl(highlightGenerator);
-            content = new Content(settings, highlightInjector, matchFinder);
+            highlightingLog = new HighlightingLog([]);
+            dao = {
+                saveHighlightingLog(log: HighlightingLog, callback: () => void): void {
+                    callback();
+                }
+            };
+            content = new Content(dao, settings, highlightInjector, matchFinder, highlightingLog);
         });
-
-        function parseDocument(path: string): Document {
-            return new DOMParser().parseFromString(readFixture(path), 'application/xml');
-        }
 
         function readFixture(path: string): string {
             return j.getFixtures().read(path);
@@ -46,14 +51,6 @@ describe('content', function() {
                 dictionary.push(new DictionaryEntry(i + 1, words[i], words[i] + ' - description', new Date(), new Date()));
             }
             return dictionary;
-        }
-
-        function doTest(testName: string) {
-            let doc = parseDocument('content-test-' + testName + '-input.html');
-            let expectedOutput = readFixture('content-test-' + testName + '-expected.html');
-            content.processDocument(doc);
-            let actualOutput = new XMLSerializer().serializeToString(doc.documentElement);
-            expect(actualOutput).toEqual(expectedOutput);
         }
 
         describe('highlighting', () => {
@@ -111,5 +108,31 @@ describe('content', function() {
                 doTest('stats-absent');
             });
         });
+
+        function doTest(testName: string) {
+            let doc = parseDocument('content-test-' + testName + '-input.html');
+            content.processDocument(doc);
+            verifyOutput(doc, testName);
+            verifyLog(doc, testName);
+        }
+
+        function verifyOutput(doc: Document, testName: string) {
+            let expectedOutput = readFixture('content-test-' + testName + '-expected.html');
+            let actualOutput = new XMLSerializer().serializeToString(doc.documentElement);
+            expect(actualOutput).toEqual(expectedOutput);
+        }
+
+        function verifyLog(doc: Document, testName: string) {
+            let expectedLog = JSON.parse(readFixture('content-test-' + testName + '-expected-log.json'));
+            expectedLog.forEach((e: any) => { e['url'] = window.location.href; });
+            let actualLog = highlightingLog.entries.map((e: HighlightingLogEntry) => {
+                return { highlights: e.highlights, url: e.url };
+            });
+            expect(actualLog).toEqual(expectedLog);
+        }
+
+        function parseDocument(path: string): Document {
+            return new DOMParser().parseFromString(readFixture(path), 'application/xml');
+        }
     });
 });

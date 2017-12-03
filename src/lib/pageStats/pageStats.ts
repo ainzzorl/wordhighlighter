@@ -7,11 +7,11 @@ interface WordAppeances {
  * Statistics about a page load.
  */
 class PageStats {
+    // (dictionary entry id)->(number of appearances)
+    readonly counts: { [id: number]: number; } = {};
     // Need 2 maps because DictionaryEntry can't be a key of a map.
     // (dictionary entry id)->(dictionaryEntry)
     private entries: { [id: number]: DictionaryEntry; } = {};
-    // (dictionary entry id)->(number of appearances)
-    private counts: { [id: number]: number; } = {};
     private totalApparances = 0;
 
     registerMatch(dictionaryEntry: DictionaryEntry): void {

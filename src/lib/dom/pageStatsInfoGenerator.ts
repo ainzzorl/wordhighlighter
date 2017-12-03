@@ -1,5 +1,5 @@
 ///<reference path="../common/dictionaryEntry.ts" />
-///<reference path="../stats/pageStats.ts" />
+///<reference path="../pageStats/pageStats.ts" />
 
 /**
  * Class responsible for generating page stats info (displayed in the right bottom corner).

@@ -2,9 +2,12 @@
 ///<reference path="./dom/domTraversal.ts" />
 ///<reference path="./dom/pageStatsInfoGenerator.ts" />
 ///<reference path="./matching/matchFinder.ts" />
+///<reference path="common/dao.ts" />
 ///<reference path="common/logger.ts" />
 ///<reference path="common/settings.ts" />
-///<reference path="stats/pageStats.ts" />
+///<reference path="highlightingLog/highlightingLog.ts" />
+///<reference path="highlightingLog/highlightingLogEntry.ts" />
+///<reference path="pageStats/pageStats.ts" />
 
 /**
  * Implements content script logic: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Content_scripts
@@ -12,17 +15,21 @@
 class Content {
     private startTime: number;
 
+    private dao: DAO;
     private settings: Settings;
     private domTraversal: DomTraversal = new DomTraversal();
     private highlightInjector: HighlightInjector;
     private matchFinder: MatchFinder;
+    private highlightingLog: HighlightingLog;
     private pageStatsInfoGenerator: PageStatsInfoGenerator = new PageStatsInfoGenerator();
     private pageStats: PageStats = new PageStats();
 
-    constructor(settings: Settings, highlightInjector: HighlightInjector, matchFinder: MatchFinder) {
+    constructor(dao: DAO, settings: Settings, highlightInjector: HighlightInjector, matchFinder: MatchFinder, highlightingLog: HighlightingLog) {
+        this.dao = dao;
         this.settings = settings;
         this.highlightInjector = highlightInjector;
         this.matchFinder = matchFinder;
+        this.highlightingLog = highlightingLog;
     }
 
     processDocument(doc: Document): void {
@@ -62,9 +69,13 @@ class Content {
     }
 
     private onFinished(content: Content, doc: Document): void {
-        if (content.settings.enablePageStats && content.pageStats.totalAppearances > 0) {
-            this.injectPageStatsInfo(content, doc);
-            this.addEventListeners(doc);
+        if (content.pageStats.totalAppearances > 0) {
+            if (content.settings.enablePageStats) {
+                this.injectPageStatsInfo(content, doc);
+                this.addEventListeners(doc);
+            }
+            this.highlightingLog.log(content.pageStats);
+            this.dao.saveHighlightingLog(this.highlightingLog, () => {});
         }
     }
 

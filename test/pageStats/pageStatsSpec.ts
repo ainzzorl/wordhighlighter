@@ -1,6 +1,6 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../../src/lib/matching/matchResultEntry.ts" />
-///<reference path="../../src/lib/stats/pageStats.ts" />
+///<reference path="../../src/lib/pageStats/pageStats.ts" />
 
 describe('PageStats', () => {
     let stats: PageStats;

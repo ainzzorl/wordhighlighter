@@ -72,7 +72,34 @@ describe('DAO', () => {
                 expect(receivedSettings).toEqual(settings);
             });
             if (!received) {
-                fail('Did not receive the dictionary');
+                fail('Did not receive the settings');
+            }
+        });
+    });
+
+    describe('highlighting log', () => {
+        it('creates, reads and updates highlighting log', () => {
+            dao.init();
+            let received = false;
+            dao.getHighlightingLog((highlightingLog: HighlightingLog) => {
+                received = true;
+                expect(highlightingLog).not.toBeNull();
+                expect(highlightingLog.entries).toEqual([]);
+            });
+            if (!received) {
+                fail('Did not receive the highlighting log');
+            }
+            let highlightingLog: HighlightingLog = new HighlightingLog([
+                new HighlightingLogEntry('example.com', new Date(), { 1: 12, 2: 34 })
+            ]);
+            dao.saveHighlightingLog(highlightingLog, () => {});
+            received = false;
+            dao.getHighlightingLog((receivedHighlightingLog: HighlightingLog) => {
+                received = true;
+                expect(receivedHighlightingLog.entries).toEqual(highlightingLog.entries);
+            });
+            if (!received) {
+                fail('Did not receive the highlighting log');
             }
         });
     });
