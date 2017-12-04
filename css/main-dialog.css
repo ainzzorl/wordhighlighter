@@ -70,6 +70,10 @@ body {
     width: 3em;
 }
 
+#history-table .count-column {
+    width: 15px;
+}
+
 .form-validation-error {
     color: red;
 }
