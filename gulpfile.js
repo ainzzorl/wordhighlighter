@@ -85,26 +85,35 @@ gulp.task('tslint', function() {
         .pipe(tslint.report())
 });
 
-gulp.task('concat-lib', ['compile-src'], function() {
+gulp.task('concat-lib', function() {
     return gulp
         .src(['build/lib/**/*.js'])
         .pipe(concat('lib.js'))
         .pipe(gulp.dest('./build/js/'));
 });
 
-gulp.task('concat-main-dialog', ['compile-src'], function() {
+gulp.task('concat-main-dialog', function() {
     return gulp
         .src(['build/mainDialog/*.js'])
         .pipe(concat('mainDialog.js'))
         .pipe(gulp.dest('./build/js/'));
 });
 
-gulp.task('test', ['compile-src', 'compile-test', 'concat-lib', 'concat-main-dialog', 'browserify-imports'], function(done) {
+gulp.task('test-no-dependencies', function(done) {
     var Server = require('karma').Server;
     return new Server({
         configFile: __dirname + '/karma.conf.js',
         singleRun: true
         }, done).start();
+});
+
+gulp.task('test', function(callback) {
+    var runSequence = require('run-sequence');
+    runSequence(
+                ['compile-src', 'compile-test', 'browserify-imports'],
+                ['concat-lib', 'concat-main-dialog'],
+                'test-no-dependencies',
+                callback);
 });
 
 gulp.task('clean-pre-package', function () {
@@ -113,17 +122,23 @@ gulp.task('clean-pre-package', function () {
         .pipe(clean());
 });
 
-// TODO: optimize: some tasks are called twice
 gulp.task('release', function(callback) {
     var runSequence = require('run-sequence');
     runSequence('clean',
-              ['copy-static-content', 'compile-src', 'compile-test', 'browserify-imports', 'tslint'],
+              ['copy-static-content', 'browserify-imports', 'tslint'],
+              ['compile-src', 'compile-test'],
               ['concat-lib', 'concat-main-dialog'],
-              'test',
+              'test-no-dependencies',
               'clean-pre-package',
               callback);
 });
 
-gulp.task('fast-build', ['copy-static-content', 'compile-src', 'concat-lib', 'concat-main-dialog']);
+gulp.task('fast-build', function(callback) {
+    var runSequence = require('run-sequence');
+    runSequence(
+              ['copy-static-content', 'compile-src'],
+              ['concat-lib', 'concat-main-dialog'],
+              callback);
+});
 
 gulp.task('default', ['fast-build']);
