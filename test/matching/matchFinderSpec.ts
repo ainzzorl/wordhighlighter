@@ -22,6 +22,7 @@ describe('MatchFinder', () => {
                 dictionary.push(new DictionaryEntry(1, 'people', '', new Date(), new Date()));
                 dictionary.push(new DictionaryEntry(2, 'profit', '', new Date(), new Date()));
                 matchFinder = new MatchFinderImpl(dictionary, stemmer);
+                matchFinder.buildIndexes();
             });
 
             describe('1 match in the middle', () => {
@@ -115,6 +116,7 @@ describe('MatchFinder', () => {
                     }
                 };
                 matchFinder = new MatchFinderImpl(dictionary, stemmer);
+                matchFinder.buildIndexes();
             });
 
             // TODO: comment

@@ -31,6 +31,7 @@ describe('content', function() {
             let stemmer: Stemmer = wnd.stemmer;
             highlightGenerator = new HighlightGenerator();
             matchFinder = new MatchFinderImpl(createDictionary(['people', 'profit']), stemmer);
+            spyOn(matchFinder, 'buildIndexes').and.callThrough();
             highlightInjector = new HighlightInjectorImpl(highlightGenerator);
             highlightingLog = new HighlightingLog([]);
             dao = {
@@ -76,9 +77,10 @@ describe('content', function() {
                 doTest('blacklisting');
             });
 
-            it('does not highlight anything is highlighting is disabled', () => {
+            it('does not highlight anything and does not build indexes is highlighting is disabled', () => {
                 settings.enableHighlighting = false;
                 doTest('disabled');
+                expect(matchFinder.buildIndexes).not.toHaveBeenCalled();
             });
 
             it('does not highlight anything if it times out', () => {

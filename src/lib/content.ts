@@ -37,6 +37,7 @@ class Content {
             return;
         }
         this.startTime = performance.now();
+        this.matchFinder.buildIndexes();
         let content: Content = this;
         this.domTraversal.traverseEligibleTextNodes(
             doc,

@@ -12,6 +12,11 @@ interface MatchFinder {
      * @param input Text string.
      */
     findMatches(input: string): Array<MatchResultEntry>;
+
+    /**
+     * Build indexes.
+     */
+    buildIndexes(): void;
 }
 
 class MatchFinderImpl implements MatchFinder {
@@ -27,9 +32,6 @@ class MatchFinderImpl implements MatchFinder {
         this.dictionary = dictionary;
         this.stemmer = stemmer;
         this.contentWordStems = {};
-        if (stemmer) {
-            this.calculateIndexes();
-        }
     }
 
     // Detect words matching the dictionary in the input.
@@ -52,6 +54,28 @@ class MatchFinderImpl implements MatchFinder {
         });
         this.pushMatchIfNotEmpty(result, currentNoMatch, null);
         return result;
+    }
+
+    // Build indexes. Must be called before matching.
+    // Not automatically calling from the constructor to prevent
+    // unnecessary calculations when highlighting is disabled.
+    buildIndexes(): void {
+        this.dictionaryStemMap = {};
+        this.strictMatchMap = {};
+        if (!this.stemmer) {
+            return;
+        }
+        for (let i = 0; i < this.dictionary.length; ++i) {
+            let entry: DictionaryEntry = this.dictionary[i];
+            if (entry.strictMatch) {
+                this.strictMatchMap[entry.value.toLowerCase()] = entry;
+            } else {
+                let stem = this.stemmer.stem(this.removeIgnoredPrefixes(entry.value));
+                if (stem) {
+                    this.dictionaryStemMap[stem] = entry;
+                }
+            }
+        }
     }
 
     private tokenize(input: String): Array<Token> {
@@ -96,22 +120,6 @@ class MatchFinderImpl implements MatchFinder {
         return char[0] >= 'a' && char[0] <= 'z'
                 || char[0] >= 'A' && char[0] <= 'Z'
                 || char[0] >= '0' && char[0] <= '9';
-    }
-
-    private calculateIndexes(): void {
-        this.dictionaryStemMap = {};
-        this.strictMatchMap = {};
-        for (let i = 0; i < this.dictionary.length; ++i) {
-            let entry: DictionaryEntry = this.dictionary[i];
-            if (entry.strictMatch) {
-                this.strictMatchMap[entry.value.toLowerCase()] = entry;
-            } else {
-                let stem = this.stemmer.stem(this.removeIgnoredPrefixes(entry.value));
-                if (stem) {
-                    this.dictionaryStemMap[stem] = entry;
-                }
-            }
-        }
     }
 
     private removeIgnoredPrefixes(input: string): string {
