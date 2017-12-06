@@ -78,6 +78,7 @@ class Content {
             this.highlightingLog.log(content.pageStats);
             this.dao.saveHighlightingLog(this.highlightingLog, () => {});
         }
+        this.matchFinder.cleanup();
     }
 
     private injectPageStatsInfo(content: Content, doc: Document): void {

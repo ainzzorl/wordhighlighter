@@ -32,6 +32,7 @@ describe('content', function() {
             highlightGenerator = new HighlightGenerator();
             matchFinder = new MatchFinderImpl(createDictionary(['people', 'profit']), stemmer);
             spyOn(matchFinder, 'buildIndexes').and.callThrough();
+            spyOn(matchFinder, 'cleanup').and.callThrough();
             highlightInjector = new HighlightInjectorImpl(highlightGenerator);
             highlightingLog = new HighlightingLog([]);
             dao = {
@@ -116,6 +117,9 @@ describe('content', function() {
             content.processDocument(doc);
             verifyOutput(doc, testName);
             verifyLog(doc, testName);
+            if (settings.enableHighlighting) {
+                expect(matchFinder.cleanup).toHaveBeenCalled();
+            }
         }
 
         function verifyOutput(doc: Document, testName: string) {

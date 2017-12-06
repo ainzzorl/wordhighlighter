@@ -17,6 +17,11 @@ interface MatchFinder {
      * Build indexes.
      */
     buildIndexes(): void;
+
+    /**
+     * Cleanup.
+     */
+    cleanup(): void;
 }
 
 class MatchFinderImpl implements MatchFinder {
@@ -24,7 +29,7 @@ class MatchFinderImpl implements MatchFinder {
     stemmer: Stemmer;
     dictionaryStemMap: any;
     strictMatchMap: any;
-    contentWordStems: any; // TODO: cleanup to release memory
+    contentWordStems: any;
 
     private IGNORED_PREFIXES = ['a ', 'an ', 'to '];
 
@@ -76,6 +81,13 @@ class MatchFinderImpl implements MatchFinder {
                 }
             }
         }
+    }
+
+    // Releasing memory.
+    cleanup(): void {
+        this.contentWordStems = {};
+        this.dictionaryStemMap = {};
+        this.strictMatchMap = {};
     }
 
     private tokenize(input: String): Array<Token> {
