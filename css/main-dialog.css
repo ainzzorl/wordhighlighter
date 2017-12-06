@@ -66,10 +66,6 @@ body {
     margin-left: 5px;
 }
 
-#timeout-input-box {
-    width: 3em;
-}
-
 #history-table .count-column {
     width: 15px;
 }

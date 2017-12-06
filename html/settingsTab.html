@@ -7,7 +7,7 @@
         </a>
       </label>
       <div class="col-xs-6">
-        <input type="checkbox" ng-model="settings.enablePageStats"/>
+        <input type="checkbox" class="form-control" ng-model="settings.enablePageStats"/>
       </div>
     </div>
     <div class="form-group row">
@@ -17,7 +17,7 @@
         </a>
       </label>
       <div class="col-xs-6">
-        <input type="checkbox" ng-model="settings.enableHighlighting"/>
+        <input type="checkbox" class="form-control" ng-model="settings.enableHighlighting"/>
       </div>
     </div>
     <div class="form-group row">
@@ -28,7 +28,7 @@
         </a>
       </label>
       <div class="col-xs-6">
-        <input id="timeout-input-box" name="timeout" ng-model="settings.timeout" type="number" required/>
+        <input id="timeout-input-box" name="timeout" class="form-control" ng-model="settings.timeout" type="number" required/>
         <div class="form-validation-error">
           <div ng-show="settingsForm.timeout.$error.required">Required</div>
           <div ng-show="settingsForm.timeout.$error.number">Not valid number</div>
