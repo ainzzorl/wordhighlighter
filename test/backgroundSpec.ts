@@ -2,26 +2,26 @@
 ///<reference path="../src/lib/background.ts" />
 ///<reference path="../src/lib/common/dictionaryEntry.ts" />
 
-describe('background', function() {
+describe('background', () => {
     let dao;
 
-    describe('start', function() {
+    describe('start', () => {
 
-        beforeEach(function() {
+        beforeEach(() => {
             dao = {
-                init: function() {}
+                init: () => {}
             };
             spyOn(dao, 'init');
             let background = new Background(dao);
             background.start();
         });
 
-        it('initializes the DAO', function() {
+        it('initializes the DAO', () => {
             expect(dao.init).toHaveBeenCalled();
         });
     });
 
-    describe('addWord', function() {
+    describe('addWord', () => {
         let background;
 
         beforeEach(() => {

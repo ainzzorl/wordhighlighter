@@ -119,10 +119,8 @@ describe('MatchFinder', () => {
                 matchFinder.buildIndexes();
             });
 
-            // TODO: comment
             function findWordMatch(input: string) {
                 let result = matchFinder.findMatches(input);
-                // TODO: error message
                 expect(result.length).toEqual(1);
                 return result[0].matchOf ? result[0].matchOf.value : null;
             }

@@ -4,7 +4,7 @@
 
 declare let inject: any;
 
-describe('wordsController', function() {
+describe('wordsController', () => {
 
     let controller;
     let $scope: any;
@@ -15,7 +15,7 @@ describe('wordsController', function() {
     let mod: any = module;
     beforeEach(mod('mainDialog'));
 
-    beforeEach(function() {
+    beforeEach(() => {
         dao = {
             getDictionary: function(callback: (dictionary: Array<DictionaryEntry>) => void) {
                 let result = [];
@@ -31,14 +31,14 @@ describe('wordsController', function() {
                 callback();
             }
         };
-        NgTableParams = function() {
+        NgTableParams = () => {
             return {
-                reload: function() {
+                reload: () => {
                 }
             };
         };
         dictionaryEntryForm = {
-            $setPristine: function() {
+            $setPristine: () => {
             }
         };
     });
@@ -48,26 +48,26 @@ describe('wordsController', function() {
         controller = $controller('wordsController', { $scope: $scope, NgTableParams: NgTableParams, dao: dao });
     }));
 
-    describe('load', function() {
-        beforeEach(function() {
+    describe('load', () => {
+        beforeEach(() => {
             $scope.load();
         });
 
-        it ('loads the dictionary', function() {
+        it ('loads the dictionary', () => {
             expect($scope.dictionary.map(function(de: DictionaryEntry) {
                 return de.value;
             })).toEqual(['word1', 'word2', 'word3']);
         });
 
-        it ('makes a copy of the original data', function() {
+        it ('makes a copy of the original data', () => {
             expect($scope.originalData).toEqual($scope.dictionary);
         });
     });
 
-    describe('onAddNewWordClicked', function() {
-        beforeEach(function() {
+    describe('onAddNewWordClicked', () => {
+        beforeEach(() => {
             $scope.newWordForm = {
-                $setPristine: function() {}
+                $setPristine: () => {}
             };
             spyOn($scope.tableParams, 'reload').and.callThrough();
             spyOn($scope.newWordForm, '$setPristine').and.callThrough();
@@ -75,9 +75,9 @@ describe('wordsController', function() {
             $scope.dictionary = [];
         });
 
-        describe('new word is not empty', function() {
-            describe ('not dupe', function() {
-                beforeEach(function() {
+        describe('new word is not empty', () => {
+            describe ('not dupe', () => {
+                beforeEach(() => {
                     $scope.newWord = {
                         value: 'new-word-value',
                         description: 'new-word-description',
@@ -87,39 +87,39 @@ describe('wordsController', function() {
                     $scope.onAddNewWordClicked();
                 });
 
-                it ('persists the new entry', function() {
+                it ('persists the new entry', () => {
                     expect(dao.addEntry).toHaveBeenCalledWith(
                         'new-word-value', 'new-word-description', true, jasmine.any(Function));
                 });
 
-                it ('adds the new entry to the table', function() {
+                it ('adds the new entry to the table', () => {
                     expect($scope.dictionary.length).toEqual(1);
                     expect($scope.dictionary[0].value).toEqual('new-word-value');
                     expect($scope.dictionary[0].description).toEqual('new-word-description');
                     expect($scope.dictionary[0].strictMatch).toBe(true);
                 });
 
-                it ('reloads the table', function() {
+                it ('reloads the table', () => {
                     expect($scope.tableParams.reload).toHaveBeenCalled();
                 });
 
-                it ('resets the word', function() {
+                it ('resets the word', () => {
                     expect($scope.newWord.value).toEqual('');
                     expect($scope.newWord.description).toEqual('');
                     expect($scope.newWord.strictMatch).toBe(false);
                 });
 
-                it ('resets the form', function() {
+                it ('resets the form', () => {
                     expect($scope.newWordForm.$setPristine).toHaveBeenCalled();
                 });
 
-                it ('hides the error', function() {
+                it ('hides the error', () => {
                     expect($scope.showAddingDupeError).toBe(false);
                 });
             });
 
-            describe ('dupe', function() {
-                beforeEach(function() {
+            describe ('dupe', () => {
+                beforeEach(() => {
                     $scope.dictionary = [
                         new DictionaryEntry(1, 'new-word-value', '', new Date(), new Date())
                     ];
@@ -131,31 +131,31 @@ describe('wordsController', function() {
                     $scope.onAddNewWordClicked();
                 });
 
-                it ('does not persist the new entry', function() {
+                it ('does not persist the new entry', () => {
                     expect(dao.addEntry).not.toHaveBeenCalled();
                 });
 
-                it ('does not add the new entry to the table', function() {
+                it ('does not add the new entry to the table', () => {
                     expect($scope.dictionary.length).toEqual(1);
                 });
 
-                it ('does not reload the table', function() {
+                it ('does not reload the table', () => {
                     expect($scope.tableParams.reload).not.toHaveBeenCalled();
                 });
 
-                it ('does not reset the word', function() {
+                it ('does not reset the word', () => {
                     expect($scope.newWord.value).toEqual('new-word-value');
                     expect($scope.newWord.description).toEqual('new-word-description');
                 });
 
-                it ('shows an error', function() {
+                it ('shows an error', () => {
                     expect($scope.showAddingDupeError).toBe(true);
                 });
             });
         });
 
-        describe('new word is empty', function() {
-            beforeEach(function() {
+        describe('new word is empty', () => {
+            beforeEach(() => {
                 $scope.newWord = {
                     value: '',
                     description: 'new-word-desciption'
@@ -163,18 +163,18 @@ describe('wordsController', function() {
                 $scope.onAddNewWordClicked();
             });
 
-            it ('does not add the new entry', function() {
+            it ('does not add the new entry', () => {
                 expect(dao.addEntry).not.toHaveBeenCalled();
             });
 
-            it ('does not reload the dictionary', function() {
+            it ('does not reload the dictionary', () => {
                 expect($scope.tableParams.reload).not.toHaveBeenCalled();
             });
         });
     });
 
-    describe('delete', function() {
-        beforeEach(function() {
+    describe('delete', () => {
+        beforeEach(() => {
             spyOn($scope, 'load').and.callThrough();
             spyOn(dao, 'saveDictionary').and.callThrough();
             spyOn($scope.tableParams, 'reload').and.callThrough();
@@ -187,25 +187,25 @@ describe('wordsController', function() {
             $scope.delete($scope.dictionary[1]);
         });
 
-        it ('removes the word from the list', function() {
+        it ('removes the word from the list', () => {
             expect($scope.dictionary.map(function(de: any) {
                 return de.value;
             })).toEqual(['word1', 'word3']);
         });
 
-        it ('reloads the table', function() {
+        it ('reloads the table', () => {
             expect($scope.tableParams.reload).toHaveBeenCalled();
         });
 
-        it ('persists the dictionary', function() {
+        it ('persists the dictionary', () => {
             expect(dao.saveDictionary).toHaveBeenCalled();
         });
     });
 
-    describe('cancel', function() {
+    describe('cancel', () => {
         let originalValue: string;
 
-        beforeEach(function() {
+        beforeEach(() => {
             spyOn(dictionaryEntryForm, '$setPristine').and.callThrough();
 
             originalValue = $scope.dictionary[1].value;
@@ -216,31 +216,31 @@ describe('wordsController', function() {
             $scope.cancel($scope.dictionary[1], dictionaryEntryForm);
         });
 
-        it ('resets the value', function() {
+        it ('resets the value', () => {
             expect($scope.dictionary[1].value).toEqual(originalValue);
         });
 
-        it ('sets the form pristine', function() {
+        it ('sets the form pristine', () => {
             expect(dictionaryEntryForm.$setPristine).toHaveBeenCalled();
         });
 
-        it ('marks the row as not being edited', function() {
+        it ('marks the row as not being edited', () => {
             expect($scope.dictionary[1].isEditing).toBe(false);
         });
 
-        it ('hides the dupe error', function() {
+        it ('hides the dupe error', () => {
             expect($scope.dictionary[1].isDupe).toBe(false);
         });
     });
 
-    describe('save', function() {
-        beforeEach(function() {
+    describe('save', () => {
+        beforeEach(() => {
             spyOn(dictionaryEntryForm, '$setPristine').and.callThrough();
             spyOn(dao, 'saveDictionary').and.callThrough();
         });
 
-        describe('not dupe, changed', function() {
-            beforeEach(function() {
+        describe('not dupe, changed', () => {
+            beforeEach(() => {
                 $scope.dictionary[1].value += '-updated';
                 $scope.dictionary[1].isEditing = true;
                 $scope.dictionary[1].isDupe = true;
@@ -249,67 +249,67 @@ describe('wordsController', function() {
                 $scope.save($scope.dictionary[1], dictionaryEntryForm);
             });
 
-            it ('updates the original data', function() {
+            it ('updates the original data', () => {
                 expect($scope.originalData[1].value).toEqual($scope.dictionary[1].value);
             });
 
-            it ('sets the form pristine', function() {
+            it ('sets the form pristine', () => {
                 expect(dictionaryEntryForm.$setPristine).toHaveBeenCalled();
             });
 
-            it ('marks the row as not being edited', function() {
+            it ('marks the row as not being edited', () => {
                 expect($scope.dictionary[1].isEditing).toBe(false);
             });
 
-            it ('persists the dictionary', function() {
+            it ('persists the dictionary', () => {
                 expect(dao.saveDictionary).toHaveBeenCalled();
             });
 
-            it ('hides the dupe error', function() {
+            it ('hides the dupe error', () => {
                 expect($scope.dictionary[1].isDupe).toBe(false);
             });
 
-            it ('updates the date', function() {
+            it ('updates the date', () => {
                 expect($scope.dictionary[1].updatedAt).not.toBeNull();
             });
         });
 
-        describe('no dupe, did not change', function() {
+        describe('no dupe, did not change', () => {
             let originalData: string;
             let originalDate: Date;
 
-            beforeEach(function() {
+            beforeEach(() => {
                 originalData = $scope.originalData[1].value;
                 originalDate = $scope.originalData[1].updatedAt;
 
                 $scope.save($scope.dictionary[1], dictionaryEntryForm);
             });
 
-            it ('does not update the original data', function() {
+            it ('does not update the original data', () => {
                 expect($scope.originalData[1].value).toEqual(originalData);
             });
 
-            it ('marks the row as not being edited', function() {
+            it ('marks the row as not being edited', () => {
                 expect($scope.dictionary[1].isEditing).toBe(false);
             });
 
-            it ('does not persist the dictionary', function() {
+            it ('does not persist the dictionary', () => {
                 expect(dao.saveDictionary).not.toHaveBeenCalled();
             });
 
-            it ('does not show the dupe error', function() {
+            it ('does not show the dupe error', () => {
                 expect($scope.dictionary[1].isDupe).toBe(false);
             });
 
-            it ('does not update the date', function() {
+            it ('does not update the date', () => {
                 expect($scope.dictionary[1].updatedAt).toEqual(originalDate);
             });
         });
 
-        describe('dupe', function() {
+        describe('dupe', () => {
             let originalData: string;
 
-            beforeEach(function() {
+            beforeEach(() => {
                 $scope.dictionary[1].value = $scope.dictionary[2].value;
                 $scope.dictionary[1].isEditing = true;
                 $scope.dictionary[1].isDupe = false;
@@ -318,42 +318,42 @@ describe('wordsController', function() {
                 $scope.save($scope.dictionary[1], dictionaryEntryForm);
             });
 
-            it ('does not update the original data', function() {
+            it ('does not update the original data', () => {
                 expect($scope.originalData[1].value).toEqual(originalData);
             });
 
-            it ('does not set the form pristine', function() {
+            it ('does not set the form pristine', () => {
                 expect(dictionaryEntryForm.$setPristine).not.toHaveBeenCalled();
             });
 
-            it ('does not mark the row as not being edited', function() {
+            it ('does not mark the row as not being edited', () => {
                 expect($scope.dictionary[1].isEditing).toBe(true);
             });
 
-            it ('does not persist the dictionary', function() {
+            it ('does not persist the dictionary', () => {
                 expect(dao.saveDictionary).not.toHaveBeenCalled();
             });
 
-            it ('shows the dupe error', function() {
+            it ('shows the dupe error', () => {
                 expect($scope.dictionary[1].isDupe).toBe(true);
             });
         });
     });
 
-    describe('isDupe', function() {
-        it ('is true if the match is exacy', function() {
+    describe('isDupe', () => {
+        it ('is true if the match is exacy', () => {
             expect($scope.isDupe('word1')).toBe(true);
         });
 
-        it ('is true if the match is exacy but in different case', function() {
+        it ('is true if the match is exacy but in different case', () => {
             expect($scope.isDupe('WORD1')).toBe(true);
         });
 
-        it ('is false otherwise', function() {
+        it ('is false otherwise', () => {
             expect($scope.isDupe('word4')).toBe(false);
         });
 
-        it ('is false if the match is skipped', function() {
+        it ('is false if the match is skipped', () => {
             expect($scope.isDupe('word1', 1)).toBe(false);
         });
     });

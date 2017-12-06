@@ -2,7 +2,7 @@
 ///<reference path="../../node_modules/@types/angular/index.d.ts" />
 ///<reference path="../../src/lib/common/settings.ts" />
 
-describe('settingsController', function() {
+describe('settingsController', () => {
 
     let controller;
     let $scope: any;
@@ -11,7 +11,7 @@ describe('settingsController', function() {
     let mod: any = module;
     beforeEach(mod('mainDialog'));
 
-    beforeEach(function() {
+    beforeEach(() => {
         dao = {
             getSettings: function(callback: (settings: Settings) => void) {
                 let settings: Settings = new Settings();
@@ -30,19 +30,19 @@ describe('settingsController', function() {
         controller = $controller('settingsController', { $scope: $scope, dao: dao });
     }));
 
-    describe('load', function() {
-        beforeEach(function() {
+    describe('load', () => {
+        beforeEach(() => {
             $scope.load();
         });
 
-        it ('loads the settings', function() {
+        it ('loads the settings', () => {
             expect($scope.settings.enableHighlighting).toBe(true);
             expect($scope.settings.timeout).toEqual(123);
         });
     });
 
-    describe('save', function() {
-        beforeEach(function() {
+    describe('save', () => {
+        beforeEach(() => {
             spyOn(dao, 'saveSettings');
             $scope.settings = new Settings();
             $scope.settings.timeout = 456;
@@ -51,7 +51,7 @@ describe('settingsController', function() {
             $scope.save();
         });
 
-        it ('saves the settings', function() {
+        it ('saves the settings', () => {
             expect(dao.saveSettings).toHaveBeenCalledWith($scope.settings, jasmine.any(Function));
         });
     });

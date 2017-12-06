@@ -2,7 +2,7 @@
 ///<reference path="../../node_modules/@types/angular/index.d.ts" />
 ///<reference path="../../src/lib/common/dictionaryEntry.ts" />
 
-describe('importController', function() {
+describe('importController', () => {
 
     let controller;
     let $scope: any;
@@ -11,7 +11,7 @@ describe('importController', function() {
     let mod: any = module;
     beforeEach(mod('mainDialog'));
 
-    beforeEach(function() {
+    beforeEach(() => {
         dao = {
             saveDictionary(dictionary: Array<DictionaryEntry>, callback: () => void): void {
                 callback();
@@ -24,98 +24,98 @@ describe('importController', function() {
         controller = $controller('importController', { $scope: $scope, dao: dao });
     }));
 
-    describe('onImportClicked', function() {
+    describe('onImportClicked', () => {
         let input;
 
-        beforeEach(function() {
+        beforeEach(() => {
             input = [
                 new DictionaryEntry(null, 'word 1', '', null, null)
             ];
-            $scope.parseInput = function() {
+            $scope.parseInput = () => {
                 return input;
             };
         });
 
-        describe('keep', function() {
-            beforeEach(function() {
+        describe('keep', () => {
+            beforeEach(() => {
                 $scope.importInput.mode = $scope.MODE_KEEP;
                 spyOn($scope, 'importAndKeep');
             });
 
-            describe('no dupes', function() {
-                beforeEach(function() {
-                    $scope.getDuplicateEntries = function() {
+            describe('no dupes', () => {
+                beforeEach(() => {
+                    $scope.getDuplicateEntries = () => {
                         return [];
                     };
                     $scope.onImportClicked();
                 });
 
-                it('detects no dupes', function() {
+                it('detects no dupes', () => {
                     expect($scope.dupes).toEqual([]);
                 });
 
-                it('imports data', function() {
+                it('imports data', () => {
                     expect($scope.importAndKeep).toHaveBeenCalled();
                 });
             });
 
-            describe('dupes', function() {
-                beforeEach(function() {
-                    $scope.getDuplicateEntries = function() {
+            describe('dupes', () => {
+                beforeEach(() => {
+                    $scope.getDuplicateEntries = () => {
                         return ['dup'];
                     };
                     $scope.onImportClicked();
                 });
 
-                it('detects dupes', function() {
+                it('detects dupes', () => {
                     expect($scope.dupes).toEqual(['dup']);
                 });
 
-                it('does not import', function() {
+                it('does not import', () => {
                     expect($scope.importAndKeep).not.toHaveBeenCalled();
                 });
 
-                it('shows no confirmation', function() {
+                it('shows no confirmation', () => {
                     expect($scope.showInputSuccessConfirmation).toBe(false);
                 });
             });
         });
 
-        describe('replace', function() {
-            beforeEach(function() {
+        describe('replace', () => {
+            beforeEach(() => {
                 $scope.importInput.mode = $scope.MODE_REPLACE;
                 spyOn($scope, 'importAsReplacement');
-                $scope.getDuplicateEntries = function() {
+                $scope.getDuplicateEntries = () => {
                     return [];
                 };
                 $scope.onImportClicked();
             });
 
-            it('imports data', function() {
+            it('imports data', () => {
                 expect($scope.importAsReplacement).toHaveBeenCalled();
             });
         });
 
-        describe('overwrite', function() {
-            beforeEach(function() {
+        describe('overwrite', () => {
+            beforeEach(() => {
                 $scope.importInput.mode = $scope.MODE_OVERWRITE;
                 spyOn($scope, 'importAndOverwrite');
-                $scope.getDuplicateEntries = function() {
+                $scope.getDuplicateEntries = () => {
                     return [];
                 };
                 $scope.onImportClicked();
             });
 
-            it('imports data', function() {
+            it('imports data', () => {
                 expect($scope.importAndOverwrite).toHaveBeenCalled();
             });
         });
     });
 
-    describe('parseInput', function() {
+    describe('parseInput', () => {
         let result: Array<DictionaryEntry>;
 
-        beforeEach(function() {
+        beforeEach(() => {
             $scope.importInput.data = ''
                 + 'word1;description1' + '\n' // word + description
                 + 'word2' + '\n' // no description
@@ -125,36 +125,36 @@ describe('importController', function() {
             result = $scope.parseInput();
         });
 
-        it ('detects the number of entries', function() {
+        it ('detects the number of entries', () => {
             expect(result.length).toEqual(4);
         });
 
-        it ('reads word + description', function() {
+        it ('reads word + description', () => {
             expect(result[0].value).toEqual('word1');
             expect(result[0].description).toEqual('description1');
         });
 
-        it ('reads word with no description', function() {
+        it ('reads word with no description', () => {
             expect(result[1].value).toEqual('word2');
             expect(result[1].description).toEqual('');
         });
 
-        it ('reads description with semicolumns', function() {
+        it ('reads description with semicolumns', () => {
             expect(result[2].value).toEqual('word3');
             expect(result[2].description).toEqual('description;3');
         });
 
-        it ('trims leading and trailing spaces', function() {
+        it ('trims leading and trailing spaces', () => {
             expect(result[3].value).toEqual('word   4');
             expect(result[3].description).toEqual('description  4');
         });
     });
 
-    describe('getDuplicateEntries', function() {
+    describe('getDuplicateEntries', () => {
         let result: Array<string>;
 
-        describe('contains duplicates', function() {
-            beforeEach(function() {
+        describe('contains duplicates', () => {
+            beforeEach(() => {
                 let input =  [
                     new DictionaryEntry(null, 'word 1', '', null, null),
                     new DictionaryEntry(null, 'word 1', '', null, null),
@@ -166,14 +166,14 @@ describe('importController', function() {
                 result = $scope.getDuplicateEntries(input);
             });
 
-            it ('detects duplicates', function() {
+            it ('detects duplicates', () => {
                 let lowercaseSortedResult = result.map((r: string) => { return r.toLowerCase(); } ).sort();
                 expect(lowercaseSortedResult).toEqual(['word 1', 'word 2']);
             });
         });
 
-        describe('no duplicates', function() {
-            beforeEach(function() {
+        describe('no duplicates', () => {
+            beforeEach(() => {
                 let input = [
                     new DictionaryEntry(null, 'word 1', '', null, null),
                     new DictionaryEntry(null, 'word 2', '', null, null),
@@ -182,16 +182,16 @@ describe('importController', function() {
                 result = $scope.getDuplicateEntries(input);
             });
 
-            it ('detects no duplicates', function() {
+            it ('detects no duplicates', () => {
                 expect(result.length).toEqual(0);
             });
         });
     });
 
-    describe('importAsReplacement', function() {
+    describe('importAsReplacement', () => {
         let input;
 
-        beforeEach(function() {
+        beforeEach(() => {
             input = [new DictionaryEntry(null, 'word 1', 'desc 1', null, null)];
             spyOn(dao, 'saveDictionary').and.callThrough();
             $scope.showInputSuccessConfirmation = false;
@@ -199,23 +199,23 @@ describe('importController', function() {
             $scope.importAsReplacement(input);
         });
 
-        it('saves the dictionary', function() {
+        it('saves the dictionary', () => {
             expect(dao.saveDictionary).toHaveBeenCalledWith(input, jasmine.any(Function));
         });
 
-        it('shows confirmation', function() {
+        it('shows confirmation', () => {
             expect($scope.showInputSuccessConfirmation).toBe(true);
         });
 
-        it('resets input data', function() {
+        it('resets input data', () => {
             expect($scope.importInput.data).toEqual('');
         });
     });
 
-    describe('importAndKeep', function() {
+    describe('importAndKeep', () => {
         let input;
 
-        beforeEach(function() {
+        beforeEach(() => {
             input = [
                 new DictionaryEntry(null, 'new', 'new - desc', null, null),
                 new DictionaryEntry(null, 'both', 'both new - desc', null, null)
@@ -232,7 +232,7 @@ describe('importController', function() {
             $scope.importAndKeep(input);
         });
 
-        it('saves the dictionary', function() {
+        it('saves the dictionary', () => {
             expect(dao.saveDictionary).toHaveBeenCalledWith(
                 [
                     new DictionaryEntry(null, 'old', 'old - desc', null, null),
@@ -243,19 +243,19 @@ describe('importController', function() {
             );
         });
 
-        it('shows confirmation', function() {
+        it('shows confirmation', () => {
             expect($scope.showInputSuccessConfirmation).toBe(true);
         });
 
-        it('resets input data', function() {
+        it('resets input data', () => {
             expect($scope.importInput.data).toEqual('');
         });
     });
 
-    describe('importAndOverwrite', function() {
+    describe('importAndOverwrite', () => {
         let input;
 
-        beforeEach(function() {
+        beforeEach(() => {
             input = [
                 new DictionaryEntry(null, 'new', 'new - desc', null, null),
                 new DictionaryEntry(null, 'both', 'both new - desc', null, null)
@@ -272,7 +272,7 @@ describe('importController', function() {
             $scope.importAndOverwrite(input);
         });
 
-        it('saves the dictionary', function() {
+        it('saves the dictionary', () => {
             expect(dao.saveDictionary).toHaveBeenCalledWith(
                 [
                     new DictionaryEntry(null, 'old', 'old - desc', null, null),
@@ -283,11 +283,11 @@ describe('importController', function() {
             );
         });
 
-        it('shows confirmation', function() {
+        it('shows confirmation', () => {
             expect($scope.showInputSuccessConfirmation).toBe(true);
         });
 
-        it('resets input data', function() {
+        it('resets input data', () => {
             expect($scope.importInput.data).toEqual('');
         });
     });

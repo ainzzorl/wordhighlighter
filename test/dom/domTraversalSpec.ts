@@ -1,7 +1,6 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../../src/lib/dom/domTraversal.ts" />
 
-// TODO: test stopping.
 describe('DomTraversal', () => {
     let domTraversal: DomTraversal;
     let rootNode: HTMLElement;

@@ -1,3 +1,5 @@
+///<reference path="../common/dictionaryEntry.ts" />
+
 interface WordAppeances {
     dictionaryEntry: DictionaryEntry;
     count: number;

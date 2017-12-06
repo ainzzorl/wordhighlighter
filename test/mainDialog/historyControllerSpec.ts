@@ -1,5 +1,7 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../../node_modules/@types/angular/index.d.ts" />
+///<reference path="../../src/lib/highlightingLog/highlightingLog.ts" />
+///<reference path="../../src/lib/highlightingLog/highlightingLogEntry.ts" />
 
 describe('historyController', () => {
 
