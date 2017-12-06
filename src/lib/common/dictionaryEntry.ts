@@ -9,13 +9,14 @@ class DictionaryEntry {
     private _updatedAt: Date;
     private _strictMatch: boolean;
 
-    constructor(id: number, value: string, description: string, createdAt: Date, updatedAt: Date, strictMatch: boolean = false) {
+    constructor(id: number, value: string, description: string, createdAt: Date = undefined, updatedAt: Date = undefined, strictMatch: boolean = false) {
         this._id = id;
         this._value = value;
         this._description = description;
-        this._createdAt = createdAt;
-        this._updatedAt = updatedAt;
         this._strictMatch = strictMatch;
+        let now = new Date();
+        this._createdAt = createdAt || now;
+        this._updatedAt = updatedAt || now;
     }
 
     get id(): number {

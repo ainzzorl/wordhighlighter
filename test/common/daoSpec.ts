@@ -30,7 +30,7 @@ describe('DAO', () => {
             if (!received) {
                 fail('Did not receive the dictionary');
             }
-            dictionary.push(new DictionaryEntry(null, 'value2', 'description2', null, null, false));
+            dictionary.push(new DictionaryEntry(null, 'value2', 'description2'));
             received = false;
             dao.saveDictionary(dictionary, () => {
                 received = true;

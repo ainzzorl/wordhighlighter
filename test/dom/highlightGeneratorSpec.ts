@@ -19,7 +19,7 @@ describe('highlightGenerator', () => {
             let result;
 
             beforeEach(() => {
-                result = generator.generate('source', new DictionaryEntry(1, 'word', 'description', null, null));
+                result = generator.generate('source', new DictionaryEntry(1, 'word', 'description'));
             });
 
             it('wraps the entry', () => {
@@ -40,7 +40,7 @@ describe('highlightGenerator', () => {
             let result;
 
             beforeEach(() => {
-                result = generator.generate('source', new DictionaryEntry(1, 'word', '', null, null));
+                result = generator.generate('source', new DictionaryEntry(1, 'word', ''));
             });
 
             it('wraps the entry', () => {

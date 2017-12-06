@@ -29,7 +29,7 @@ describe('importController', () => {
 
         beforeEach(() => {
             input = [
-                new DictionaryEntry(null, 'word 1', '', null, null)
+                new DictionaryEntry(null, 'word 1', '')
             ];
             $scope.parseInput = () => {
                 return input;
@@ -156,12 +156,12 @@ describe('importController', () => {
         describe('contains duplicates', () => {
             beforeEach(() => {
                 let input =  [
-                    new DictionaryEntry(null, 'word 1', '', null, null),
-                    new DictionaryEntry(null, 'word 1', '', null, null),
-                    new DictionaryEntry(null, 'word 2', '', null, null),
-                    new DictionaryEntry(null, 'word 1', '', null, null),
-                    new DictionaryEntry(null, 'WoRd 2', '', null, null),
-                    new DictionaryEntry(null, 'word 3', '', null, null)
+                    new DictionaryEntry(null, 'word 1', ''),
+                    new DictionaryEntry(null, 'word 1', ''),
+                    new DictionaryEntry(null, 'word 2', ''),
+                    new DictionaryEntry(null, 'word 1', ''),
+                    new DictionaryEntry(null, 'WoRd 2', ''),
+                    new DictionaryEntry(null, 'word 3', '')
                 ];
                 result = $scope.getDuplicateEntries(input);
             });
@@ -175,9 +175,9 @@ describe('importController', () => {
         describe('no duplicates', () => {
             beforeEach(() => {
                 let input = [
-                    new DictionaryEntry(null, 'word 1', '', null, null),
-                    new DictionaryEntry(null, 'word 2', '', null, null),
-                    new DictionaryEntry(null, 'word 3', '', null, null)
+                    new DictionaryEntry(null, 'word 1', ''),
+                    new DictionaryEntry(null, 'word 2', ''),
+                    new DictionaryEntry(null, 'word 3', '')
                 ];
                 result = $scope.getDuplicateEntries(input);
             });
@@ -192,7 +192,7 @@ describe('importController', () => {
         let input;
 
         beforeEach(() => {
-            input = [new DictionaryEntry(null, 'word 1', 'desc 1', null, null)];
+            input = [new DictionaryEntry(null, 'word 1', 'desc 1')];
             spyOn(dao, 'saveDictionary').and.callThrough();
             $scope.showInputSuccessConfirmation = false;
             $scope.importInput.data = 'input-data';
@@ -217,13 +217,13 @@ describe('importController', () => {
 
         beforeEach(() => {
             input = [
-                new DictionaryEntry(null, 'new', 'new - desc', null, null),
-                new DictionaryEntry(null, 'both', 'both new - desc', null, null)
+                new DictionaryEntry(null, 'new', 'new - desc'),
+                new DictionaryEntry(null, 'both', 'both new - desc')
             ];
             dao.getDictionary = function(callback: (dictionary: Array<DictionaryEntry>) => void) {
                 callback([
-                    new DictionaryEntry(null, 'old', 'old - desc', null, null),
-                    new DictionaryEntry(null, 'both', 'both old - desc', null, null)
+                    new DictionaryEntry(null, 'old', 'old - desc'),
+                    new DictionaryEntry(null, 'both', 'both old - desc')
                 ]);
             };
             $scope.showInputSuccessConfirmation = false;
@@ -235,9 +235,9 @@ describe('importController', () => {
         it('saves the dictionary', () => {
             expect(dao.saveDictionary).toHaveBeenCalledWith(
                 [
-                    new DictionaryEntry(null, 'old', 'old - desc', null, null),
-                    new DictionaryEntry(null, 'both', 'both old - desc', null, null),
-                    new DictionaryEntry(null, 'new', 'new - desc', null, null)
+                    new DictionaryEntry(null, 'old', 'old - desc'),
+                    new DictionaryEntry(null, 'both', 'both old - desc'),
+                    new DictionaryEntry(null, 'new', 'new - desc')
                 ],
                 jasmine.any(Function)
             );

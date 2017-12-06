@@ -31,7 +31,7 @@ describe('background', () => {
                 },
                 getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
                     callback([
-                        new DictionaryEntry(1, 'existingWord', '', null, null)
+                        new DictionaryEntry(1, 'existingWord', '')
                     ]);
                 }
             };
