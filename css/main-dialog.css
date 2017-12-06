@@ -74,6 +74,11 @@ body {
     width: 15px;
 }
 
+#history-tab {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
 .form-validation-error {
     color: red;
 }
