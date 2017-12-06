@@ -7,6 +7,7 @@ describe('importController', () => {
     let controller;
     let $scope: any;
     let dao;
+    let now = new Date();
 
     let mod: any = module;
     beforeEach(mod('mainDialog'));
@@ -217,13 +218,13 @@ describe('importController', () => {
 
         beforeEach(() => {
             input = [
-                new DictionaryEntry(null, 'new', 'new - desc'),
-                new DictionaryEntry(null, 'both', 'both new - desc')
+                new DictionaryEntry(null, 'new', 'new - desc', now, now),
+                new DictionaryEntry(null, 'both', 'both new - desc', now, now)
             ];
             dao.getDictionary = function(callback: (dictionary: Array<DictionaryEntry>) => void) {
                 callback([
-                    new DictionaryEntry(null, 'old', 'old - desc'),
-                    new DictionaryEntry(null, 'both', 'both old - desc')
+                    new DictionaryEntry(null, 'old', 'old - desc', now, now),
+                    new DictionaryEntry(null, 'both', 'both old - desc', now, now)
                 ]);
             };
             $scope.showInputSuccessConfirmation = false;
@@ -235,9 +236,9 @@ describe('importController', () => {
         it('saves the dictionary', () => {
             expect(dao.saveDictionary).toHaveBeenCalledWith(
                 [
-                    new DictionaryEntry(null, 'old', 'old - desc'),
-                    new DictionaryEntry(null, 'both', 'both old - desc'),
-                    new DictionaryEntry(null, 'new', 'new - desc')
+                    new DictionaryEntry(null, 'old', 'old - desc', now, now),
+                    new DictionaryEntry(null, 'both', 'both old - desc', now, now),
+                    new DictionaryEntry(null, 'new', 'new - desc', now, now)
                 ],
                 jasmine.any(Function)
             );
@@ -257,13 +258,13 @@ describe('importController', () => {
 
         beforeEach(() => {
             input = [
-                new DictionaryEntry(null, 'new', 'new - desc', null, null),
-                new DictionaryEntry(null, 'both', 'both new - desc', null, null)
+                new DictionaryEntry(null, 'new', 'new - desc', now, now),
+                new DictionaryEntry(null, 'both', 'both new - desc', now, now)
             ];
             dao.getDictionary = function(callback: (dictionary: Array<DictionaryEntry>) => void) {
                 callback([
-                    new DictionaryEntry(null, 'old', 'old - desc', null, null),
-                    new DictionaryEntry(null, 'both', 'both old - desc', null, null)
+                    new DictionaryEntry(null, 'old', 'old - desc', now, now),
+                    new DictionaryEntry(null, 'both', 'both old - desc', now, now)
                 ]);
             };
             $scope.showInputSuccessConfirmation = false;
@@ -275,9 +276,9 @@ describe('importController', () => {
         it('saves the dictionary', () => {
             expect(dao.saveDictionary).toHaveBeenCalledWith(
                 [
-                    new DictionaryEntry(null, 'old', 'old - desc', null, null),
-                    new DictionaryEntry(null, 'both', 'both new - desc', null, null),
-                    new DictionaryEntry(null, 'new', 'new - desc', null, null)
+                    new DictionaryEntry(null, 'old', 'old - desc', now, now),
+                    new DictionaryEntry(null, 'both', 'both new - desc', now, now),
+                    new DictionaryEntry(null, 'new', 'new - desc', now, now)
                 ],
                 jasmine.any(Function)
             );
