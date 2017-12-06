@@ -1,11 +1,18 @@
-# wordhighlighter
+# Word Highlighter
 
 ## About
-Word Highlighter is a web extension that, given a list of words, highlights their occurences in the browser. It's written in TypeScript + AngularJS. The intended use case is helping to memorize new words.
+Word Highlighter is a web extension that, given a list of words, highlights their occurences in the browser. It's written in TypeScript + AngularJS.
 
-The functionality is similar to [Vocabulary Highligher](https://addons.mozilla.org/en-US/firefox/addon/vocabulary-highlighter/), but:
-- Doesn't crash the browser that often.
-- Word matching is more intelligent.
+The intended use case is memorizing new words and expanding your vocabulary:
+- Learn a new word.
+- Add it to the dictionary.
+- See it highlighted when you encounter it.
+- See what words in your dictionary you encounter most often.
+
+
+## Install
+- [Firefox](https://addons.mozilla.org/en-US/firefox/addon/wordhighlighter/)
+- [Chrome](https://chrome.google.com/webstore/detail/word-highlighter/flpifgahbaopfmnlmcgkkodanhoifdpa)
 
 ## Building the project
 
