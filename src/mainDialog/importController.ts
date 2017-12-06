@@ -81,7 +81,6 @@ angular
         dao.saveDictionary(entries, onSuccess);
     };
 
-    // TODO: optimize with sets
     $scope.importAndKeep = function(newEntries: Array<DictionaryEntry>) {
         dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
             newEntries.forEach(function(newEntry: DictionaryEntry) {

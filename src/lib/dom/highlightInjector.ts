@@ -13,7 +13,6 @@ interface HighlightInjector {
     inject(textNode: Node, matchResult: Array<MatchResultEntry>): void;
 }
 
-// TODO: does it need to depends on HighlightGenerator? Can it be pure?
 class HighlightInjectorImpl implements HighlightInjector {
     private highlightGenerator: HighlightGenerator;
 

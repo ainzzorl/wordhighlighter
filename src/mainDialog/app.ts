@@ -20,7 +20,6 @@ app
 // This happens in Firefox, but works normally in Chrome.
 // This is an attempt to detect and block these abnormal scrolls.
 // Of course, some "real" scrolls are blocked by it as well.
-// TODO: find something better.
 
 let currentXOffset = 0;
 let currentYOffset = 0;

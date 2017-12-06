@@ -8,8 +8,6 @@
 /**
  * Data Access Object.
  * Handles all interactions with the storage.
- *
- * TODO: consider using sync storage.
  */
 class DAO {
     private static readonly KEYS = {

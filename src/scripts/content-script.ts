@@ -6,17 +6,16 @@
 
 let timeStart = performance.now();
 WHLogger.log('Processing URL ' + document.URL);
-// TODO: read dictionary and settings at once.
 new DAO().getDictionary(function(dictionary: Array<DictionaryEntry>) {
     new DAO().getSettings(function(settings: Settings) {
         new DAO().getHighlightingLog(function(highlightingLog: HighlightingLog) {
-                // TODO: explain
+            // "stemmer" is not in Window class,
+            // so we need to convert the object to "any" to read the property.
             let wnd: any = window;
             let stemmer: Stemmer = wnd.stemmer;
 
             let dao = new DAO();
             let highlightInjector = new HighlightInjectorImpl(new HighlightGenerator());
-            // TODO: should not initialize stems if markup injection is disabled
             let matchFinder = new MatchFinderImpl(dictionary, stemmer);
 
             let content = new Content(dao, settings, highlightInjector, matchFinder, highlightingLog);
