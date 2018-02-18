@@ -21,6 +21,12 @@ describe('MatchFinder', () => {
                 dictionary = [];
                 dictionary.push(new DictionaryEntry(1, 'people', '', new Date(), new Date()));
                 dictionary.push(new DictionaryEntry(2, 'profit', '', new Date(), new Date()));
+                // Chinese
+                dictionary.push(new DictionaryEntry(3, '中文', '', new Date(), new Date()));
+                // Japanese
+                dictionary.push(new DictionaryEntry(4, '日本語', '', new Date(), new Date()));
+                // Russian
+                dictionary.push(new DictionaryEntry(5, 'русский', '', new Date(), new Date()));
                 matchFinder = new MatchFinderImpl(dictionary, stemmer);
                 matchFinder.buildIndexes();
             });
@@ -90,6 +96,44 @@ describe('MatchFinder', () => {
                     expect(matchResult[0].matchOf).toBeNull();
                     expect(matchResult[1].value).toEqual('profit');
                     expect(matchResult[1].matchOf.value).toEqual('profit');
+                });
+            });
+
+            describe('other alphabets', () => {
+                describe('chinese', () => {
+                    beforeEach(() => {
+                        matchResult = matchFinder.findMatches('中文');
+                    });
+
+                    it('finds the match', () => {
+                        expect(matchResult.length).toEqual(1);
+                        expect(matchResult[0].value).toEqual('中文');
+                        expect(matchResult[0].matchOf.value).toEqual('中文');
+                    });
+                });
+
+                describe('japanese', () => {
+                    beforeEach(() => {
+                        matchResult = matchFinder.findMatches('日本語');
+                    });
+
+                    it('finds the match', () => {
+                        expect(matchResult.length).toEqual(1);
+                        expect(matchResult[0].value).toEqual('日本語');
+                        expect(matchResult[0].matchOf.value).toEqual('日本語');
+                    });
+                });
+
+                describe('russian', () => {
+                    beforeEach(() => {
+                        matchResult = matchFinder.findMatches('русский');
+                    });
+
+                    it('finds the match', () => {
+                        expect(matchResult.length).toEqual(1);
+                        expect(matchResult[0].value).toEqual('русский');
+                        expect(matchResult[0].matchOf.value).toEqual('русский');
+                    });
                 });
             });
         });

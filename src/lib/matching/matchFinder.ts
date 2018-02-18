@@ -129,9 +129,10 @@ class MatchFinderImpl implements MatchFinder {
     }
 
     private isWordCharacter(char: string) {
-        return char[0] >= 'a' && char[0] <= 'z'
-                || char[0] >= 'A' && char[0] <= 'Z'
-                || char[0] >= '0' && char[0] <= '9';
+        return char[0] >= '0' && char[0] <= '9'
+                || char[0] >= 'a' && char[0] <= 'z' || char[0] >= 'A' && char[0] <= 'Z' // Latin
+                || char[0].match(/[\u3400-\u9FBF]/) // Chinese or Japanese
+                || char[0] >= 'а' && char[0] <= 'я' || char[0] >= 'А' && char[0] <= 'Я'; // Russian
     }
 
     private removeIgnoredPrefixes(input: string): string {
