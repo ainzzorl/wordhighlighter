@@ -3,10 +3,10 @@
     <div class="form-group row">
       <label for="new-word-value" class="col-xs-3 col-form-label">Word:</label>
       <div class="col-xs-9">
-        <input ng-model="newWord.value" name="value" minlength="3" type="text" class="form-control" required/>
+        <input ng-model="newWord.value" name="value" minlength="1" type="text" class="form-control" required/>
         <div ng-show="newWordForm.$submitted" class="form-validation-error">
           <div ng-show="newWordForm.value.$error.required">Required</div>
-          <div ng-show="newWordForm.value.$error.minlength">Must be 3 characters or longer</div>
+          <div ng-show="newWordForm.value.$error.minlength">Must be 1 characters or longer</div>
         </div>
       </div>
     </div>
@@ -46,11 +46,11 @@
       <td title="'Word'" sortable="'value'" ng-switch="dictionaryEntry.isEditing" ng-form="value">
         <span ng-switch-default class="editable-text">{{dictionaryEntry.value}}</span>
         <div class="controls" ng-switch-when="true">
-          <input type="text" name="value" minlength="3" ng-model="dictionaryEntry.value" class="editable-input form-control input-sm"
+          <input type="text" name="value" minlength="1" ng-model="dictionaryEntry.value" class="editable-input form-control input-sm"
             required />
           <div ng-show="dictionaryEntryForm.value.$dirty" class="form-validation-error">
             <div ng-show="dictionaryEntryForm.value.$error.required">Required</div>
-            <div ng-show="dictionaryEntryForm.value.$error.minlength">Must be 3 characters or longer</div>
+            <div ng-show="dictionaryEntryForm.value.$error.minlength">Must be 1 characters or longer</div>
           </div>
         </div>
         <div class="alert alert-danger" ng-show="dictionaryEntry.isDupe">
