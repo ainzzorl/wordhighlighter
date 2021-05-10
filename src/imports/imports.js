@@ -1,2 +1,1 @@
-var natural = require('natural');
-window.stemmer = natural.PorterStemmer;
+window.stemmer = require('natural/lib/natural/stemmers/porter_stemmer');;
