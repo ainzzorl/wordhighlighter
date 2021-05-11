@@ -83,13 +83,12 @@ gulp.task('browserify-imports', function () {
       .pipe(gulp.dest('./build/js/'));
   });
 
-// Lint rules are specified in tslint.json
-gulp.task('tslint', gulp.series(function() {
-    var tslint = require('gulp-tslint');
-    return gulp.src(['src/**/*.ts', 'test/**/*.ts'])
-        .pipe(tslint({
-            formatter: 'verbose'}))
-        .pipe(tslint.report())
+gulp.task('eslint', gulp.series(function() {
+    var eslint = require('gulp-eslint');
+    // TODO: lint gulpfile
+    return gulp.src(['src/*.ts', 'test/*.ts'])
+    .pipe(eslint())
+    .pipe(eslint.formatEach('compact', process.stderr));
 }));
 
 gulp.task('concat-lib', gulp.series(function() {
@@ -124,8 +123,11 @@ gulp.task('clean-pre-package', gulp.series(function () {
         .pipe(clean());
 }));
 
+// TODO: prettier
+gulp.task('lint', gulp.series('eslint'))
+
 gulp.task('release', gulp.series('clean',
-              gulp.parallel('copy-static-content', 'browserify-imports', 'tslint'),
+              gulp.parallel('copy-static-content', 'browserify-imports', 'lint'),
               gulp.parallel('compile-src', 'compile-test'),
               gulp.parallel('concat-lib', 'concat-main-dialog'),
               'test-no-dependencies',

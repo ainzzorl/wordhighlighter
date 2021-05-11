@@ -12,7 +12,7 @@ describe('content', function() {
 
     // jasmine.getFixtures() is added by jasmine-jquery and is not in the type definition.
     // Using this "any" variable to suppress compiler warnings.
-    let j: any = jasmine;
+    const j: any = jasmine;
 
     beforeEach(function() {
         j.getFixtures().fixturesPath = 'base/test/fixtures';
@@ -27,8 +27,8 @@ describe('content', function() {
 
         beforeEach(() => {
             settings = new Settings();
-            let wnd: any = window;
-            let stemmer: Stemmer = wnd.stemmer;
+            const wnd: any = window;
+            const stemmer: Stemmer = wnd.stemmer;
             highlightGenerator = new HighlightGenerator();
             matchFinder = new MatchFinderImpl(createDictionary(['people', 'profit']), stemmer);
             spyOn(matchFinder, 'buildIndexes').and.callThrough();
@@ -48,7 +48,7 @@ describe('content', function() {
         }
 
         function createDictionary(words: Array<string>): Array<DictionaryEntry> {
-            let dictionary = [];
+            const dictionary = [];
             for (let i = 0; i < words.length; ++i) {
                 dictionary.push(new DictionaryEntry(i + 1, words[i], words[i] + ' - description', new Date(), new Date()));
             }
@@ -98,7 +98,7 @@ describe('content', function() {
 
                 // Stubbing the generator to not highlight words anyhow
                 // to make it easier to test stats only.
-                highlightGenerator.generate = function(word: string, dictionaryEntry: DictionaryEntry) {
+                highlightGenerator.generate = function(word: string, _dictionaryEntry: DictionaryEntry) {
                     return word;
                 };
             });
@@ -113,7 +113,7 @@ describe('content', function() {
         });
 
         function doTest(testName: string) {
-            let doc = parseDocument('content-test-' + testName + '-input.html');
+            const doc = parseDocument('content-test-' + testName + '-input.html');
             content.processDocument(doc);
             verifyOutput(doc, testName);
             verifyLog(doc, testName);
@@ -123,15 +123,15 @@ describe('content', function() {
         }
 
         function verifyOutput(doc: Document, testName: string) {
-            let expectedOutput = readFixture('content-test-' + testName + '-expected.html');
-            let actualOutput = new XMLSerializer().serializeToString(doc.documentElement);
+            const expectedOutput = readFixture('content-test-' + testName + '-expected.html');
+            const actualOutput = new XMLSerializer().serializeToString(doc.documentElement);
             expect(actualOutput).toEqual(expectedOutput);
         }
 
         function verifyLog(doc: Document, testName: string) {
-            let expectedLog = JSON.parse(readFixture('content-test-' + testName + '-expected-log.json'));
+            const expectedLog = JSON.parse(readFixture('content-test-' + testName + '-expected-log.json'));
             expectedLog.forEach((e: any) => { e['url'] = window.location.href; });
-            let actualLog = highlightingLog.entries.map((e: HighlightingLogEntry) => {
+            const actualLog = highlightingLog.entries.map((e: HighlightingLogEntry) => {
                 return { highlights: e.highlights, url: e.url };
             });
             expect(actualLog).toEqual(expectedLog);

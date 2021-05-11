@@ -12,7 +12,7 @@ describe('background', () => {
                 init: () => {}
             };
             spyOn(dao, 'init');
-            let background = new Background(dao);
+            const background = new Background(dao);
             background.start();
         });
 
@@ -26,10 +26,10 @@ describe('background', () => {
 
         beforeEach(() => {
             dao = {
-                addEntry(value: string, description: string, strictMatch: boolean, callback: (dictionaryEntry: DictionaryEntry) => void): void {
+                addEntry(value: string, description: string, strictMatch: boolean, callback: (_dictionaryEntry: DictionaryEntry) => void): void {
                     callback(new DictionaryEntry(1, value, description, new Date(), new Date(), strictMatch));
                 },
-                getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
+                getDictionary(callback: (_dictionary: Array<DictionaryEntry>) => void): void {
                     callback([
                         new DictionaryEntry(1, 'existingWord', '')
                     ]);
