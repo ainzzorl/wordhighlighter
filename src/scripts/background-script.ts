@@ -7,15 +7,15 @@ let background: Background = new Background(new DAO());
 background.start();
 
 chrome.contextMenus.create({
-    id: 'add-word',
-    title: 'Add word',
-    contexts: ['selection']
+  id: 'add-word',
+  title: 'Add word',
+  contexts: ['selection'],
 });
 
-chrome.contextMenus.onClicked.addListener(function(info) {
-    switch (info.menuItemId) {
-        case 'add-word':
-            background.addWord(info.selectionText);
-            break;
-    }
+chrome.contextMenus.onClicked.addListener(function (info) {
+  switch (info.menuItemId) {
+    case 'add-word':
+      background.addWord(info.selectionText);
+      break;
+  }
 });

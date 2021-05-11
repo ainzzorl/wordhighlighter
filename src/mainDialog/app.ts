@@ -5,13 +5,12 @@ const DEFAULT_TAB = 'words';
 
 let app = angular.module('mainDialog', ['ngTable']);
 
-app.service('dao', function() {
-    return new DAO();
+app.service('dao', function () {
+  return new DAO();
 });
 
-app
-.run(function($rootScope: any) {
-    $rootScope.currentTab = DEFAULT_TAB;
+app.run(function ($rootScope: any) {
+  $rootScope.currentTab = DEFAULT_TAB;
 });
 
 // The code below is an ugly workaround for a bug.
@@ -24,19 +23,22 @@ app
 let currentXOffset = 0;
 let currentYOffset = 0;
 
-app
-.run(function($window: any) {
-    if ($window.navigator.userAgent.toLowerCase().indexOf('firefox') < 0) {
-        return;
-    }
+app.run(function ($window: any) {
+  if ($window.navigator.userAgent.toLowerCase().indexOf('firefox') < 0) {
+    return;
+  }
 
-    angular.element($window).bind('scroll', function() {
-        if (this.pageYOffset === 0 && this.pageYOffset !== currentYOffset && currentYOffset > 10) {
-            WHLogger.log('Strange scroll has been detected');
-            $window.scrollTo(currentXOffset, currentYOffset);
-            WHLogger.log('Reset scroll to ' + currentXOffset + ', ' + currentYOffset);
-        }
-        currentXOffset = this.pageXOffset;
-        currentYOffset = this.pageYOffset;
-    });
+  angular.element($window).bind('scroll', function () {
+    if (
+      this.pageYOffset === 0 &&
+      this.pageYOffset !== currentYOffset &&
+      currentYOffset > 10
+    ) {
+      WHLogger.log('Strange scroll has been detected');
+      $window.scrollTo(currentXOffset, currentYOffset);
+      WHLogger.log('Reset scroll to ' + currentXOffset + ', ' + currentYOffset);
+    }
+    currentXOffset = this.pageXOffset;
+    currentYOffset = this.pageYOffset;
+  });
 });

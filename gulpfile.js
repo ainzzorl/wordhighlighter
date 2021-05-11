@@ -85,10 +85,29 @@ gulp.task('browserify-imports', function () {
 
 gulp.task('eslint', gulp.series(function() {
     var eslint = require('gulp-eslint');
-    // TODO: lint gulpfile
+    // TODO: lint js, Gulpfile
     return gulp.src(['src/*.ts', 'test/*.ts'])
     .pipe(eslint())
     .pipe(eslint.formatEach('compact', process.stderr));
+}));
+
+gulp.task('prettier', gulp.series(function() {
+    var prettier = require('gulp-prettier');
+    // TODO: lint js, Gulpfile
+    return gulp.src('src/**/*.ts', 'test/**/*.ts')
+        .pipe(prettier.check({ singleQuote: true }));
+}));
+
+gulp.task("fix", s=gulp.series(function() {
+    var prettier = require('gulp-prettier');
+  return gulp
+    .src('src/**/*.ts', 'test/**/*.ts')
+    .pipe(
+      prettier({
+        singleQuote: true,
+      })
+    )
+    .pipe(gulp.dest(file => file.base))
 }));
 
 gulp.task('concat-lib', gulp.series(function() {
@@ -123,8 +142,7 @@ gulp.task('clean-pre-package', gulp.series(function () {
         .pipe(clean());
 }));
 
-// TODO: prettier
-gulp.task('lint', gulp.series('eslint'))
+gulp.task('lint', gulp.series('eslint', 'prettier'))
 
 gulp.task('release', gulp.series('clean',
               gulp.parallel('copy-static-content', 'browserify-imports', 'lint'),

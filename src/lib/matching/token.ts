@@ -1,4 +1,4 @@
 interface Token {
-    value: string;
-    isWord: boolean;
+  value: string;
+  isWord: boolean;
 }

@@ -5,6 +5,6 @@
  * Means that "value" matches a dictionary entry in matchOf.
  */
 interface MatchResultEntry {
-    value: string;
-    matchOf: DictionaryEntry;
+  value: string;
+  matchOf: DictionaryEntry;
 }

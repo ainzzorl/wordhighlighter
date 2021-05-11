@@ -5,29 +5,33 @@
  * Implements background logic: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Background_scripts
  */
 class Background {
-    dao: DAO;
+  dao: DAO;
 
-    constructor(dao: DAO) {
-        this.dao = dao;
-    }
+  constructor(dao: DAO) {
+    this.dao = dao;
+  }
 
-    start(): void {
-        this.dao.init();
-    }
+  start(): void {
+    this.dao.init();
+  }
 
-    // TODO: use utility method to check for dupes
-    addWord(value: string): void {
-        let dao = this.dao;
-        dao.getDictionary(function(dictionary: Array<DictionaryEntry>) {
-            let isDupe: boolean = dictionary
-                .filter(function(entry) {
-                    return entry.value === value;
-                }).length > 0;
-            if (!isDupe) {
-                dao.addEntry(value, '', false, function() {
-                    WHLogger.log('Word ' + value + ' has been added to the dictionary through the context menu');
-                });
-            }
+  // TODO: use utility method to check for dupes
+  addWord(value: string): void {
+    let dao = this.dao;
+    dao.getDictionary(function (dictionary: Array<DictionaryEntry>) {
+      let isDupe: boolean =
+        dictionary.filter(function (entry) {
+          return entry.value === value;
+        }).length > 0;
+      if (!isDupe) {
+        dao.addEntry(value, '', false, function () {
+          WHLogger.log(
+            'Word ' +
+              value +
+              ' has been added to the dictionary through the context menu'
+          );
         });
-    }
+      }
+    });
+  }
 }
