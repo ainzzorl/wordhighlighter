@@ -86,7 +86,7 @@ gulp.task('browserify-imports', function () {
 gulp.task('eslint', gulp.series(function() {
     var eslint = require('gulp-eslint');
     // TODO: lint js, Gulpfile
-    return gulp.src(['src/*.ts', 'test/*.ts'])
+    return gulp.src(['src/**/*.ts', 'test/**/*.ts'])
     .pipe(eslint())
     .pipe(eslint.formatEach('compact', process.stderr));
 }));
