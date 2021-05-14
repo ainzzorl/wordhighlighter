@@ -228,5 +228,100 @@ describe('MatchFinder', () => {
         });
       });
     });
+
+    describe('multi-word matches', () => {
+      beforeEach(() => {
+        stemmer = {
+          stem: function (word) {
+            if (word.toLowerCase().indexOf('one') === 0) {
+              return 'one';
+            }
+            if (word.toLowerCase().indexOf('two') === 0) {
+              return 'two';
+            }
+            if (word.toLowerCase().indexOf('three') === 0) {
+              return 'three';
+            }
+            return word;
+          },
+        };
+        dictionary = [];
+        dictionary.push(
+          new DictionaryEntry(1, 'three', '', new Date(), new Date())
+        );
+        dictionary.push(
+          new DictionaryEntry(2, 'one TWO', '', new Date(), new Date(), true)
+        );
+        dictionary.push(
+          new DictionaryEntry(3, 'twos, threes', '', new Date(), new Date())
+        );
+        dictionary.push(
+          new DictionaryEntry(4, 'OnE-tWo-ThReEs', '', new Date(), new Date())
+        );
+        matchFinder = new MatchFinderImpl(dictionary, stemmer);
+        matchFinder.buildIndexes();
+      });
+
+      describe('1 two-word match', () => {
+        beforeEach(() => {
+          matchResult = matchFinder.findMatches('!one two four');
+        });
+
+        it('finds the match', () => {
+          expect(matchResult.length).toEqual(3);
+          expect(matchResult[0].value).toEqual('!');
+          expect(matchResult[0].matchOf).toBeNull();
+          expect(matchResult[1].value).toEqual('one two');
+          expect(matchResult[1].matchOf.value).toEqual('one TWO');
+          expect(matchResult[2].value).toEqual(' four');
+          expect(matchResult[2].matchOf).toBeNull();
+        });
+      });
+
+      describe('non strict match', () => {
+        beforeEach(() => {
+          matchResult = matchFinder.findMatches(
+            'hello oNeS tWoS, tHrEe goodbye...'
+          );
+        });
+
+        it('finds the match', () => {
+          expect(matchResult.length).toEqual(3);
+          expect(matchResult[0].value).toEqual('hello ');
+          expect(matchResult[0].matchOf).toBeNull();
+          expect(matchResult[1].value).toEqual('oNeS tWoS, tHrEe');
+          expect(matchResult[1].matchOf.value).toEqual('OnE-tWo-ThReEs');
+          expect(matchResult[2].value).toEqual(' goodbye...');
+          expect(matchResult[2].matchOf).toBeNull();
+        });
+      });
+
+      describe('no strict match', () => {
+        beforeEach(() => {
+          matchResult = matchFinder.findMatches('ones twos');
+        });
+
+        it('does not finds the match', () => {
+          expect(matchResult.length).toEqual(1);
+          expect(matchResult[0].value).toEqual('ones twos');
+        });
+      });
+
+      describe('possible overlaps', () => {
+        beforeEach(() => {
+          matchResult = matchFinder.findMatches('one two three');
+        });
+
+        it('finds two matches', () => {
+          expect(matchResult.length).toEqual(3);
+          expect(matchResult[0].value).toEqual('one two');
+          expect(matchResult[0].matchOf.value).toEqual('one TWO');
+          expect(matchResult[1].value).toEqual(' ');
+          expect(matchResult[1].matchOf).toBeNull();
+          expect(matchResult[2].value).toEqual('three');
+          expect(matchResult[2].matchOf.value).toEqual('three');
+        });
+      });
+    });
   });
 });

@@ -24,11 +24,31 @@ interface MatchFinder {
   cleanup(): void;
 }
 
+class TrieNode {
+  key: string;
+  value?: DictionaryEntry;
+  // TODO: use maps
+  children: any = new Object();
+}
+
 class MatchFinderImpl implements MatchFinder {
   dictionary: Array<DictionaryEntry>;
   stemmer: Stemmer;
-  dictionaryStemMap: any;
-  strictMatchMap: any;
+
+  // Trie data structure.
+  // The need for Trie arises from multi-token phrases we may need to lookup,
+  // without knowing ahead of time the length of the input string.
+  //
+  // Trie seems like an overkill since words/phrases in the dictionary are typically
+  // very short (usually just one word, occasionally 2 or 3, very rarely more than that),
+  // but we can't think of a significantly simpler way to do it without Tries.
+  strictTrie: TrieNode;
+  nonStrictTrie: TrieNode;
+
+  // A cache to avoid running somewhat expensive stemming more than once
+  // on the same word.
+  // TODO: use maps.
+  // TODO: maybe extract something like "CachingStemmer"?
   contentWordStems: any;
 
   private IGNORED_PREFIXES = ['a ', 'an ', 'to '];
@@ -36,58 +56,196 @@ class MatchFinderImpl implements MatchFinder {
   constructor(dictionary: Array<DictionaryEntry>, stemmer: Stemmer) {
     this.dictionary = dictionary;
     this.stemmer = stemmer;
-    this.contentWordStems = {};
+    this.strictTrie = new TrieNode();
+    this.nonStrictTrie = new TrieNode();
+    this.contentWordStems = new Object();
   }
 
   // Detect words matching the dictionary in the input.
   findMatches(input: string): Array<MatchResultEntry> {
     let result: Array<MatchResultEntry> = [];
+    let tokens = this.tokenize(input);
+    let i = 0;
     let currentNoMatch = '';
-    this.tokenize(input).forEach((token: Token) => {
+    while (i < tokens.length) {
+      let token = tokens[i];
       if (!token.isWord) {
         currentNoMatch += token.value;
-        return;
+        i++;
+        continue;
       }
-      let match = this.findMatchForWord(token.value);
-      if (!match) {
-        currentNoMatch += token.value;
-        return;
+      // Try finding a match in the "strict" trie, starting from tokens[i].
+      let [endIndex, match] = this.matchWithTrie(
+        tokens,
+        i,
+        this.strictTrie,
+        true
+      );
+      if (match !== null) {
+        // Found "strict" match.
+        this.pushMatchIfNotEmpty(result, currentNoMatch, null);
+        this.pushMatchIfNotEmpty(
+          result,
+          tokens
+            .slice(i, endIndex)
+            .map((t) => t.value)
+            .join(''),
+          match
+        );
+        currentNoMatch = '';
+        i = endIndex;
+      } else {
+        // Try finding a match in the "non-strict" trie, starting from tokens[i].
+        [endIndex, match] = this.matchWithTrie(
+          tokens,
+          i,
+          this.nonStrictTrie,
+          false
+        );
+        if (match !== null) {
+          // Found "non-strict" match.
+          this.pushMatchIfNotEmpty(result, currentNoMatch, null);
+          this.pushMatchIfNotEmpty(
+            result,
+            tokens
+              .slice(i, endIndex)
+              .map((t) => t.value)
+              .join(''),
+            match
+          );
+          currentNoMatch = '';
+          i = endIndex;
+        } else {
+          // No match starting from i-th token.
+          i += 1;
+          currentNoMatch += token.value;
+        }
       }
-      this.pushMatchIfNotEmpty(result, currentNoMatch, null);
-      this.pushMatchIfNotEmpty(result, token.value, match);
-      currentNoMatch = '';
-    });
+    }
     this.pushMatchIfNotEmpty(result, currentNoMatch, null);
     return result;
   }
 
-  // Build indexes. Must be called before matching.
+  // Try finding a match in a trie starting at tokens[firstTokenIndex].
+  // Returns a tuple of:
+  // - If there's a match:
+  //   - index of the first token after the match.
+  //   - DictionaryEntry corresponding to the match.
+  // - If there's no match:
+  //   - [null, null]
+  matchWithTrie(
+    tokens: Array<Token>,
+    firstTokenIndex: number,
+    trie: TrieNode,
+    strict: boolean
+  ): [number, DictionaryEntry] {
+    let node = trie;
+    let i = firstTokenIndex;
+
+    // Walk down the trie until we find a match.
+    while (i < tokens.length) {
+      if (!tokens[i].isWord) {
+        // Stip this token.
+        i++;
+        continue;
+      }
+      let word = tokens[i].value;
+      let key = word.toLowerCase();
+      if (!strict) {
+        // TODO: extract this block.
+        let cachedStem = this.contentWordStems[word];
+        if (cachedStem) {
+          key = cachedStem;
+        } else {
+          key = this.stemmer.stem(key);
+          this.contentWordStems[word] = key;
+        }
+      }
+      if (key in node.children) {
+        node = node.children[key];
+        if (node.value) {
+          // Found a match.
+          return [i + 1, node.value];
+        }
+        // Non-leaf trie node that doesn't have a corresponding entry in the dictionary.
+        // Need to keep walking.
+        i++;
+      } else {
+        return [null, null];
+      }
+    }
+    return [null, null];
+  }
+
+  // Build indexes/tries. Must be called before matching.
   // Not automatically calling from the constructor to prevent
   // unnecessary calculations when highlighting is disabled.
   buildIndexes(): void {
-    this.dictionaryStemMap = {};
-    this.strictMatchMap = {};
+    this.strictTrie = new TrieNode();
+    this.nonStrictTrie = new TrieNode();
+    this.contentWordStems = new Object();
     if (!this.stemmer) {
       return;
     }
-    for (let i = 0; i < this.dictionary.length; ++i) {
-      let entry: DictionaryEntry = this.dictionary[i];
-      if (entry.strictMatch) {
-        this.strictMatchMap[entry.value.toLowerCase()] = entry;
-      } else {
-        let stem = this.stemmer.stem(this.removeIgnoredPrefixes(entry.value));
-        if (stem) {
-          this.dictionaryStemMap[stem] = entry;
-        }
+    this.dictionary.forEach((entry: DictionaryEntry) => {
+      this.insertIntoTrie(entry, this.strictTrie, true);
+      if (!entry.strictMatch) {
+        this.insertIntoTrie(entry, this.nonStrictTrie, false);
       }
+    });
+  }
+
+  private insertIntoTrie(
+    entry: DictionaryEntry,
+    trie: TrieNode,
+    strict: boolean
+  ): void {
+    let normalizedWords: string[];
+    if (strict) {
+      normalizedWords = this.getNormalizedWords(entry.value, false);
+    } else {
+      normalizedWords = this.getNormalizedWords(
+        this.removeIgnoredPrefixes(entry.value),
+        true
+      );
     }
+    let node: TrieNode = trie;
+    normalizedWords.forEach((word: string) => {
+      if (word in node.children) {
+        node = node.children[word] as TrieNode;
+      } else {
+        node.children[word] = new TrieNode();
+        node.children[word].key = word;
+        node = node.children[word];
+      }
+    });
+    node.value = entry;
   }
 
   // Releasing memory.
   cleanup(): void {
-    this.contentWordStems = {};
-    this.dictionaryStemMap = {};
-    this.strictMatchMap = {};
+    this.strictTrie = new TrieNode();
+    this.nonStrictTrie = new TrieNode();
+    this.contentWordStems = new Object();
+  }
+
+  // Breake the input into words and "normalize" them.
+  private getNormalizedWords(input: string, doStem: boolean): Array<string> {
+    let result: Array<string> = [];
+    this.tokenize(input.toLowerCase()).forEach((token: Token) => {
+      if (!token.isWord) {
+        return;
+      }
+      let word = token.value;
+      if (doStem) {
+        word = this.stemmer.stem(word);
+        if (!word) {
+          return;
+        }
+      }
+      result.push(word);
+    });
+    return result;
   }
 
   private tokenize(input: String): Array<Token> {
@@ -110,33 +268,19 @@ class MatchFinderImpl implements MatchFinder {
     return result;
   }
 
-  private findMatchForWord(word: string): DictionaryEntry {
-    let strictMatch = <DictionaryEntry>this.strictMatchMap[word.toLowerCase()];
-    if (strictMatch && strictMatch.value) {
-      return strictMatch;
-    }
-
-    let cachedStem = this.contentWordStems[word];
-    let targetStem: string;
-    if (cachedStem) {
-      targetStem = cachedStem;
-    } else {
-      targetStem = this.stemmer.stem(word);
-      this.contentWordStems[word] = targetStem;
-    }
-    let result = <DictionaryEntry>this.dictionaryStemMap[targetStem];
-    return result && result.value ? result : null;
-  }
-
   private isWordCharacter(char: string) {
     return (
       (char[0] >= '0' && char[0] <= '9') ||
+      // Latin
+      // TODO: what about symbols like ñ?
       (char[0] >= 'a' && char[0] <= 'z') ||
-      (char[0] >= 'A' && char[0] <= 'Z') || // Latin
-      char[0].match(/[\u3400-\u9FBF]/) || // Chinese or Japanese
+      (char[0] >= 'A' && char[0] <= 'Z') ||
+      // Chinese or Japanese
+      char[0].match(/[\u3400-\u9FBF]/) ||
+      // Russian
       (char[0] >= 'а' && char[0] <= 'я') ||
       (char[0] >= 'А' && char[0] <= 'Я')
-    ); // Russian
+    );
   }
 
   private removeIgnoredPrefixes(input: string): string {
