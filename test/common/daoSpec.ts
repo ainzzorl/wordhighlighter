@@ -67,6 +67,7 @@ describe('DAO', () => {
       settings.enableHighlighting = false;
       settings.enablePageStats = false;
       settings.timeout = 123;
+      settings.backgroundColor = 'ff00ff';
       dao.saveSettings(settings, () => {});
       dao.getSettings((receivedSettings: Settings) => {
         received = true;

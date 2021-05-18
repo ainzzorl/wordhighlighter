@@ -62,6 +62,10 @@ body {
     margin-left: 5px;
 }
 
+#settings-form .color-picker-swatch {
+    width: 100%;
+}
+
 #history-table .count-column {
     width: 15px;
 }

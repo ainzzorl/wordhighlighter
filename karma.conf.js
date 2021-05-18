@@ -6,7 +6,9 @@ module.exports = function(config) {
     files: [
       'node_modules/angular/angular.min.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'node_modules/ng-table/bundles/ng-table.min.js', // TODO: mock it instead
+      'node_modules/ng-table/bundles/ng-table.min.js',
+      'node_modules/tinycolor2/dist/tinycolor-min.js',
+      'node_modules/angularjs-color-picker/dist/angularjs-color-picker.min.js',
 
       // for fixtures
       'node_modules/jquery/dist/jquery.min.js',

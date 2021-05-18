@@ -7,6 +7,32 @@ angular
     function ($scope: any, $timeout: any, dao: DAO) {
       $scope.isSaving = false;
 
+      $scope.colorPickerOptions = {
+        required: true,
+        format: 'hex8',
+        case: 'lower',
+        hue: true,
+        saturation: true,
+        lightness: true,
+        alpha: true,
+        swatch: true,
+        swatchBootstrap: true,
+        swatchOnly: true,
+        round: true,
+        pos: 'bottom right',
+        inputClass: 'form-control',
+        close: {
+          show: true,
+          label: 'Close',
+          class: '',
+        },
+        reset: {
+          show: true,
+          label: 'Reset',
+          class: '',
+        },
+      };
+
       $scope.load = function () {
         dao.getSettings(function (settings: Settings) {
           $scope.settings = settings;

@@ -64,6 +64,8 @@ gulp.task(
         'node_modules/ng-table/bundles/ng-table.min.css',
         'node_modules/bootstrap/dist/css/bootstrap.min.css',
         'node_modules/font-awesome/css/font-awesome.min.css',
+        'node_modules/angularjs-color-picker/dist/angularjs-color-picker.min.css',
+        'node_modules/angularjs-color-picker/dist/themes/angularjs-color-picker-bootstrap.min.css',
       ])
       .pipe(gulp.dest('build/thirdparty/css'));
   })
@@ -76,6 +78,8 @@ gulp.task(
       .src([
         'node_modules/angular/angular.min.js',
         'node_modules/ng-table/bundles/ng-table.min.js',
+        'node_modules/tinycolor2/dist/tinycolor-min.js',
+        'node_modules/angularjs-color-picker/dist/angularjs-color-picker.min.js',
       ])
       .pipe(gulp.dest('build/thirdparty/js'));
   })

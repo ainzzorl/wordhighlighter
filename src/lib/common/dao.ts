@@ -263,6 +263,11 @@ class DAO {
       input.enablePageStats = Settings.DEFAULT_ENABLE_PAGE_STATS;
     }
     settings.enablePageStats = input.enablePageStats;
+    if (input.backgroundColor === undefined) {
+      // Was created before background color was implemented.
+      input.backgroundColor = Settings.DEFAULT_BACKGROUND_COLOR;
+    }
+    settings.backgroundColor = input.backgroundColor;
     return settings;
   }
 
@@ -289,6 +294,7 @@ class DAO {
       timeout: input.timeout,
       enableHighlighting: input.enableHighlighting,
       enablePageStats: input.enablePageStats,
+      backgroundColor: input.backgroundColor,
     };
   }
 

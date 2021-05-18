@@ -1,12 +1,13 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../../src/lib/common/dictionaryEntry.ts" />
+///<reference path="../../src/lib/common/settings.ts" />
 ///<reference path="../../src/lib/dom/highlightGenerator.ts" />
 
 describe('highlightGenerator', () => {
   let generator: HighlightGenerator;
 
   beforeEach(() => {
-    generator = new HighlightGenerator();
+    generator = new HighlightGenerator(Settings.DEFAULT);
     // Ignore all whitespace characters when comparing strings.
     // We use string interpolation a lot,
     // and because of it there are a lot of extra spaces and line breaks in the generated HTML.
@@ -27,7 +28,7 @@ describe('highlightGenerator', () => {
 
       it('wraps the entry', () => {
         expect(result).toEqual(
-          `<span class="highlighted-word">
+          `<span class="highlighted-word" style="background-color: #ffff00;">
                         source
                         <div class="highlighted-word-tooltip-wrapper">
                             <div class="highlighted-word-tooltip">
@@ -52,7 +53,7 @@ describe('highlightGenerator', () => {
 
       it('wraps the entry', () => {
         expect(result).toEqual(
-          `<span class="highlighted-word">
+          `<span class="highlighted-word" style="background-color: #ffff00;">
                         source
                         <div class="highlighted-word-tooltip-wrapper">
                             <div class="highlighted-word-tooltip">

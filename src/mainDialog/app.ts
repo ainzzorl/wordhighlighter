@@ -3,7 +3,7 @@
 
 const DEFAULT_TAB = 'words';
 
-let app = angular.module('mainDialog', ['ngTable']);
+let app = angular.module('mainDialog', ['ngTable', 'color.picker']);
 
 app.service('dao', function () {
   return new DAO();
