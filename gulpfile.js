@@ -112,6 +112,17 @@ gulp.task(
 );
 
 gulp.task(
+  'compile-src-swallow-errors',
+  gulp.series(function () {
+    return tsProjectSrc
+      .src()
+      .pipe(tsProjectSrc())
+      .on('error', swallowError)
+      .js.pipe(gulp.dest('build'));
+  })
+);
+
+gulp.task(
   'compile-test',
   gulp.series(function () {
     return tsProjectTest
@@ -268,5 +279,29 @@ gulp.task(
     gulp.parallel('concat-lib', 'concat-main-dialog')
   )
 );
+
+gulp.task(
+  'fast-build-swallow-errors',
+  gulp.series(
+    gulp.parallel('copy-static-content', 'compile-src-swallow-errors'),
+    gulp.parallel('concat-lib', 'concat-main-dialog')
+  )
+);
+
+gulp.task(
+  'watch-fast-build',
+  gulp.series(function () {
+    gulp.watch(
+      ['src/**/*.ts', 'css/**/*.css', 'html/**/*.html'],
+      { ignoreInitial: false },
+      gulp.series('fast-build-swallow-errors')
+    );
+  })
+);
+
+function swallowError(error) {
+  console.log(error.toString());
+  this.emit('end');
+}
 
 gulp.task('default', gulp.series('fast-build'));
