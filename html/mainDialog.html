@@ -1,33 +1,67 @@
 <!DOCTYPE html>
 <html ng-app="mainDialog">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <script src="../thirdparty/js/angular.min.js"></script>
     <script src="../thirdparty/js/ng-table.min.js"></script>
     <script src="../thirdparty/js/tinycolor-min.js"></script>
     <script src="../thirdparty/js/angularjs-color-picker.min.js"></script>
     <script src="../js/lib.js"></script>
     <script src="../js/mainDialog.js"></script>
-    <link rel="stylesheet" href="../thirdparty/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../thirdparty/css/ng-table.min.css">
-    <link rel="stylesheet" href="../thirdparty/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../thirdparty/css/angularjs-color-picker.min.css">
-    <link rel="stylesheet" href="../thirdparty/css/angularjs-color-picker-bootstrap.min.css">
-    <link rel="stylesheet" href="../css/main-dialog.css">
+    <link rel="stylesheet" href="../thirdparty/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../thirdparty/css/ng-table.min.css" />
+    <link rel="stylesheet" href="../thirdparty/css/font-awesome.min.css" />
+    <link
+      rel="stylesheet"
+      href="../thirdparty/css/angularjs-color-picker.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../thirdparty/css/angularjs-color-picker-bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../css/main-dialog.css" />
   </head>
   <body>
     <div class="content container">
       <ul class="nav nav-tabs">
-        <li ng-click="currentTab = 'words'" ng-class="{active: (currentTab === 'words')}"><a href="#">Words</a></li>
-        <li ng-click="currentTab = 'import'" ng-class="{active: (currentTab === 'import')}"><a href="#">Import</a></li>
-        <li ng-click="currentTab = 'settings'" ng-class="{active: (currentTab === 'settings')}"><a href="#">Settings</a></li>
-        <li ng-click="currentTab = 'history'" ng-class="{active: (currentTab === 'history')}"><a href="#">History</a></li>
+        <li
+          ng-click="currentTab = 'words'"
+          ng-class="{active: (currentTab === 'words')}"
+        >
+          <a href="#">Words</a>
+        </li>
+        <li
+          ng-click="currentTab = 'import'"
+          ng-class="{active: (currentTab === 'import')}"
+        >
+          <a href="#">Import</a>
+        </li>
+        <li
+          ng-click="currentTab = 'settings'"
+          ng-class="{active: (currentTab === 'settings')}"
+        >
+          <a href="#">Settings</a>
+        </li>
+        <li
+          ng-click="currentTab = 'history'"
+          ng-class="{active: (currentTab === 'history')}"
+        >
+          <a href="#">History</a>
+        </li>
       </ul>
       <div ng-switch="currentTab">
-        <div ng-switch-when="words"><div ng-include="'wordsTab.html'"></div></div>
-        <div ng-switch-when="import"><div ng-include="'importTab.html'"></div></div>
-        <div ng-switch-when="settings"><div ng-include="'settingsTab.html'"></div></div>
-        <div ng-switch-when="history"><div ng-include="'historyTab.html'"></div></div>
+        <div ng-switch-when="words">
+          <div ng-include="'wordsTab.html'"></div>
+        </div>
+        <div ng-switch-when="import">
+          <div ng-include="'importTab.html'"></div>
+        </div>
+        <div ng-switch-when="settings">
+          <div ng-include="'settingsTab.html'"></div>
+        </div>
+        <div ng-switch-when="history">
+          <div ng-include="'historyTab.html'"></div>
+        </div>
       </div>
     </div>
   </body>

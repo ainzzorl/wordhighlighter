@@ -178,6 +178,7 @@ gulp.task(
         'test/**/*.ts',
         'src/**/*.js',
         'test/**/*.js',
+        'html/**/*.html',
         'gulpfile.js',
       ])
       .pipe(prettier.check({ singleQuote: true }));
@@ -194,6 +195,7 @@ gulp.task(
         'test/**/*.ts',
         'src/**/*.js',
         'test/**/*.js',
+        'html/**/*.html',
         'gulpfile.js',
       ])
       .pipe(

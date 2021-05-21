@@ -1,6 +1,7 @@
 <div id="history-tab" ng-controller="historyController">
   <form ng-submit="refresh()">
-    <span>Showing last</span> <input type="text" size="2" ng-model="interval.value"/> <span>days.</span>
+    <span>Showing last</span>
+    <input type="text" size="2" ng-model="interval.value" /> <span>days.</span>
     <button type="submit" class="btn btn-primary btn-sm">
       <span class="glyphicon glyphicon-refresh"></span>
     </button>
@@ -10,15 +11,21 @@
     Invalid interval: must be a number.
   </div>
 
-  <table id="history-table" ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+  <table
+    id="history-table"
+    ng-table="tableParams"
+    class="table table-condensed table-bordered table-striped"
+  >
     <tr ng-repeat="row in $data">
-      <td title="'Word'" sortable="'word'">
-        {{row.word}}
-      </td>
+      <td title="'Word'" sortable="'word'">{{row.word}}</td>
       <td title="'Times highlighted'" sortable="'total'" class="count-column">
         {{row.total}}
       </td>
-      <td title="'Different pages'" sortable="'uniquePages'" class="count-column">
+      <td
+        title="'Different pages'"
+        sortable="'uniquePages'"
+        class="count-column"
+      >
         {{row.uniquePages}}
       </td>
     </tr>
