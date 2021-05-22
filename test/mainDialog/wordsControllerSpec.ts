@@ -16,9 +16,7 @@ describe('wordsController', () => {
 
   beforeEach(() => {
     dao = {
-      getDictionary: function (
-        callback: (dictionary: Array<DictionaryEntry>) => void
-      ) {
+      getDictionary: function () {
         let result = [];
         result.push(
           new DictionaryEntry(1, 'word1', 'desc1', new Date(), new Date())
@@ -29,7 +27,7 @@ describe('wordsController', () => {
         result.push(
           new DictionaryEntry(3, 'word3', 'desc3', new Date(), new Date())
         );
-        callback(result);
+        return Promise.resolve(result);
       },
       addEntry(
         value: string,
@@ -65,18 +63,21 @@ describe('wordsController', () => {
     };
   });
 
-  beforeEach(inject(function ($controller, $rootScope) {
-    $scope = $rootScope.$new();
-    controller = $controller('wordsController', {
-      $scope: $scope,
-      NgTableParams: NgTableParams,
-      dao: dao,
-    });
-  }));
+  beforeEach(
+    async () =>
+      await inject(async function ($controller, $rootScope) {
+        $scope = $rootScope.$new();
+        controller = await $controller('wordsController', {
+          $scope: $scope,
+          NgTableParams: NgTableParams,
+          dao: dao,
+        });
+      })
+  );
 
   describe('load', () => {
-    beforeEach(() => {
-      $scope.load();
+    beforeEach(async () => {
+      await $scope.load();
     });
 
     it('loads the dictionary', () => {
@@ -105,14 +106,14 @@ describe('wordsController', () => {
 
     describe('new word is not empty', () => {
       describe('not dupe', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           $scope.newWord = {
             value: 'new-word-value',
             description: 'new-word-description',
             strictMatch: true,
           };
           $scope.showAddingDupeError = true;
-          $scope.onAddNewWordClicked();
+          await $scope.onAddNewWordClicked();
         });
 
         it('persists the new entry', () => {
@@ -195,12 +196,12 @@ describe('wordsController', () => {
     });
 
     describe('new word is empty', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         $scope.newWord = {
           value: '',
           description: 'new-word-desciption',
         };
-        $scope.onAddNewWordClicked();
+        await $scope.onAddNewWordClicked();
       });
 
       it('does not add the new entry', () => {
@@ -282,13 +283,13 @@ describe('wordsController', () => {
     });
 
     describe('not dupe, changed', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         $scope.dictionary[1].value += '-updated';
         $scope.dictionary[1].isEditing = true;
         $scope.dictionary[1].isDupe = true;
         $scope.dictionary[1].updatedAt = null;
 
-        $scope.save($scope.dictionary[1], dictionaryEntryForm);
+        await $scope.save($scope.dictionary[1], dictionaryEntryForm);
       });
 
       it('updates the original data', () => {

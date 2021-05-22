@@ -18,7 +18,7 @@ class Background {
   // TODO: use utility method to check for dupes
   addWord(value: string): void {
     let dao = this.dao;
-    dao.getDictionary(function (dictionary: Array<DictionaryEntry>) {
+    dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
       let isDupe: boolean =
         dictionary.filter(function (entry) {
           return entry.value === value;

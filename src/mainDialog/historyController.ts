@@ -19,7 +19,7 @@ angular
         $scope.interval.value = Number($scope.interval.value);
 
         dao.getHighlightingLog(function (highlightingLog: HighlightingLog) {
-          dao.getDictionary(function (dictionary: Array<DictionaryEntry>) {
+          dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
             $scope.tableData = populateTableData(dictionary, highlightingLog);
             $scope.tableParams = new NgTableParams(
               {

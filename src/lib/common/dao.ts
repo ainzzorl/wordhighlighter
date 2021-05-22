@@ -30,14 +30,13 @@ class DAO {
     this.initHighlightingLog();
   }
 
-  getDictionary(callback: (dictionary: Array<DictionaryEntry>) => void): void {
+  getDictionary(): Promise<Array<DictionaryEntry>> {
     let self: DAO = this;
-    self.store.get(
-      DAO.KEYS.dictionary,
-      (result: { dictionary: Array<any> }) => {
-        callback(self.deserializeDictionary(result.dictionary));
-      }
-    );
+    return new Promise<Array<DictionaryEntry>>(function (resolve, _reject) {
+      self.store.get(DAO.KEYS.dictionary, (result: { [key: string]: any }) => {
+        resolve(self.deserializeDictionary(result.dictionary));
+      });
+    });
   }
 
   getSettings(callback: (settings: Settings) => void): void {

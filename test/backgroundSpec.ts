@@ -42,10 +42,8 @@ describe('background', () => {
             )
           );
         },
-        getDictionary(
-          callback: (_dictionary: Array<DictionaryEntry>) => void
-        ): void {
-          callback([new DictionaryEntry(1, 'existingWord', '')]);
+        getDictionary(): Promise<Array<DictionaryEntry>> {
+          return Promise.resolve([new DictionaryEntry(1, 'existingWord', '')]);
         },
       };
       spyOn(dao, 'addEntry').and.callThrough();
@@ -53,8 +51,8 @@ describe('background', () => {
     });
 
     describe('not duplicate', () => {
-      beforeEach(() => {
-        background.addWord('differentWord');
+      beforeEach(async () => {
+        await background.addWord('differentWord');
       });
 
       it('adds the word', () => {

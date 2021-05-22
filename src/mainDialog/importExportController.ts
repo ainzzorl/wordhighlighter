@@ -82,7 +82,7 @@ angular
 
     function getJsonExportString(): Promise<string> {
       return new Promise(function (resolve, _reject) {
-        dao.getDictionary(function (dictionary: Array<DictionaryEntry>) {
+        dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
           let jsonData: any = {};
           jsonData.words = dictionary.map((entry) => {
             return {
@@ -109,7 +109,7 @@ angular
           'created at',
           'updated at',
         ]);
-        dao.getDictionary(function (dictionary: Array<DictionaryEntry>) {
+        dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
           csvData = csvData.concat(
             dictionary.map((entry) => {
               return [
@@ -288,12 +288,14 @@ angular
       return result;
     };
 
-    $scope.importAsReplacement = function (entries: Array<DictionaryEntry>) {
+    $scope.importAsReplacement = async function (
+      entries: Array<DictionaryEntry>
+    ) {
       dao.saveDictionary(entries, onSuccess);
     };
 
-    $scope.importAndKeep = function (newEntries: Array<DictionaryEntry>) {
-      dao.getDictionary(function (dictionary: Array<DictionaryEntry>) {
+    $scope.importAndKeep = async function (newEntries: Array<DictionaryEntry>) {
+      dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
         newEntries.forEach(function (newEntry: DictionaryEntry) {
           let exists = dictionary.some(function (
             existingEntry: DictionaryEntry
@@ -308,8 +310,10 @@ angular
       });
     };
 
-    $scope.importAndOverwrite = function (newEntries: Array<DictionaryEntry>) {
-      dao.getDictionary(function (dictionary: Array<DictionaryEntry>) {
+    $scope.importAndOverwrite = async function (
+      newEntries: Array<DictionaryEntry>
+    ) {
+      dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
         newEntries.forEach(function (newEntry: DictionaryEntry) {
           let exists = false;
           dictionary.forEach(function (existingEntry: DictionaryEntry) {

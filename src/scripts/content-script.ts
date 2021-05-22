@@ -6,7 +6,7 @@
 
 let timeStart = performance.now();
 WHLogger.log('Processing URL ' + document.URL);
-new DAO().getDictionary(function (dictionary: Array<DictionaryEntry>) {
+new DAO().getDictionary().then((dictionary: Array<DictionaryEntry>) => {
   new DAO().getSettings(function (settings: Settings) {
     new DAO().getHighlightingLog(function (highlightingLog: HighlightingLog) {
       // "stemmer" is not in Window class,

@@ -5,7 +5,7 @@ angular
   .module('mainDialog')
   .controller(
     'wordsController',
-    function ($scope: any, NgTableParams: any, dao: DAO) {
+    async function ($scope: any, NgTableParams: any, dao: DAO) {
       $scope.dictionary = [];
       $scope.newWord = {
         value: '',
@@ -15,21 +15,23 @@ angular
 
       $scope.showAddingDupeError = false;
 
-      $scope.load = function () {
-        dao.getDictionary(function (dictionary: Array<DictionaryEntry>) {
-          $scope.dictionary = dictionary;
-          $scope.tableParams = new NgTableParams(
-            {
-              count: 1000000000, // hide pager
-            },
-            {
-              dataset: $scope.dictionary,
-              counts: [], // hide page sizes
-            }
-          );
-          $scope.originalData = angular.copy($scope.dictionary);
-          $scope.$apply();
-        });
+      $scope.load = async function () {
+        return dao
+          .getDictionary()
+          .then((dictionary: Array<DictionaryEntry>) => {
+            $scope.dictionary = dictionary;
+            $scope.tableParams = new NgTableParams(
+              {
+                count: 1000000000, // hide pager
+              },
+              {
+                dataset: $scope.dictionary,
+                counts: [], // hide page sizes
+              }
+            );
+            $scope.originalData = angular.copy($scope.dictionary);
+            $scope.$apply();
+          });
       };
 
       $scope.onAddNewWordClicked = function () {
@@ -130,6 +132,6 @@ angular
         );
       }
 
-      $scope.load();
+      await $scope.load();
     }
   );

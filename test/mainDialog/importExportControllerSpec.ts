@@ -237,16 +237,16 @@ describe('importExportController', () => {
     let result: any;
 
     beforeEach(() => {
-      dao.getDictionary = function (
-        callback: (dictionary: Array<DictionaryEntry>) => void
-      ) {
-        callback([new DictionaryEntry(null, 'w', 'd', now, now, true)]);
+      dao.getDictionary = function () {
+        return Promise.resolve([
+          new DictionaryEntry(null, 'w', 'd', now, now, true),
+        ]);
       };
     });
 
     describe('json', () => {
       beforeEach(async () => {
-        $scope
+        await $scope
           .getExportString('json')
           .then((s) => {
             result = JSON.parse(s);
@@ -267,7 +267,7 @@ describe('importExportController', () => {
 
     describe('csv', () => {
       beforeEach(async () => {
-        $scope
+        await $scope
           .getExportString('csv')
           .then((s) => {
             result = Papa.parse(s).data;
@@ -338,12 +338,12 @@ describe('importExportController', () => {
   describe('importAsReplacement', () => {
     let input;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       input = [new DictionaryEntry(null, 'word 1', 'desc 1')];
       spyOn(dao, 'saveDictionary').and.callThrough();
       $scope.showInputSuccessConfirmation = false;
       $scope.importInput.data = 'input-data';
-      $scope.importAsReplacement(input);
+      await $scope.importAsReplacement(input);
     });
 
     it('saves the dictionary', () => {
@@ -365,15 +365,13 @@ describe('importExportController', () => {
   describe('importAndKeep', () => {
     let input;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       input = [
         new DictionaryEntry(null, 'new', 'new - desc', now, now),
         new DictionaryEntry(null, 'both', 'both new - desc', now, now),
       ];
-      dao.getDictionary = function (
-        callback: (dictionary: Array<DictionaryEntry>) => void
-      ) {
-        callback([
+      dao.getDictionary = function () {
+        return Promise.resolve([
           new DictionaryEntry(null, 'old', 'old - desc', now, now),
           new DictionaryEntry(null, 'both', 'both old - desc', now, now),
         ]);
@@ -381,7 +379,7 @@ describe('importExportController', () => {
       $scope.showInputSuccessConfirmation = false;
       $scope.importInput.data = 'input-data';
       spyOn(dao, 'saveDictionary').and.callThrough();
-      $scope.importAndKeep(input);
+      await $scope.importAndKeep(input);
     });
 
     it('saves the dictionary', () => {
@@ -407,15 +405,13 @@ describe('importExportController', () => {
   describe('importAndOverwrite', () => {
     let input;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       input = [
         new DictionaryEntry(null, 'new', 'new - desc', now, now),
         new DictionaryEntry(null, 'both', 'both new - desc', now, now),
       ];
-      dao.getDictionary = function (
-        callback: (dictionary: Array<DictionaryEntry>) => void
-      ) {
-        callback([
+      dao.getDictionary = function () {
+        return Promise.resolve([
           new DictionaryEntry(null, 'old', 'old - desc', now, now),
           new DictionaryEntry(null, 'both', 'both old - desc', now, now),
         ]);
@@ -423,7 +419,7 @@ describe('importExportController', () => {
       $scope.showInputSuccessConfirmation = false;
       $scope.importInput.data = 'input-data';
       spyOn(dao, 'saveDictionary').and.callThrough();
-      $scope.importAndOverwrite(input);
+      await $scope.importAndOverwrite(input);
     });
 
     it('saves the dictionary', () => {

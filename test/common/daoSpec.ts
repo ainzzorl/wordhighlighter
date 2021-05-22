@@ -11,42 +11,28 @@ describe('DAO', () => {
   });
 
   describe('dictionary', () => {
-    it('creates, reads and updates the dictionary', () => {
+    it('creates, reads and updates the dictionary', async () => {
       dao.init();
       dao.addEntry('value1', 'description1', true, () => {});
-      let received = false;
-      let dictionary: Array<DictionaryEntry>;
-      dao.getDictionary((_dictionary: Array<DictionaryEntry>) => {
-        dictionary = _dictionary;
-        received = true;
-        expect(dictionary.length).toEqual(1);
-        expect(dictionary[0].value).toEqual('value1');
-        expect(dictionary[0].description).toEqual('description1');
-        expect(dictionary[0].strictMatch).toEqual(true);
-        expect(dictionary[0].createdAt).not.toBeNull();
-        expect(dictionary[0].updatedAt).not.toBeNull();
-        expect(dictionary[0].id).not.toBeNull();
-      });
-      if (!received) {
-        fail('Did not receive the dictionary');
-      }
+      let dictionary = await dao.getDictionary();
+      expect(dictionary.length).toEqual(1);
+      expect(dictionary[0].value).toEqual('value1');
+      expect(dictionary[0].description).toEqual('description1');
+      expect(dictionary[0].strictMatch).toEqual(true);
+      expect(dictionary[0].createdAt).not.toBeNull();
+      expect(dictionary[0].updatedAt).not.toBeNull();
+      expect(dictionary[0].id).not.toBeNull();
       dictionary.push(new DictionaryEntry(null, 'value2', 'description2'));
-      received = false;
+      let received = false;
       dao.saveDictionary(dictionary, () => {
         received = true;
       });
-      dao.getDictionary((_dictionary: Array<DictionaryEntry>) => {
-        dictionary = _dictionary;
-        received = true;
-        expect(dictionary.length).toEqual(2);
-        expect(dictionary[1].value).toEqual('value2');
-        expect(dictionary[1].description).toEqual('description2');
-        expect(dictionary[1].strictMatch).toEqual(false);
-        expect(dictionary[1].id).not.toBeNull();
-      });
-      if (!received) {
-        fail('Did not receive the dictionary');
-      }
+      dictionary = await dao.getDictionary();
+      expect(dictionary.length).toEqual(2);
+      expect(dictionary[1].value).toEqual('value2');
+      expect(dictionary[1].description).toEqual('description2');
+      expect(dictionary[1].strictMatch).toEqual(false);
+      expect(dictionary[1].id).not.toBeNull();
     });
   });
 

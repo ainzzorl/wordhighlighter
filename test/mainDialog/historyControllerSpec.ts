@@ -14,10 +14,8 @@ describe('historyController', () => {
 
   beforeEach(() => {
     dao = {
-      getDictionary: (
-        callback: (dictionary: Array<DictionaryEntry>) => void
-      ) => {
-        callback([]);
+      getDictionary: () => {
+        return Promise.resolve([]);
       },
       getHighlightingLog: (callback: (log: HighlightingLog) => void) => {
         callback(new HighlightingLog());
@@ -37,11 +35,9 @@ describe('historyController', () => {
 
   describe('refresh', () => {
     describe('valid interval', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         $scope.interval.value = '10';
-        dao.getDictionary = (
-          callback: (dictionary: Array<DictionaryEntry>) => void
-        ) => {
+        dao.getDictionary = () => {
           let result = [];
           result.push(
             new DictionaryEntry(1, 'word1', 'desc1', new Date(), new Date())
@@ -52,7 +48,7 @@ describe('historyController', () => {
           result.push(
             new DictionaryEntry(3, 'word3', 'desc3', new Date(), new Date())
           );
-          callback(result);
+          return Promise.resolve(result);
         };
         dao.getHighlightingLog = (callback: (log: HighlightingLog) => void) => {
           let entries: Array<HighlightingLogEntry> = [];
@@ -85,7 +81,7 @@ describe('historyController', () => {
           );
           callback(new HighlightingLog(entries));
         };
-        $scope.refresh();
+        await $scope.refresh();
       });
 
       it('populates data for the table', () => {
