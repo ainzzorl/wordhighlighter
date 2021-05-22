@@ -39,8 +39,8 @@ describe('content', function () {
       highlightInjector = new HighlightInjectorImpl(highlightGenerator);
       highlightingLog = new HighlightingLog([]);
       dao = {
-        saveHighlightingLog(log: HighlightingLog, callback: () => void): void {
-          callback();
+        saveHighlightingLog(_log: Array<HighlightingLogEntry>) {
+          return Promise.resolve();
         },
       };
       content = new Content(
@@ -96,23 +96,23 @@ describe('content', function () {
         };
       });
 
-      it('injects highlights', () => {
-        doTest('basic');
+      it('injects highlights', async () => {
+        await doTest('basic');
       });
 
-      it('ignores blacklisted elements', () => {
-        doTest('blacklisting');
+      it('ignores blacklisted elements', async () => {
+        await doTest('blacklisting');
       });
 
-      it('does not highlight anything and does not build indexes is highlighting is disabled', () => {
+      it('does not highlight anything and does not build indexes is highlighting is disabled', async () => {
         settings.enableHighlighting = false;
-        doTest('disabled');
+        await doTest('disabled');
         expect(matchFinder.buildIndexes).not.toHaveBeenCalled();
       });
 
-      it('does not highlight anything if it times out', () => {
+      it('does not highlight anything if it times out', async () => {
         settings.timeout = 0;
-        doTest('timeout');
+        await doTest('timeout');
       });
     });
 
@@ -132,18 +132,18 @@ describe('content', function () {
         };
       });
 
-      it('injects page stats is anything is highlighted', () => {
-        doTest('stats-present');
+      it('injects page stats is anything is highlighted', async () => {
+        await doTest('stats-present');
       });
 
-      it("does not injects page stats if there's nothing to highlight", () => {
-        doTest('stats-absent');
+      it("does not injects page stats if there's nothing to highlight", async () => {
+        await doTest('stats-absent');
       });
     });
 
-    function doTest(testName: string) {
+    async function doTest(testName: string) {
       const doc = parseDocument('content-test-' + testName + '-input.html');
-      content.processDocument(doc);
+      await content.processDocument(doc);
       verifyOutput(doc, testName);
       verifyLog(doc, testName);
       if (settings.enableHighlighting) {

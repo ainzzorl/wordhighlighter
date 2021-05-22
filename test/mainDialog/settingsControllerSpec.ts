@@ -12,29 +12,32 @@ describe('settingsController', () => {
 
   beforeEach(() => {
     dao = {
-      getSettings: function (callback: (settings: Settings) => void) {
+      getSettings: () => {
         let settings: Settings = new Settings();
         settings.enableHighlighting = true;
         settings.timeout = 123;
-        callback(settings);
+        return Promise.resolve(settings);
       },
-      saveSettings(settings: Settings, callback: () => void): void {
-        callback();
+      saveSettings(_settings: Settings) {
+        return Promise.resolve();
       },
     };
   });
 
-  beforeEach(inject(function ($controller, $rootScope) {
-    $scope = $rootScope.$new();
-    controller = $controller('settingsController', {
-      $scope: $scope,
-      dao: dao,
-    });
-  }));
+  beforeEach(
+    async () =>
+      await inject(async function ($controller, $rootScope) {
+        $scope = $rootScope.$new();
+        controller = await $controller('settingsController', {
+          $scope: $scope,
+          dao: dao,
+        });
+      })
+  );
 
   describe('load', () => {
-    beforeEach(() => {
-      $scope.load();
+    beforeEach(async () => {
+      await $scope.load();
     });
 
     it('loads the settings', () => {
@@ -44,20 +47,17 @@ describe('settingsController', () => {
   });
 
   describe('save', () => {
-    beforeEach(() => {
-      spyOn(dao, 'saveSettings');
+    beforeEach(async () => {
+      spyOn(dao, 'saveSettings').and.callThrough();
       $scope.settings = new Settings();
       $scope.settings.timeout = 456;
       $scope.settings.enableHighlighting = false;
       $scope.settings.enablePageStats = false;
-      $scope.save();
+      await $scope.save();
     });
 
     it('saves the settings', () => {
-      expect(dao.saveSettings).toHaveBeenCalledWith(
-        $scope.settings,
-        jasmine.any(Function)
-      );
+      expect(dao.saveSettings).toHaveBeenCalledWith($scope.settings);
     });
   });
 });

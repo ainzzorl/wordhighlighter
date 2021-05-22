@@ -29,13 +29,8 @@ describe('wordsController', () => {
         );
         return Promise.resolve(result);
       },
-      addEntry(
-        value: string,
-        description: string,
-        strictMatch: boolean,
-        callback: (dictionaryEntry: DictionaryEntry) => void
-      ): void {
-        callback(
+      addEntry(value: string, description: string, strictMatch: boolean) {
+        return Promise.resolve(
           new DictionaryEntry(
             1,
             value,
@@ -46,11 +41,8 @@ describe('wordsController', () => {
           )
         );
       },
-      saveDictionary(
-        dictionary: Array<DictionaryEntry>,
-        callback: () => void
-      ): void {
-        callback();
+      saveDictionary(_dictionary: Array<DictionaryEntry>) {
+        return Promise.resolve();
       },
     };
     NgTableParams = () => {
@@ -120,8 +112,7 @@ describe('wordsController', () => {
           expect(dao.addEntry).toHaveBeenCalledWith(
             'new-word-value',
             'new-word-description',
-            true,
-            jasmine.any(Function)
+            true
           );
         });
 

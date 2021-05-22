@@ -39,22 +39,24 @@ class Content {
     this.highlightingLog = highlightingLog;
   }
 
-  processDocument(doc: Document): void {
+  async processDocument(doc: Document) {
     if (!this.settings.enableHighlighting) {
       return;
     }
     this.startTime = performance.now();
     this.matchFinder.buildIndexes();
     let content: Content = this;
-    this.domTraversal.traverseEligibleTextNodes(
-      doc,
-      function (node: Text) {
-        content.onFound(content, node);
-      },
-      function () {
-        content.onFinished(content, doc);
-      }
-    );
+    return new Promise<void>((resolve, _reject) => {
+      this.domTraversal.traverseEligibleTextNodes(
+        doc,
+        function (node: Text) {
+          content.onFound(content, node);
+        },
+        function () {
+          content.onFinished(content, doc).then(resolve);
+        }
+      );
+    });
   }
 
   private isTimeout(): boolean {
@@ -78,14 +80,14 @@ class Content {
       );
   }
 
-  private onFinished(content: Content, doc: Document): void {
+  private async onFinished(content: Content, doc: Document) {
     if (content.pageStats.totalAppearances > 0) {
       if (content.settings.enablePageStats) {
         this.injectPageStatsInfo(content, doc);
         this.addEventListeners(doc);
       }
       this.highlightingLog.log(content.pageStats);
-      this.dao.saveHighlightingLog(this.highlightingLog, () => {});
+      await this.dao.saveHighlightingLog(this.highlightingLog);
     }
     this.matchFinder.cleanup();
   }

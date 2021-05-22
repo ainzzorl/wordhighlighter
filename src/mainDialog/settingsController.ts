@@ -33,16 +33,16 @@ angular
         },
       };
 
-      $scope.load = function () {
-        dao.getSettings(function (settings: Settings) {
+      $scope.load = async () => {
+        return dao.getSettings().then((settings: Settings) => {
           $scope.settings = settings;
           $scope.$apply();
         });
       };
 
-      $scope.save = function () {
+      $scope.save = async () => {
         $scope.isSaving = true;
-        dao.saveSettings($scope.settings, () => {
+        return dao.saveSettings($scope.settings).then(() => {
           // Saving happens so fast that it's difficult to notice.
           // Keeping the spinner on a little longer
           // to let users see the spinner and assure the changes are saved.

@@ -30,8 +30,8 @@ describe('background', () => {
           description: string,
           strictMatch: boolean,
           callback: (_dictionaryEntry: DictionaryEntry) => void
-        ): void {
-          callback(
+        ) {
+          return Promise.resolve(
             new DictionaryEntry(
               1,
               value,
@@ -56,12 +56,7 @@ describe('background', () => {
       });
 
       it('adds the word', () => {
-        expect(dao.addEntry).toHaveBeenCalledWith(
-          'differentWord',
-          '',
-          false,
-          jasmine.any(Function)
-        );
+        expect(dao.addEntry).toHaveBeenCalledWith('differentWord', '', false);
       });
     });
 
@@ -74,8 +69,7 @@ describe('background', () => {
         expect(dao.addEntry).not.toHaveBeenCalledWith(
           'existingWord',
           '',
-          false,
-          jasmine.any(Function)
+          false
         );
       });
     });

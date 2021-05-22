@@ -291,29 +291,32 @@ angular
     $scope.importAsReplacement = async function (
       entries: Array<DictionaryEntry>
     ) {
-      dao.saveDictionary(entries, onSuccess);
+      return dao.saveDictionary(entries).then(onSuccess);
     };
 
     $scope.importAndKeep = async function (newEntries: Array<DictionaryEntry>) {
-      dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
-        newEntries.forEach(function (newEntry: DictionaryEntry) {
-          let exists = dictionary.some(function (
-            existingEntry: DictionaryEntry
-          ): boolean {
-            return existingEntry.value === newEntry.value;
+      return dao
+        .getDictionary()
+        .then((dictionary: Array<DictionaryEntry>) => {
+          newEntries.forEach(function (newEntry: DictionaryEntry) {
+            let exists = dictionary.some(function (
+              existingEntry: DictionaryEntry
+            ): boolean {
+              return existingEntry.value === newEntry.value;
+            });
+            if (!exists) {
+              dictionary.push(newEntry);
+            }
           });
-          if (!exists) {
-            dictionary.push(newEntry);
-          }
-        });
-        dao.saveDictionary(dictionary, onSuccess);
-      });
+          return dao.saveDictionary(dictionary);
+        })
+        .then(onSuccess);
     };
 
     $scope.importAndOverwrite = async function (
       newEntries: Array<DictionaryEntry>
     ) {
-      dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
+      return dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
         newEntries.forEach(function (newEntry: DictionaryEntry) {
           let exists = false;
           dictionary.forEach(function (existingEntry: DictionaryEntry) {
@@ -327,7 +330,7 @@ angular
             dictionary.push(newEntry);
           }
         });
-        dao.saveDictionary(dictionary, onSuccess);
+        return dao.saveDictionary(dictionary).then(onSuccess);
       });
     };
 

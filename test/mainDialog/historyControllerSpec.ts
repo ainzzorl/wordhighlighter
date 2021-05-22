@@ -17,8 +17,8 @@ describe('historyController', () => {
       getDictionary: () => {
         return Promise.resolve([]);
       },
-      getHighlightingLog: (callback: (log: HighlightingLog) => void) => {
-        callback(new HighlightingLog());
+      getHighlightingLog: () => {
+        return Promise.resolve(new HighlightingLog());
       },
     };
     NgTableParams = () => {};
@@ -50,7 +50,7 @@ describe('historyController', () => {
           );
           return Promise.resolve(result);
         };
-        dao.getHighlightingLog = (callback: (log: HighlightingLog) => void) => {
+        dao.getHighlightingLog = () => {
           let entries: Array<HighlightingLogEntry> = [];
           // Outside of the interval.
           entries.push(
@@ -79,7 +79,7 @@ describe('historyController', () => {
               1: 10,
             })
           );
-          callback(new HighlightingLog(entries));
+          return Promise.resolve(new HighlightingLog(entries));
         };
         await $scope.refresh();
       });

@@ -11,15 +11,21 @@ angular
       };
       $scope.MILLISECONDS_IN_DAY = 1000 * 3600 * 24;
 
-      $scope.refresh = function () {
+      $scope.refresh = async function () {
         $scope.isIntervalValid = !isNaN($scope.interval.value);
         if (!$scope.isIntervalValid) {
           return;
         }
         $scope.interval.value = Number($scope.interval.value);
 
-        dao.getHighlightingLog(function (highlightingLog: HighlightingLog) {
-          dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
+        let highlightingLog: HighlightingLog;
+        return dao
+          .getHighlightingLog()
+          .then((hl: HighlightingLog) => {
+            highlightingLog = hl;
+            return dao.getDictionary();
+          })
+          .then((dictionary: Array<DictionaryEntry>) => {
             $scope.tableData = populateTableData(dictionary, highlightingLog);
             $scope.tableParams = new NgTableParams(
               {
@@ -33,7 +39,6 @@ angular
             );
             $scope.$apply();
           });
-        });
       };
 
       function populateTableData(

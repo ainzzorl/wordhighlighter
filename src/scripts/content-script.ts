@@ -7,8 +7,8 @@
 let timeStart = performance.now();
 WHLogger.log('Processing URL ' + document.URL);
 new DAO().getDictionary().then((dictionary: Array<DictionaryEntry>) => {
-  new DAO().getSettings(function (settings: Settings) {
-    new DAO().getHighlightingLog(function (highlightingLog: HighlightingLog) {
+  new DAO().getSettings().then((settings: Settings) => {
+    new DAO().getHighlightingLog().then((highlightingLog: HighlightingLog) => {
       // "stemmer" is not in Window class,
       // so we need to convert the object to "any" to read the property.
       let wnd: any = window;

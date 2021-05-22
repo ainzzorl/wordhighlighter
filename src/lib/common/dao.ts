@@ -39,143 +39,143 @@ class DAO {
     });
   }
 
-  getSettings(callback: (settings: Settings) => void): void {
+  getSettings(): Promise<Settings> {
     let self: DAO = this;
-    self.store.get(DAO.KEYS.settings, (result: { settings: any }) => {
-      callback(self.deserializeSettings(result.settings));
+    return new Promise<Settings>((resolve, _reject) => {
+      self.store.get(DAO.KEYS.settings, (result: { [key: string]: any }) => {
+        resolve(self.deserializeSettings(result.settings));
+      });
     });
   }
 
-  getHighlightingLog(
-    callback: (highlightingLog: HighlightingLog) => void
-  ): void {
+  getHighlightingLog(): Promise<HighlightingLog> {
     let self: DAO = this;
-    self.store.get(
-      DAO.KEYS.highlightingLog,
-      (result: { highlightingLog: Array<any> }) => {
-        callback(self.deserializeHighlightingLog(result.highlightingLog));
-      }
-    );
+    return new Promise<HighlightingLog>((resolve, _reject) => {
+      self.store.get(
+        DAO.KEYS.highlightingLog,
+        (result: { [key: string]: any }) => {
+          resolve(self.deserializeHighlightingLog(result.highlightingLog));
+        }
+      );
+    });
   }
 
   addEntry(
     value: string,
     description: string,
-    strictMatch: boolean,
-    callback: (newEntry: DictionaryEntry) => void
-  ): void {
+    strictMatch: boolean
+  ): Promise<DictionaryEntry> {
     let self: DAO = this;
-    self.store.get(
-      [DAO.KEYS.dictionary, DAO.KEYS.idSequenceNumber],
-      (result: { dictionary: Array<any>; idSequenceNumber: number }) => {
-        let dictionary = self.deserializeDictionary(result.dictionary);
-        let now: Date = new Date();
-        let entry = new DictionaryEntry(
-          result.idSequenceNumber,
-          value,
-          description,
-          now,
-          now,
-          strictMatch
-        );
-        dictionary.push(entry);
-        self.store.set(
-          {
-            dictionary: self.serializeDictionary(dictionary),
-            idSequenceNumber: result.idSequenceNumber + 1,
-          },
-          () => {
-            WHLogger.log(
-              'Word ' + entry.value + ' has been added to the storages'
-            );
-            callback(self.serializeDictionaryEntry(entry));
-          }
-        );
-      }
-    );
-  }
-
-  saveDictionary(
-    dictionary: Array<DictionaryEntry>,
-    callback: () => void
-  ): void {
-    let self: DAO = this;
-    let entriesWithNoIds = dictionary.filter(
-      (dictionaryEntry: DictionaryEntry) => {
-        return !dictionaryEntry.id;
-      }
-    );
-    if (entriesWithNoIds.length === 0) {
-      self.store.set(
-        { dictionary: self.serializeDictionary(dictionary) },
-        () => {
-          WHLogger.log('Saved dictionary');
-          callback();
+    return new Promise<DictionaryEntry>((resolve, _reject) => {
+      self.store.get(
+        [DAO.KEYS.dictionary, DAO.KEYS.idSequenceNumber],
+        (result: { [key: string]: any }) => {
+          let dictionary = self.deserializeDictionary(result.dictionary);
+          let now: Date = new Date();
+          let entry = new DictionaryEntry(
+            result.idSequenceNumber,
+            value,
+            description,
+            now,
+            now,
+            strictMatch
+          );
+          dictionary.push(entry);
+          self.store.set(
+            {
+              dictionary: self.serializeDictionary(dictionary),
+              idSequenceNumber: result.idSequenceNumber + 1,
+            },
+            () => {
+              WHLogger.log(
+                'Word ' + entry.value + ' has been added to the storages'
+              );
+              resolve(self.serializeDictionaryEntry(entry));
+            }
+          );
         }
       );
-      return;
-    }
-    self.store.get(
-      DAO.KEYS.idSequenceNumber,
-      (result: { idSequenceNumber: number }) => {
-        let idSequenceNumber = result.idSequenceNumber;
-        entriesWithNoIds.forEach((dictionaryEntry: DictionaryEntry) => {
-          dictionaryEntry.id = idSequenceNumber++;
-        });
-        self.store.set(
-          {
-            idSequenceNumber: idSequenceNumber,
-            dictionary: self.serializeDictionary(dictionary),
-          },
-          () => {
-            WHLogger.log(
-              'Saved the dictionary. New id sequence number: ' +
-                idSequenceNumber
-            );
-            callback();
-          }
-        );
-      }
-    );
-  }
-
-  saveSettings(settings: Settings, callback: () => void): void {
-    this.store.set({ settings: this.serializeSettings(settings) }, () => {
-      WHLogger.log('Saved the settings');
-      callback();
     });
   }
 
-  saveHighlightingLog(
-    highlightingLog: HighlightingLog,
-    callback: () => void
-  ): void {
-    this.store.set(
-      { highlightingLog: this.serializeHighlightingLog(highlightingLog) },
-      () => {
-        WHLogger.log('Saved the highlighting log');
-        callback();
+  saveDictionary(dictionary: Array<DictionaryEntry>): Promise<void> {
+    let self: DAO = this;
+    return new Promise<void>((resolve, _reject) => {
+      let entriesWithNoIds = dictionary.filter(
+        (dictionaryEntry: DictionaryEntry) => {
+          return !dictionaryEntry.id;
+        }
+      );
+      if (entriesWithNoIds.length === 0) {
+        self.store.set(
+          { dictionary: self.serializeDictionary(dictionary) },
+          () => {
+            WHLogger.log('Saved dictionary');
+            resolve();
+          }
+        );
+        return;
       }
-    );
+      self.store.get(
+        DAO.KEYS.idSequenceNumber,
+        (result: { [key: string]: any }) => {
+          let idSequenceNumber = result.idSequenceNumber;
+          entriesWithNoIds.forEach((dictionaryEntry: DictionaryEntry) => {
+            dictionaryEntry.id = idSequenceNumber++;
+          });
+          self.store.set(
+            {
+              idSequenceNumber: idSequenceNumber,
+              dictionary: self.serializeDictionary(dictionary),
+            },
+            () => {
+              WHLogger.log(
+                'Saved the dictionary. New id sequence number: ' +
+                  idSequenceNumber
+              );
+              resolve();
+            }
+          );
+        }
+      );
+    });
+  }
+
+  saveSettings(settings: Settings): Promise<void> {
+    return new Promise((resolve, _reject) => {
+      this.store.set({ settings: this.serializeSettings(settings) }, () => {
+        WHLogger.log('Saved the settings');
+        resolve();
+      });
+    });
+  }
+
+  saveHighlightingLog(highlightingLog: HighlightingLog): Promise<void> {
+    return new Promise((resolve) => {
+      this.store.set(
+        { highlightingLog: this.serializeHighlightingLog(highlightingLog) },
+        () => {
+          WHLogger.log('Saved the highlighting log');
+          resolve();
+        }
+      );
+    });
   }
 
   private initDictionary() {
     let self: DAO = this;
-    self.store.get(
-      DAO.KEYS.dictionary,
-      (result: { dictionary: Array<any> }) => {
-        if (!result.dictionary) {
-          self.store.set({ dictionary: [] }, () => {
-            WHLogger.log('Initialized the dictionary');
-          });
-        }
+    self.store.get(DAO.KEYS.dictionary, (result: { [key: string]: any }) => {
+      if (!result.dictionary) {
+        self.store.set({ dictionary: [] }, () => {
+          WHLogger.log('Initialized the dictionary');
+        });
       }
-    );
+    });
   }
 
   private initSettings() {
     let self: DAO = this;
-    self.store.get(DAO.KEYS.settings, (result: { settings: Settings }) => {
+    self.store.get(DAO.KEYS.settings, (result: { [key: string]: any }) => {
       if (!result.settings) {
         let settings = Settings.DEFAULT;
         self.store.set({ settings: self.serializeSettings(settings) }, () => {
@@ -189,7 +189,7 @@ class DAO {
     let self: DAO = this;
     self.store.get(
       DAO.KEYS.idSequenceNumber,
-      (result: { idSequenceNumber: number }) => {
+      (result: { [key: string]: any }) => {
         if (!result.idSequenceNumber) {
           self.store.set({ idSequenceNumber: 1 }, () => {
             WHLogger.log('Initialized the id sequence');
@@ -203,7 +203,7 @@ class DAO {
     let self: DAO = this;
     self.store.get(
       DAO.KEYS.highlightingLog,
-      (result: { highlightingLog: HighlightingLog }) => {
+      (result: { [key: string]: any }) => {
         if (!result.highlightingLog) {
           self.store.set(
             {

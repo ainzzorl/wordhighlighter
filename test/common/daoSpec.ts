@@ -13,7 +13,7 @@ describe('DAO', () => {
   describe('dictionary', () => {
     it('creates, reads and updates the dictionary', async () => {
       dao.init();
-      dao.addEntry('value1', 'description1', true, () => {});
+      await dao.addEntry('value1', 'description1', true);
       let dictionary = await dao.getDictionary();
       expect(dictionary.length).toEqual(1);
       expect(dictionary[0].value).toEqual('value1');
@@ -23,10 +23,7 @@ describe('DAO', () => {
       expect(dictionary[0].updatedAt).not.toBeNull();
       expect(dictionary[0].id).not.toBeNull();
       dictionary.push(new DictionaryEntry(null, 'value2', 'description2'));
-      let received = false;
-      dao.saveDictionary(dictionary, () => {
-        received = true;
-      });
+      await dao.saveDictionary(dictionary);
       dictionary = await dao.getDictionary();
       expect(dictionary.length).toEqual(2);
       expect(dictionary[1].value).toEqual('value2');
@@ -37,60 +34,44 @@ describe('DAO', () => {
   });
 
   describe('settings', () => {
-    it('creates, reads and updates settings', () => {
+    it('creates, reads and updates settings', async () => {
       dao.init();
-      let received = false;
-      dao.getSettings((settings: Settings) => {
-        received = true;
+      await dao.getSettings().then((settings: Settings) => {
         expect(settings).not.toBeNull();
         expect(settings).toEqual(Settings.DEFAULT);
       });
-      if (!received) {
-        fail('Did not receive the settings');
-      }
-      received = false;
       let settings: Settings = new Settings();
       settings.enableHighlighting = false;
       settings.enablePageStats = false;
       settings.timeout = 123;
       settings.backgroundColor = 'ff00ff';
-      dao.saveSettings(settings, () => {});
-      dao.getSettings((receivedSettings: Settings) => {
-        received = true;
+      await dao.saveSettings(settings);
+      await dao.getSettings().then((receivedSettings: Settings) => {
         expect(receivedSettings).toEqual(settings);
       });
-      if (!received) {
-        fail('Did not receive the settings');
-      }
     });
   });
 
   describe('highlighting log', () => {
-    it('creates, reads and updates highlighting log', () => {
+    it('creates, reads and updates highlighting log', async () => {
       dao.init();
-      let received = false;
-      dao.getHighlightingLog((highlightingLog: HighlightingLog) => {
-        received = true;
-        expect(highlightingLog).not.toBeNull();
-        expect(highlightingLog.entries).toEqual([]);
-      });
-      if (!received) {
-        fail('Did not receive the highlighting log');
-      }
+      await dao
+        .getHighlightingLog()
+        .then((highlightingLog: HighlightingLog) => {
+          expect(highlightingLog).not.toBeNull();
+          expect(highlightingLog.entries).toEqual([]);
+        });
       let highlightingLog: HighlightingLog = new HighlightingLog([
         new HighlightingLogEntry('example.com', new Date(), { 1: 12, 2: 34 }),
       ]);
-      dao.saveHighlightingLog(highlightingLog, () => {});
-      received = false;
-      dao.getHighlightingLog((receivedHighlightingLog: HighlightingLog) => {
-        received = true;
-        expect(receivedHighlightingLog.entries).toEqual(
-          highlightingLog.entries
-        );
-      });
-      if (!received) {
-        fail('Did not receive the highlighting log');
-      }
+      await dao.saveHighlightingLog(highlightingLog);
+      await dao
+        .getHighlightingLog()
+        .then((receivedHighlightingLog: HighlightingLog) => {
+          expect(receivedHighlightingLog.entries).toEqual(
+            highlightingLog.entries
+          );
+        });
     });
   });
 
@@ -116,6 +97,7 @@ describe('DAO', () => {
       Object.keys(items).forEach((key: string) => {
         data[key] = items[key];
       });
+      callback();
     };
   }
 });

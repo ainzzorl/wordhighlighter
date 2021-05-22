@@ -34,22 +34,23 @@ angular
           });
       };
 
-      $scope.onAddNewWordClicked = function () {
+      $scope.onAddNewWordClicked = async function () {
         let newValue: string = $scope.newWord.value.trim();
         if (newValue) {
           if ($scope.isDupe(newValue)) {
             $scope.showAddingDupeError = true;
             return;
           }
-          dao.addEntry(
-            newValue,
-            $scope.newWord.description,
-            $scope.newWord.strictMatch,
-            function (newEntry: DictionaryEntry) {
+          await dao
+            .addEntry(
+              newValue,
+              $scope.newWord.description,
+              $scope.newWord.strictMatch
+            )
+            .then((newEntry: DictionaryEntry) => {
               $scope.dictionary.push(newEntry);
               $scope.tableParams.reload();
-            }
-          );
+            });
           $scope.newWord.value = '';
           $scope.newWord.description = '';
           $scope.newWord.strictMatch = false;
@@ -67,13 +68,16 @@ angular
         dictionaryEntry.isDupe = false;
       };
 
-      $scope.delete = function (dictionaryEntry: any) {
+      $scope.delete = async function (dictionaryEntry: any) {
         $scope.dictionary.splice(findEntryIndexById(dictionaryEntry.id), 1);
         $scope.tableParams.reload();
-        dao.saveDictionary($scope.dictionary, function () {});
+        return dao.saveDictionary($scope.dictionary);
       };
 
-      $scope.save = function (dictionaryEntry: any, dictionaryEntryForm: any) {
+      $scope.save = async function (
+        dictionaryEntry: any,
+        dictionaryEntryForm: any
+      ) {
         if ($scope.isDupe(dictionaryEntry.value, dictionaryEntry.id)) {
           dictionaryEntry.isDupe = true;
           return;
@@ -81,7 +85,7 @@ angular
         let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
         if (changed(dictionaryEntry, originalRow)) {
           dictionaryEntry.touch();
-          dao.saveDictionary($scope.dictionary, function () {});
+          await dao.saveDictionary($scope.dictionary);
         }
         angular.extend(originalRow, dictionaryEntry);
         dictionaryEntry.isDupe = false;

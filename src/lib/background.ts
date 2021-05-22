@@ -16,21 +16,20 @@ class Background {
   }
 
   // TODO: use utility method to check for dupes
-  addWord(value: string): void {
+  async addWord(value: string): Promise<void> {
     let dao = this.dao;
-    dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
+    dao.getDictionary().then(async (dictionary: Array<DictionaryEntry>) => {
       let isDupe: boolean =
         dictionary.filter(function (entry) {
           return entry.value === value;
         }).length > 0;
       if (!isDupe) {
-        dao.addEntry(value, '', false, function () {
-          WHLogger.log(
-            'Word ' +
-              value +
-              ' has been added to the dictionary through the context menu'
-          );
-        });
+        await dao.addEntry(value, '', false);
+        WHLogger.log(
+          'Word ' +
+            value +
+            ' has been added to the dictionary through the context menu'
+        );
       }
     });
   }

@@ -14,11 +14,8 @@ describe('importExportController', () => {
 
   beforeEach(() => {
     dao = {
-      saveDictionary(
-        dictionary: Array<DictionaryEntry>,
-        callback: () => void
-      ): void {
-        callback();
+      async saveDictionary(_dictionary: Array<DictionaryEntry>) {
+        return Promise.resolve();
       },
     };
   });
@@ -347,10 +344,7 @@ describe('importExportController', () => {
     });
 
     it('saves the dictionary', () => {
-      expect(dao.saveDictionary).toHaveBeenCalledWith(
-        input,
-        jasmine.any(Function)
-      );
+      expect(dao.saveDictionary).toHaveBeenCalledWith(input);
     });
 
     it('shows confirmation', () => {
@@ -383,14 +377,11 @@ describe('importExportController', () => {
     });
 
     it('saves the dictionary', () => {
-      expect(dao.saveDictionary).toHaveBeenCalledWith(
-        [
-          new DictionaryEntry(null, 'old', 'old - desc', now, now),
-          new DictionaryEntry(null, 'both', 'both old - desc', now, now),
-          new DictionaryEntry(null, 'new', 'new - desc', now, now),
-        ],
-        jasmine.any(Function)
-      );
+      expect(dao.saveDictionary).toHaveBeenCalledWith([
+        new DictionaryEntry(null, 'old', 'old - desc', now, now),
+        new DictionaryEntry(null, 'both', 'both old - desc', now, now),
+        new DictionaryEntry(null, 'new', 'new - desc', now, now),
+      ]);
     });
 
     it('shows confirmation', () => {
@@ -423,14 +414,11 @@ describe('importExportController', () => {
     });
 
     it('saves the dictionary', () => {
-      expect(dao.saveDictionary).toHaveBeenCalledWith(
-        [
-          new DictionaryEntry(null, 'old', 'old - desc', now, now),
-          new DictionaryEntry(null, 'both', 'both new - desc', now, now),
-          new DictionaryEntry(null, 'new', 'new - desc', now, now),
-        ],
-        jasmine.any(Function)
-      );
+      expect(dao.saveDictionary).toHaveBeenCalledWith([
+        new DictionaryEntry(null, 'old', 'old - desc', now, now),
+        new DictionaryEntry(null, 'both', 'both new - desc', now, now),
+        new DictionaryEntry(null, 'new', 'new - desc', now, now),
+      ]);
     });
 
     it('shows confirmation', () => {
