@@ -9,10 +9,13 @@ module.exports = function(config) {
       'node_modules/ng-table/bundles/ng-table.min.js',
       'node_modules/tinycolor2/dist/tinycolor-min.js',
       'node_modules/angularjs-color-picker/dist/angularjs-color-picker.min.js',
+      'node_modules/papaparse/papaparse.min.js',
 
       // for fixtures
       'node_modules/jquery/dist/jquery.min.js',
       'node_modules/jasmine-jquery/lib/jasmine-jquery.js',
+
+      'node_modules/babel-polyfill/dist/polyfill.js',
 
       'build/js/imports.js',
       'build/js/lib.js',

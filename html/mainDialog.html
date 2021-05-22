@@ -6,6 +6,7 @@
     <script src="../thirdparty/js/ng-table.min.js"></script>
     <script src="../thirdparty/js/tinycolor-min.js"></script>
     <script src="../thirdparty/js/angularjs-color-picker.min.js"></script>
+    <script src="../thirdparty/js/papaparse.min.js"></script>
     <script src="../js/lib.js"></script>
     <script src="../js/mainDialog.js"></script>
     <link rel="stylesheet" href="../thirdparty/css/bootstrap.min.css" />
@@ -31,10 +32,10 @@
           <a href="#">Words</a>
         </li>
         <li
-          ng-click="currentTab = 'import'"
-          ng-class="{active: (currentTab === 'import')}"
+          ng-click="currentTab = 'importExport'"
+          ng-class="{active: (currentTab === 'importExport')}"
         >
-          <a href="#">Import</a>
+          <a href="#">Import/Export</a>
         </li>
         <li
           ng-click="currentTab = 'settings'"
@@ -53,8 +54,8 @@
         <div ng-switch-when="words">
           <div ng-include="'wordsTab.html'"></div>
         </div>
-        <div ng-switch-when="import">
-          <div ng-include="'importTab.html'"></div>
+        <div ng-switch-when="importExport">
+          <div ng-include="'importExportTab.html'"></div>
         </div>
         <div ng-switch-when="settings">
           <div ng-include="'settingsTab.html'"></div>

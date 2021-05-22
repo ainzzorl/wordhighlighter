@@ -1,0 +1,135 @@
+<div id="import-tab" ng-controller="importExportController">
+  <div class="well well-sm">
+    <div class="row">
+      <div class="col-xs-12">
+        <label class="form-label" for="customFile">Export:</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <button class="btn btn-primary" ng-click="onExportClicked('json')">
+          JSON
+        </button>
+        <button class="btn btn-primary" ng-click="onExportClicked('csv')">
+          CSV (works with Excel)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="well well-sm">
+    <form>
+      <div class="row form-group">
+        <div class="col-xs-12">
+          <label class="form-label" for="customFile">Import:</label>
+        </div>
+      </div>
+
+      <div class="alert alert-danger row" ng-show="dupes && dupes.length > 0">
+        <div class="col-xs-12">
+          The input contains duplicates: {{ dupes.join(', ') }}
+        </div>
+      </div>
+
+      <div class="alert alert-danger row" ng-show="showImportError">
+        <div class="col-xs-12">Import error: {{importError}}</div>
+      </div>
+
+      <div
+        class="alert alert-success row"
+        ng-show="showInputSuccessConfirmation"
+      >
+        <div class="col-xs-12">The import has succeeded!</div>
+      </div>
+
+      <div class="row form-group" ng-hide="showConfirmationDialog">
+        <div class="col-xs-12">
+          <select class="form-control" ng-model="importInput.mode">
+            <option value="{{MODE_KEEP}}">
+              If the word already exists, keep it
+            </option>
+            <option value="{{MODE_OVERWRITE}}">
+              If the word already exists, replace it
+            </option>
+            <option value="{{MODE_REPLACE}}">
+              Delete everything and import
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row form-group" ng-hide="showConfirmationDialog">
+        <div class="col-xs-12">
+          <label class="radio-inline">
+            <input
+              type="radio"
+              ng-model="importInput.format"
+              value="ssv"
+              checked
+            />Semicolon-separated
+          </label>
+          <label class="radio-inline">
+            <input
+              type="radio"
+              ng-model="importInput.format"
+              value="json"
+            />JSON
+          </label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="importInput.format" value="csv" />CSV
+          </label>
+        </div>
+      </div>
+
+      <div id="import-data-row" class="row form-group">
+        <textarea
+          id="import-data"
+          rows="4"
+          cols="50"
+          ng-model="importInput.data"
+          placeholder="{{placeholders[importInput.format]}}"
+        ></textarea>
+      </div>
+
+      <div class="row form-group" ng-hide="showConfirmationDialog">
+        <div class="col-xs-12">
+          <button
+            class="btn btn-primary"
+            ng-click="showConfirmationDialog = true"
+          >
+            Import
+          </button>
+        </div>
+      </div>
+
+      <div class="alert alert-warning row" ng-show="showConfirmationDialog">
+        <div class="col-xs-12">
+          <div class="row">
+            <div class="col-xs-12">
+              <p>
+                Are you sure you want to perform the import? This operation
+                cannot be undone.
+              </p>
+            </div>
+          </div>
+          <div class="row input-group-btn">
+            <div class="col-xs-3">
+              <button
+                ng-click="showConfirmationDialog = false; onImportClicked()"
+                class="btn btn-primary"
+              >
+                Confirm
+              </button>
+              <button
+                ng-click="showConfirmationDialog = false"
+                class="btn btn-default"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

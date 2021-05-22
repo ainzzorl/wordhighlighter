@@ -1,8 +1,9 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../../node_modules/@types/angular/index.d.ts" />
+///<reference path="../../node_modules/@types/papaparse/index.d.ts" />
 ///<reference path="../../src/lib/common/dictionaryEntry.ts" />
 
-describe('importController', () => {
+describe('importExportController', () => {
   let controller;
   let $scope: any;
   let dao;
@@ -24,7 +25,10 @@ describe('importController', () => {
 
   beforeEach(inject(function ($controller, $rootScope) {
     $scope = $rootScope.$new();
-    controller = $controller('importController', { $scope: $scope, dao: dao });
+    controller = $controller('importExportController', {
+      $scope: $scope,
+      dao: dao,
+    });
   }));
 
   describe('onImportClicked', () => {
@@ -33,7 +37,7 @@ describe('importController', () => {
     beforeEach(() => {
       input = [new DictionaryEntry(null, 'word 1', '')];
       $scope.parseInput = () => {
-        return input;
+        return Promise.resolve(input);
       };
     });
 
@@ -44,11 +48,11 @@ describe('importController', () => {
       });
 
       describe('no dupes', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           $scope.getDuplicateEntries = () => {
             return [];
           };
-          $scope.onImportClicked();
+          await $scope.onImportClicked();
         });
 
         it('detects no dupes', () => {
@@ -61,11 +65,11 @@ describe('importController', () => {
       });
 
       describe('dupes', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           $scope.getDuplicateEntries = () => {
             return ['dup'];
           };
-          $scope.onImportClicked();
+          await $scope.onImportClicked();
         });
 
         it('detects dupes', () => {
@@ -83,13 +87,13 @@ describe('importController', () => {
     });
 
     describe('replace', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         $scope.importInput.mode = $scope.MODE_REPLACE;
         spyOn($scope, 'importAsReplacement');
         $scope.getDuplicateEntries = () => {
           return [];
         };
-        $scope.onImportClicked();
+        await $scope.onImportClicked();
       });
 
       it('imports data', () => {
@@ -98,13 +102,13 @@ describe('importController', () => {
     });
 
     describe('overwrite', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         $scope.importInput.mode = $scope.MODE_OVERWRITE;
         spyOn($scope, 'importAndOverwrite');
         $scope.getDuplicateEntries = () => {
           return [];
         };
-        $scope.onImportClicked();
+        await $scope.onImportClicked();
       });
 
       it('imports data', () => {
@@ -116,43 +120,176 @@ describe('importController', () => {
   describe('parseInput', () => {
     let result: Array<DictionaryEntry>;
 
+    describe('ssv', () => {
+      beforeEach(async () => {
+        $scope.importInput.data =
+          '' +
+          'word1;description1' +
+          '\n' + // word + description
+          'word2' +
+          '\n' + // no description
+          'word3;description;3' +
+          '\n' + // description with semicolumns
+          '    ' +
+          '\n' + // empty
+          '    word   4  ;  description  4    '; // leading and trailing spaces
+        result = await $scope.parseInput('ssv');
+      });
+
+      it('detects the number of entries', () => {
+        expect(result.length).toEqual(4);
+      });
+
+      it('reads word + description', () => {
+        expect(result[0].value).toEqual('word1');
+        expect(result[0].description).toEqual('description1');
+      });
+
+      it('reads word with no description', () => {
+        expect(result[1].value).toEqual('word2');
+        expect(result[1].description).toEqual('');
+      });
+
+      it('reads description with semicolumns', () => {
+        expect(result[2].value).toEqual('word3');
+        expect(result[2].description).toEqual('description;3');
+      });
+
+      it('trims leading and trailing spaces', () => {
+        expect(result[3].value).toEqual('word   4');
+        expect(result[3].description).toEqual('description  4');
+      });
+    });
+
+    describe('csv', () => {
+      it('parses valid input', async () => {
+        $scope.importInput.data =
+          'word,description,strict\n' + 'word1,description1,true';
+        result = await $scope.parseInput('csv');
+
+        expect(result.length).toEqual(1);
+        expect(result[0].value).toEqual('word1');
+        expect(result[0].description).toEqual('description1');
+        expect(result[0].strictMatch).toBe(true);
+      });
+
+      it('recognizes bad header', async () => {
+        $scope.importInput.data =
+          'word,blah,strict\n' + 'word1,description1,true';
+
+        await $scope
+          .parseInput('csv')
+          .then(() => {
+            fail('Expected parsing to fail');
+          })
+          .catch((error: string) => {
+            expect(error).toEqual(
+              'Unexpected columns. Expected columns: word[,description[,strict]]'
+            );
+          });
+      });
+    });
+
+    describe('json', () => {
+      it('parses valid input', async () => {
+        $scope.importInput.data =
+          '{"words": [\n  {"word": "word1",  "description": "description1", "strict": true}]\n}';
+        result = await $scope.parseInput('json');
+
+        expect(result.length).toEqual(1);
+        expect(result[0].value).toEqual('word1');
+        expect(result[0].description).toEqual('description1');
+        expect(result[0].strictMatch).toBe(true);
+      });
+
+      it('handles parsing errors', async () => {
+        $scope.importInput.data = 'not-valid-json';
+
+        await $scope
+          .parseInput('json')
+          .then(() => {
+            fail('Expected parsing to fail');
+          })
+          .catch((error: any) => {
+            expect(error.toString()).toEqual(
+              'SyntaxError: JSON Parse error: Unexpected identifier "not"'
+            );
+          });
+      });
+
+      it('handles wrong format', async () => {
+        $scope.importInput.data =
+          '{"blah": [\n  {"word": "word1",  "description": "description1", "strict": true}]\n}';
+
+        await $scope
+          .parseInput('json')
+          .then(() => {
+            fail('Expected parsing to fail');
+          })
+          .catch((exception) => {
+            expect(exception).toEqual('Key not found: "words"');
+          });
+      });
+    });
+  });
+
+  describe('getExportString', () => {
+    let result: any;
+
     beforeEach(() => {
-      $scope.importInput.data =
-        '' +
-        'word1;description1' +
-        '\n' + // word + description
-        'word2' +
-        '\n' + // no description
-        'word3;description;3' +
-        '\n' + // description with semicolumns
-        '    ' +
-        '\n' + // empty
-        '    word   4  ;  description  4    '; // leading and trailing spaces
-      result = $scope.parseInput();
+      dao.getDictionary = function (
+        callback: (dictionary: Array<DictionaryEntry>) => void
+      ) {
+        callback([new DictionaryEntry(null, 'w', 'd', now, now, true)]);
+      };
     });
 
-    it('detects the number of entries', () => {
-      expect(result.length).toEqual(4);
+    describe('json', () => {
+      beforeEach(async () => {
+        $scope
+          .getExportString('json')
+          .then((s) => {
+            result = JSON.parse(s);
+          })
+          .catch((e) => {
+            fail(e);
+          });
+      });
+
+      it('exports data', () => {
+        expect(result['words'][0]['word']).toEqual('w');
+        expect(result['words'][0]['description']).toEqual('d');
+        expect(result['words'][0]['strict']).toBe(true);
+        expect(result['words'][0]['createdAt']).not.toBeFalsy();
+        expect(result['words'][0]['updatedAt']).not.toBeFalsy();
+      });
     });
 
-    it('reads word + description', () => {
-      expect(result[0].value).toEqual('word1');
-      expect(result[0].description).toEqual('description1');
-    });
+    describe('csv', () => {
+      beforeEach(async () => {
+        $scope
+          .getExportString('csv')
+          .then((s) => {
+            result = Papa.parse(s).data;
+          })
+          .catch((e) => {
+            fail(e);
+          });
+      });
 
-    it('reads word with no description', () => {
-      expect(result[1].value).toEqual('word2');
-      expect(result[1].description).toEqual('');
-    });
-
-    it('reads description with semicolumns', () => {
-      expect(result[2].value).toEqual('word3');
-      expect(result[2].description).toEqual('description;3');
-    });
-
-    it('trims leading and trailing spaces', () => {
-      expect(result[3].value).toEqual('word   4');
-      expect(result[3].description).toEqual('description  4');
+      it('exports data', () => {
+        expect(result.length).toEqual(2);
+        expect(result[0][0]).toEqual('word');
+        expect(result[0][1]).toEqual('description');
+        expect(result[0][2]).toEqual('strict');
+        expect(result[0][3]).toEqual('created at');
+        expect(result[0][4]).toEqual('updated at');
+        expect(result[1][0]).toEqual('w');
+        expect(result[1][1]).toEqual('d');
+        expect(result[1][2]).toEqual('true');
+        expect(result[1][3]).not.toBeFalsy();
+        expect(result[1][4]).not.toBeFalsy();
+      });
     });
   });
 

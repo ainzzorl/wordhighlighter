@@ -80,6 +80,7 @@ gulp.task(
         'node_modules/ng-table/bundles/ng-table.min.js',
         'node_modules/tinycolor2/dist/tinycolor-min.js',
         'node_modules/angularjs-color-picker/dist/angularjs-color-picker.min.js',
+        'node_modules/papaparse/papaparse.min.js',
       ])
       .pipe(gulp.dest('build/thirdparty/js'));
   })
