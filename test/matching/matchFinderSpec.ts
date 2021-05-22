@@ -161,10 +161,13 @@ describe('MatchFinder', () => {
           new DictionaryEntry(3, 'To hamper', '', new Date(), new Date())
         );
         dictionary.push(
-          new DictionaryEntry(4, 'go to', '', new Date(), new Date())
+          new DictionaryEntry(4, 'go to work', '', new Date(), new Date())
         );
         dictionary.push(
           new DictionaryEntry(5, 'Contention', '', new Date(), new Date(), true)
+        );
+        dictionary.push(
+          new DictionaryEntry(5, 'read, to', '', new Date(), new Date())
         );
         stemmer = {
           stem: function (word) {
@@ -209,8 +212,13 @@ describe('MatchFinder', () => {
           expect(findWordMatch('hamper')).toEqual('To hamper');
         });
 
+        it('ignores ", to" at the end', () => {
+          expect(findWordMatch('read')).toEqual('read, to');
+        });
+
         it('does not ignore "to" elsewhere', () => {
           expect(findWordMatch('go')).toBeNull();
+          expect(findWordMatch('go work')).toBeNull();
         });
       });
 

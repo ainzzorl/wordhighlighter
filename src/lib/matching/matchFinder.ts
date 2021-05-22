@@ -52,6 +52,7 @@ class MatchFinderImpl implements MatchFinder {
   contentWordStems: any;
 
   private IGNORED_PREFIXES = ['a ', 'an ', 'to '];
+  private IGNORED_SUFFIXES = [', to'];
 
   constructor(dictionary: Array<DictionaryEntry>, stemmer: Stemmer) {
     this.dictionary = dictionary;
@@ -205,7 +206,7 @@ class MatchFinderImpl implements MatchFinder {
       normalizedWords = this.getNormalizedWords(entry.value, false);
     } else {
       normalizedWords = this.getNormalizedWords(
-        this.removeIgnoredPrefixes(entry.value),
+        this.removeIgnoredSuffixes(this.removeIgnoredPrefixes(entry.value)),
         true
       );
     }
@@ -288,6 +289,16 @@ class MatchFinderImpl implements MatchFinder {
     this.IGNORED_PREFIXES.forEach(function (prefix: string) {
       if (result.toLowerCase().lastIndexOf(prefix, 0) === 0) {
         result = result.substring(prefix.length);
+      }
+    });
+    return result;
+  }
+
+  private removeIgnoredSuffixes(input: string): string {
+    let result = input;
+    this.IGNORED_SUFFIXES.forEach(function (suffix: string) {
+      if (result.toLowerCase().endsWith(suffix)) {
+        result = result.substring(0, result.length - suffix.length);
       }
     });
     return result;
