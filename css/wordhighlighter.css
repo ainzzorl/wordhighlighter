@@ -22,7 +22,7 @@
     /* Position the tooltip */
     position: absolute;
     display: block;
-    z-index: 1000;
+    z-index: 9999999999;
     bottom: 1.5em;
     margin-left: -70px;
 
