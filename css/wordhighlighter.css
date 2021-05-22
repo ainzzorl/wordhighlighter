@@ -12,12 +12,12 @@
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
+    font-family: initial;
     font-size: 16px;
     font-style: normal;
     font-weight: normal;
     font-variant: initial;
     line-height: initial;
-    font-family: initial;
 
     /* Position the tooltip */
     position: absolute;
@@ -25,6 +25,156 @@
     z-index: 1000;
     bottom: 1.5em;
     margin-left: -70px;
+
+
+    /* Resetting all other properties. */
+    animation : initial;
+    animation-delay : initial;
+    animation-direction : initial;
+    animation-duration : initial;
+    animation-fill-mode : initial;
+    animation-iteration-count : initial;
+    animation-name : initial;
+    animation-play-state : initial;
+    animation-timing-function : initial;
+    backface-visibility : initial;
+    /* background : initial; */
+    background-attachment : initial;
+    background-clip : initial;
+    /* background-color : initial; */
+    background-image : initial;
+    background-origin : initial;
+    background-position : initial;
+    background-position-x : initial;
+    background-position-y : initial;
+    background-repeat : initial;
+    background-size : initial;
+    border : initial;
+    border-style : initial;
+    border-width : initial;
+    border-color : initial;
+    border-bottom : initial;
+    border-bottom-color : initial;
+    /* border-bottom-left-radius : initial;
+    border-bottom-right-radius : initial; */
+    border-bottom-style : initial;
+    border-bottom-width : initial;
+    border-collapse : initial;
+    border-image : initial;
+    border-left : initial;
+    border-left-color : initial;
+    border-left-style : initial;
+    border-left-width : initial;
+    /* border-radius : initial; */
+    border-right : initial;
+    border-right-color : initial;
+    border-right-style : initial;
+    border-right-width : initial;
+    border-spacing : initial;
+    border-top : initial;
+    border-top-color : initial;
+    /* border-top-left-radius : initial;
+    border-top-right-radius : initial; */
+    border-top-style : initial;
+    border-top-width : initial;
+    /* bottom : initial; */
+    box-shadow : initial;
+    box-sizing : initial;
+    caption-side : initial;
+    clear : initial;
+    clip : initial;
+    /* color : initial; */
+    columns : initial;
+    column-count : initial;
+    column-fill : initial;
+    column-gap : initial;
+    column-rule : initial;
+    column-rule-color : initial;
+    column-rule-style : initial;
+    column-rule-width : initial;
+    column-span : initial;
+    column-width : initial;
+    content : initial;
+    counter-increment : initial;
+    counter-reset : initial;
+    cursor : initial;
+    direction : initial;
+    /* display : initial; */
+    empty-cells : initial;
+    float : initial;
+    font : initial;
+    /* font-family : initial; */
+    /* font-size : initial; */
+    /* font-style : initial; */
+    /* font-variant : initial; */
+    /* font-weight : initial; */
+    height : initial;
+    hyphens : initial;
+    left : initial;
+    letter-spacing : initial;
+    /* line-height : initial; */
+    list-style : initial;
+    list-style-image : initial;
+    list-style-position : initial;
+    list-style-type : initial;
+    margin : initial;
+    margin-bottom : initial;
+    /* margin-left : initial; */
+    margin-right : initial;
+    margin-top : initial;
+    max-height : initial;
+    max-width : initial;
+    min-height : initial;
+    min-width : initial;
+    opacity : initial;
+    orphans : initial;
+    outline : initial;
+    outline-color : initial;
+    outline-style : initial;
+    outline-width : initial;
+    overflow : initial;
+    overflow-x : initial;
+    overflow-y : initial;
+    /* padding : initial; */
+    padding-bottom : initial;
+    padding-left : initial;
+    padding-right : initial;
+    padding-top : initial;
+    page-break-after : initial;
+    page-break-before : initial;
+    page-break-inside : initial;
+    perspective : initial;
+    perspective-origin : initial;
+    /* position : initial; */
+    quotes : initial;
+    right : initial;
+    tab-size : initial;
+    table-layout : initial;
+    /* text-align : initial; */
+    text-align-last : initial;
+    text-decoration : initial;
+    text-decoration-color : initial;
+    text-decoration-line : initial;
+    text-decoration-style : initial;
+    text-indent : initial;
+    text-shadow : initial;
+    text-transform : initial;
+    top : initial;
+    transform : initial;
+    transform-style : initial;
+    transition : initial;
+    transition-delay : initial;
+    transition-duration : initial;
+    transition-property : initial;
+    transition-timing-function : initial;
+    unicode-bidi : initial;
+    vertical-align : initial;
+    /* visibility : initial; */
+    white-space : initial;
+    widows : initial;
+    /* width : initial; */
+    word-spacing : initial;
+    /* z-index : initial; */
 }
 
 .highlighted-word .highlighted-word-tooltip p {
