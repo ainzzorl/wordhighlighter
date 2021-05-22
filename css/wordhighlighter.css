@@ -11,7 +11,7 @@
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 5px 0;
+    padding: 5px 5px;
     font-family: initial;
     font-size: 16px;
     font-style: normal;
@@ -136,10 +136,10 @@
     overflow-x : initial;
     overflow-y : initial;
     /* padding : initial; */
-    padding-bottom : initial;
+    /* padding-bottom : initial;
     padding-left : initial;
     padding-right : initial;
-    padding-top : initial;
+    padding-top : initial; */
     page-break-after : initial;
     page-break-before : initial;
     page-break-inside : initial;
