@@ -117,7 +117,7 @@
     list-style-image : initial;
     list-style-position : initial;
     list-style-type : initial;
-    margin : initial;
+    /* margin : initial; */
     margin-bottom : initial;
     /* margin-left : initial; */
     margin-right : initial;
@@ -178,7 +178,11 @@
 }
 
 .highlighted-word .highlighted-word-tooltip p {
-    margin: 0px;
+    /* But not margin-left: it's used to position the tooltip. */
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+
     padding-top: 0px;
     color: #fff !important;
     width: initial;
