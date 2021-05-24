@@ -178,9 +178,10 @@
 }
 
 .highlighted-word .highlighted-word-tooltip p {
-    margin-top: 0px;
+    margin: 0px;
     padding-top: 0px;
     color: #fff !important;
+    width: initial;
 }
 
 .highlighted-word:hover .highlighted-word-tooltip {
@@ -194,6 +195,7 @@
 
 .highlighted-word .highlighted-word-tooltip .highlighted-word-description {
      white-space: pre-wrap;
+     margin-top: 0.5em !important;
 }
 
 /*
