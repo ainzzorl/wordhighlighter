@@ -73,12 +73,24 @@ angular
     $scope.onExportClicked = function (format: string) {
       $scope.getExportString(format).then((exportString: string) => {
         let a = document.createElement('a');
-        let dataURI = 'data:' + format + ';base64,' + btoa(exportString);
+        let dataURI =
+          'data:' + format + ';base64,' + btoa(toBinary(exportString));
         a.href = dataURI;
         a['download'] = 'word-highlighter-export-TODO.' + format;
         a.click();
       });
     };
+
+    // convert a Unicode string to a string in which
+    // each 16-bit unit occupies only one byte
+    // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/btoa#unicode_strings
+    function toBinary(s: string) {
+      const codeUnits = new Uint16Array(s.length);
+      for (let i = 0; i < codeUnits.length; i++) {
+        codeUnits[i] = s.charCodeAt(i);
+      }
+      return String.fromCharCode(...new Uint8Array(codeUnits.buffer));
+    }
 
     function getJsonExportString(): Promise<string> {
       return new Promise(function (resolve, _reject) {
