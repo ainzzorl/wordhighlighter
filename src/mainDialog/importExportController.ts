@@ -76,7 +76,7 @@ angular
         let dataURI =
           'data:' + format + ';base64,' + btoa(toBinary(exportString));
         a.href = dataURI;
-        a['download'] = 'word-highlighter-export-TODO.' + format;
+        a['download'] = 'word-highlighter-export.' + format;
         a.click();
       });
     };
