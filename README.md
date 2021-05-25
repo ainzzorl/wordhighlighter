@@ -1,7 +1,7 @@
 # Word Highlighter
 
 ## About
-Word Highlighter is a web extension that, given a list of words, highlights their occurences in the browser. It's written in TypeScript + AngularJS.
+Word Highlighter is a web extension (add-on) that, given a list of words, highlights their occurences on every page. It's written in TypeScript + AngularJS.
 
 The intended use case is memorizing new words and expanding your vocabulary:
 - Learn a new word.
@@ -19,14 +19,20 @@ The intended use case is memorizing new words and expanding your vocabulary:
 ### Prerequisites
 - Install [Node.js](https://nodejs.org/)
 - Install [Gulp](http://gulpjs.com/)
-  - "npm install --global gulp"
+  - `npm install --global gulp`
 - Install [web-ext](https://github.com/mozilla/web-ext)
-  - "npm install --global web-ext"
-- Install a browser that allows unsigned extention, for example [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/)
-  - Configure it to allow unsigned extentions. In case of Firefox Developer Edition, go to about:config and set xpinstall.signatures.required=false.
+  - `npm install --global web-ext`
+- Install a browser that allows unsigned extention, for example [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/).
 
 ### Steps
 - Clone the repo.
-- Run "npm install"
-- Run "gulp release". It should generate build artifacts in ./build/
-- Run "web-ext run --f PATH-TO-BROWSER-EXECUTABLE -s build" to start the browser with the add-on installed.
+- Run `npm install`
+- Run `gulp release`. It should generate build artifacts under `./build/`.
+- Run `web-ext run -s build --firefox=PATH-TO-BROWSER-EXECUTABLE` (e.g. `web-ext run -s build --firefox=/Applications/Firefox\ Developer\ Edition.app/Contents/MacOS/firefox-bin`) to start the browser with the add-on installed.
+
+## Release process
+
+- Increment version in `manifest.json`.
+- `gulp release`
+- Firefox: `web-ext sign -s build/ --api-key API-KEY --api-secret API-SECRET`
+- Chrome: generate zip file (`(cd build && zip -r ../local/chrome-release.zip *)`), upload to Chrome Web Store.
