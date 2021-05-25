@@ -128,6 +128,8 @@ class MatchFinderImpl implements MatchFinder {
   }
 
   // Try finding a match in a trie starting at tokens[firstTokenIndex].
+  // Finds the longest, in terms of the number of words, match.
+  //
   // Returns a tuple of:
   // - If there's a match:
   //   - index of the first token after the match.
@@ -142,6 +144,7 @@ class MatchFinderImpl implements MatchFinder {
   ): [number, DictionaryEntry] {
     let node = trie;
     let i = firstTokenIndex;
+    let result: [number, DictionaryEntry] = [null, null];
 
     // Walk down the trie until we find a match.
     while (i < tokens.length) {
@@ -166,16 +169,16 @@ class MatchFinderImpl implements MatchFinder {
         node = node.children[key];
         if (node.value) {
           // Found a match.
-          return [i + 1, node.value];
+          // But keep looking for a longer match.
+          result = [i + 1, node.value];
         }
-        // Non-leaf trie node that doesn't have a corresponding entry in the dictionary.
-        // Need to keep walking.
+        // Keep walking.
         i++;
       } else {
-        return [null, null];
+        return result;
       }
     }
-    return [null, null];
+    return result;
   }
 
   // Build indexes/tries. Must be called before matching.

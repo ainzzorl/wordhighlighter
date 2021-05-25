@@ -330,6 +330,39 @@ describe('MatchFinder', () => {
           expect(matchResult[2].matchOf.value).toEqual('three');
         });
       });
+
+      describe('several possible matches', () => {
+        beforeEach(() => {
+          stemmer = {
+            stem: function (word) {
+              return word;
+            },
+          };
+          dictionary = [
+            new DictionaryEntry(1, 'one', '', new Date(), new Date()),
+            new DictionaryEntry(2, 'two', '', new Date(), new Date()),
+            new DictionaryEntry(3, 'three', '', new Date(), new Date()),
+            new DictionaryEntry(4, 'one two', '', new Date(), new Date()),
+            new DictionaryEntry(5, 'one two three', '', new Date(), new Date()),
+          ];
+          matchFinder = new MatchFinderImpl(dictionary, stemmer);
+          matchFinder.buildIndexes();
+        });
+
+        describe('multiple possible matches starting from the same word', () => {
+          beforeEach(() => {
+            matchResult = matchFinder.findMatches('one two three four');
+          });
+
+          it('finds the longest match', () => {
+            expect(matchResult.length).toEqual(2);
+            expect(matchResult[0].value).toEqual('one two three');
+            expect(matchResult[0].matchOf.value).toEqual('one two three');
+            expect(matchResult[1].value).toEqual(' four');
+            expect(matchResult[1].matchOf).toBeNull();
+          });
+        });
+      });
     });
   });
 });
