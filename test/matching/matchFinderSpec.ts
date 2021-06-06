@@ -27,16 +27,25 @@ describe('MatchFinder', () => {
         );
         // Chinese
         dictionary.push(
-          new DictionaryEntry(3, '中文', '', new Date(), new Date())
+          new DictionaryEntry(3, '中文', '', new Date(), new Date(), true)
         );
         // Japanese
         dictionary.push(
-          new DictionaryEntry(4, '日本語', '', new Date(), new Date())
+          new DictionaryEntry(4, '日本語', '', new Date(), new Date(), true)
         );
         // Russian
         dictionary.push(
-          new DictionaryEntry(5, 'русский', '', new Date(), new Date())
+          new DictionaryEntry(5, 'русский', '', new Date(), new Date(), true)
         );
+        // Spanish
+        dictionary.push(
+          new DictionaryEntry(6, 'español', '', new Date(), new Date(), true)
+        );
+        // French
+        dictionary.push(
+          new DictionaryEntry(7, 'français', '', new Date(), new Date(), true)
+        );
+
         matchFinder = new MatchFinderImpl(dictionary, stemmer);
         matchFinder.buildIndexes();
       });
@@ -143,6 +152,30 @@ describe('MatchFinder', () => {
             expect(matchResult.length).toEqual(1);
             expect(matchResult[0].value).toEqual('русский');
             expect(matchResult[0].matchOf.value).toEqual('русский');
+          });
+        });
+
+        describe('spanish', () => {
+          beforeEach(() => {
+            matchResult = matchFinder.findMatches('español');
+          });
+
+          it('finds the match', () => {
+            expect(matchResult.length).toEqual(1);
+            expect(matchResult[0].value).toEqual('español');
+            expect(matchResult[0].matchOf.value).toEqual('español');
+          });
+        });
+
+        describe('français', () => {
+          beforeEach(() => {
+            matchResult = matchFinder.findMatches('français');
+          });
+
+          it('finds the match', () => {
+            expect(matchResult.length).toEqual(1);
+            expect(matchResult[0].value).toEqual('français');
+            expect(matchResult[0].matchOf.value).toEqual('français');
           });
         });
       });

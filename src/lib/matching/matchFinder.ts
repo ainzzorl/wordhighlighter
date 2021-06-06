@@ -276,14 +276,15 @@ class MatchFinderImpl implements MatchFinder {
     return (
       (char[0] >= '0' && char[0] <= '9') ||
       // Latin
-      // TODO: what about symbols like ñ?
       (char[0] >= 'a' && char[0] <= 'z') ||
       (char[0] >= 'A' && char[0] <= 'Z') ||
       // Chinese or Japanese
       char[0].match(/[\u3400-\u9FBF]/) ||
       // Russian
       (char[0] >= 'а' && char[0] <= 'я') ||
-      (char[0] >= 'А' && char[0] <= 'Я')
+      (char[0] >= 'А' && char[0] <= 'Я') ||
+      // Misc diacritics
+      (char[0] >= 'À' && char[0] <= 'ÿ')
     );
   }
 
