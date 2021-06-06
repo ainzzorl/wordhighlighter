@@ -1,3 +1,13 @@
+## v1.5.4 (2021-06-06)
+
+*  Update README [View](https://github.com/ainzzorl/wordhighlighter/commit/0acc374c6cf5226ca5dbfb5e1b6ae0a4ab85283e)
+*  Update the page about testing [View](https://github.com/ainzzorl/wordhighlighter/commit/3f348fb9babc7d08090913d14714892f4937504b)
+*  Create codeql-analysis.yml [View](https://github.com/ainzzorl/wordhighlighter/commit/c1f1f4c921b2c0c677638d607e080aed55f4208d)
+*  Add changelog [View](https://github.com/ainzzorl/wordhighlighter/commit/897231aeacf37774a8c8f0e0c0667a39662de34a)
+*  Add diacritical character range [View](https://github.com/ainzzorl/wordhighlighter/commit/7f99742546a6afa6120984e47aa37ee4001430f6)
+*  Bump manifest version [View](https://github.com/ainzzorl/wordhighlighter/commit/3997f56c311ce93fe8b2d990b269a59aee489f51)
+
+
 ## v1.5.3 (2021-05-25)
 
 *  When there are multiple possible matches starting from a word, pick the longest #68 [View](https://github.com/ainzzorl/wordhighlighter/commit/e925bc439311706bb0fd39dbba53c8fde58d5440)
