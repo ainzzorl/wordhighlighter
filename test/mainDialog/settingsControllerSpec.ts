@@ -3,9 +3,9 @@
 ///<reference path="../../src/lib/common/settings.ts" />
 
 describe('settingsController', () => {
-  let controller;
+  let controller: any;
   let $scope: any;
-  let dao;
+  let dao: any;
 
   let mod: any = module;
   beforeEach(mod('mainDialog'));
@@ -56,7 +56,7 @@ describe('settingsController', () => {
       $scope.settings.enableHighlighting = false;
       $scope.settings.enablePageStats = false;
       $scope.settings.backgroundColor = 'fefefe';
-      await $scope.save();
+      await $scope.save(true);
     });
 
     it('saves the settings', () => {

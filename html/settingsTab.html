@@ -1,11 +1,5 @@
 <div ng-controller="settingsController">
-  <form
-    id="settings-form"
-    ng-show="settings"
-    name="settingsForm"
-    ng-submit="save()"
-    novalidate
-  >
+  <form id="settings-form" ng-show="settings" name="settingsForm" novalidate>
     <div class="form-group row">
       <label for="enable-page-stats" class="col-xs-6 col-form-label">
         <a
@@ -21,6 +15,7 @@
           type="checkbox"
           class="form-control"
           ng-model="settings.enablePageStats"
+          ng-change="save(settingsForm.$valid)"
         />
       </div>
     </div>
@@ -39,6 +34,7 @@
           type="checkbox"
           class="form-control"
           ng-model="settings.enableHighlighting"
+          ng-change="save(settingsForm.$valid)"
         />
       </div>
     </div>
@@ -55,6 +51,7 @@
       <div class="col-xs-6" id="color-picker-cell">
         <color-picker
           ng-model="settings.backgroundColor"
+          event-api="colorEventApi"
           options="colorPickerOptions"
         ></color-picker>
       </div>
@@ -76,6 +73,7 @@
           class="form-control"
           ng-model="settings.timeout"
           type="number"
+          ng-change="save(settingsForm.$valid)"
           required
         />
         <div class="form-validation-error">
@@ -84,20 +82,6 @@
             Not valid number
           </div>
         </div>
-      </div>
-    </div>
-    <div class="form-group row">
-      <div class="col-xs-6">&nbsp;</div>
-      <!-- offset-* doesn't work with xs' -->
-      <div class="col-xs-6">
-        <button
-          type="submit"
-          ng-disabled="settingsForm.$invalid"
-          class="btn btn-primary"
-        >
-          Save
-          <i ng-show="isSaving" class="fa fa-spinner fa-spin"></i>
-        </button>
       </div>
     </div>
   </form>
