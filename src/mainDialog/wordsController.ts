@@ -11,15 +11,25 @@ angular
         value: '',
         description: '',
         scrictMatch: false,
+        group: Group.DEFAULT_GROUP_ID.toString(),
       };
 
+      $scope.groups = [];
+      $scope.groupIdToName = {};
+
       $scope.showAddingDupeError = false;
+
+      $scope.filterByGroup = '0';
 
       $scope.load = async function () {
         return dao
           .getDictionary()
           .then((dictionary: Array<DictionaryEntry>) => {
             $scope.dictionary = dictionary;
+            // Group ids are integers, but the dropdown selector values are strings.
+            $scope.dictionary.forEach((entry: any) => {
+              entry.groupIdStr = entry.groupId.toString();
+            });
             $scope.tableParams = new NgTableParams(
               {
                 count: 1000000000, // hide pager
@@ -30,6 +40,13 @@ angular
               }
             );
             $scope.originalData = angular.copy($scope.dictionary);
+            return dao.getGroups();
+          })
+          .then((groups: Array<Group>) => {
+            $scope.groups = groups;
+            groups.forEach((group) => {
+              $scope.groupIdToName[group.id] = group.name;
+            });
             $scope.$apply();
           });
       };
@@ -45,7 +62,8 @@ angular
             .addEntry(
               newValue,
               $scope.newWord.description,
-              $scope.newWord.strictMatch
+              $scope.newWord.strictMatch,
+              parseInt($scope.newWord.group)
             )
             .then((newEntry: DictionaryEntry) => {
               $scope.dictionary.push(newEntry);
@@ -54,6 +72,7 @@ angular
           $scope.newWord.value = '';
           $scope.newWord.description = '';
           $scope.newWord.strictMatch = false;
+          $scope.newWord.group = Group.DEFAULT_GROUP_ID.toString();
           $scope.showAddingDupeError = false;
           $scope.newWordForm.$setPristine();
         }
@@ -84,6 +103,8 @@ angular
         }
         let originalRow = resetRow(dictionaryEntry, dictionaryEntryForm);
         if (changed(dictionaryEntry, originalRow)) {
+          // Group ids are integers, but the dropdown selector values are strings.
+          dictionaryEntry.groupId = parseInt(dictionaryEntry.groupIdStr);
           dictionaryEntry.touch();
           await dao.saveDictionary($scope.dictionary);
         }
@@ -132,7 +153,8 @@ angular
         return (
           dictionaryEntry.value !== originalRow.value ||
           dictionaryEntry.description !== originalRow.description ||
-          dictionaryEntry.strictMatch !== originalRow.strictMatch
+          dictionaryEntry.strictMatch !== originalRow.strictMatch ||
+          dictionaryEntry.groupIdStr !== originalRow.groupIdStr
         );
       }
 

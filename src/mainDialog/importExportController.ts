@@ -4,7 +4,7 @@
 
 angular
   .module('mainDialog')
-  .controller('importExportController', function ($scope: any, dao: DAO) {
+  .controller('importExportController', async function ($scope: any, dao: DAO) {
     $scope.MODE_KEEP = 'keep';
     $scope.MODE_OVERWRITE = 'overwrite';
     $scope.MODE_REPLACE = 'replace';
@@ -13,6 +13,7 @@ angular
       data: '',
       mode: $scope.MODE_KEEP,
       format: 'ssv',
+      groupIdStr: Group.DEFAULT_GROUP_ID.toString(),
     };
 
     $scope.showInputSuccessConfirmation = false;
@@ -25,9 +26,17 @@ angular
       ssv: 'cat;A small domesticated carnivorous mammal.',
     };
 
+    $scope.load = async function () {
+      return dao.getGroups().then((groups: Array<Group>) => {
+        $scope.groups = groups;
+        $scope.$apply();
+      });
+    };
+
     $scope.onImportClicked = async function () {
       $scope.showImportError = false;
       $scope.importError = '';
+      $scope.importInput.groupId = parseInt($scope.importInput.groupIdStr);
       $scope
         .parseInput($scope.importInput.format)
         .then((input: Array<DictionaryEntry>) => {
@@ -36,6 +45,9 @@ angular
           if ($scope.dupes.length > 0) {
             return;
           }
+          input.forEach((entry: DictionaryEntry) => {
+            entry.groupId = parseInt($scope.importInput.groupIdStr);
+          });
           switch ($scope.importInput.mode) {
             case $scope.MODE_KEEP:
               $scope.importAndKeep(input);
@@ -103,6 +115,7 @@ angular
               strict: entry.strictMatch,
               createdAt: entry.createdAt,
               updatedAt: entry.updatedAt,
+              groupId: entry.groupId,
             };
           });
           resolve(JSON.stringify(jsonData));
@@ -120,6 +133,7 @@ angular
           'strict',
           'created at',
           'updated at',
+          'group id',
         ]);
         dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
           csvData = csvData.concat(
@@ -130,6 +144,7 @@ angular
                 entry.strictMatch.toString(),
                 entry.createdAt.toString(),
                 entry.updatedAt.toString(),
+                entry.groupId.toString(),
               ];
             })
           );
@@ -335,6 +350,7 @@ angular
             if (existingEntry.value === newEntry.value) {
               exists = true;
               existingEntry.description = newEntry.description;
+              existingEntry.groupId = newEntry.groupId;
               existingEntry.updatedAt = newEntry.updatedAt;
             }
           });
@@ -351,4 +367,6 @@ angular
       $scope.importInput.data = '';
       $scope.$apply();
     }
+
+    await $scope.load();
   });

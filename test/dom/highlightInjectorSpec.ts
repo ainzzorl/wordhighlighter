@@ -7,7 +7,9 @@ describe('highlightInjector', () => {
   let highlightGenerator: HighlightGenerator;
 
   beforeEach(() => {
-    highlightGenerator = new HighlightGenerator(new Settings());
+    highlightGenerator = new HighlightGenerator([
+      new Group(1, 'group-name', 'background-color'),
+    ]);
     highlightGenerator.generate = (
       word: string,
       dictionaryEntry: DictionaryEntry

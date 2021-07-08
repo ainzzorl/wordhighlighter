@@ -32,6 +32,12 @@
           <a href="#">Words</a>
         </li>
         <li
+          ng-click="currentTab = 'groups'"
+          ng-class="{active: (currentTab === 'groups')}"
+        >
+          <a href="#">Groups</a>
+        </li>
+        <li
           ng-click="currentTab = 'importExport'"
           ng-class="{active: (currentTab === 'importExport')}"
         >
@@ -56,6 +62,9 @@
         </div>
         <div ng-switch-when="importExport">
           <div ng-include="'importExportTab.html'"></div>
+        </div>
+        <div ng-switch-when="groups">
+          <div ng-include="'groupsTab.html'"></div>
         </div>
         <div ng-switch-when="settings">
           <div ng-include="'settingsTab.html'"></div>

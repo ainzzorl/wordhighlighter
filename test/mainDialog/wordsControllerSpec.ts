@@ -1,6 +1,7 @@
 ///<reference path="../../node_modules/@types/jasmine/index.d.ts" />
 ///<reference path="../../node_modules/@types/angular/index.d.ts" />
 ///<reference path="../../src/lib/common/dictionaryEntry.ts" />
+///<reference path="../../src/lib/common/group.ts" />
 
 declare let inject: any;
 
@@ -27,6 +28,14 @@ describe('wordsController', () => {
         result.push(
           new DictionaryEntry(3, 'word3', 'desc3', new Date(), new Date())
         );
+        return Promise.resolve(result);
+      },
+      getGroups: function () {
+        let result = [
+          new Group(1, 'group-1', 'color-1'),
+          new Group(2, 'group-2', 'color-2'),
+          new Group(3, 'group-3', 'color-3'),
+        ];
         return Promise.resolve(result);
       },
       addEntry(value: string, description: string, strictMatch: boolean) {
@@ -80,6 +89,20 @@ describe('wordsController', () => {
       ).toEqual(['word1', 'word2', 'word3']);
     });
 
+    it('loads groups', () => {
+      expect(
+        $scope.groups.map(function (g: Group) {
+          return g.name;
+        })
+      ).toEqual(['group-1', 'group-2', 'group-3']);
+    });
+
+    it('loads group id to name map', () => {
+      expect($scope.groupIdToName[1]).toEqual('group-1');
+      expect($scope.groupIdToName[2]).toEqual('group-2');
+      expect($scope.groupIdToName[3]).toEqual('group-3');
+    });
+
     it('makes a copy of the original data', () => {
       expect($scope.originalData).toEqual($scope.dictionary);
     });
@@ -103,6 +126,7 @@ describe('wordsController', () => {
             value: 'new-word-value',
             description: 'new-word-description',
             strictMatch: true,
+            group: '123',
           };
           $scope.showAddingDupeError = true;
           await $scope.onAddNewWordClicked();
@@ -112,7 +136,8 @@ describe('wordsController', () => {
           expect(dao.addEntry).toHaveBeenCalledWith(
             'new-word-value',
             'new-word-description',
-            true
+            true,
+            123
           );
         });
 
@@ -133,6 +158,7 @@ describe('wordsController', () => {
           expect($scope.newWord.value).toEqual('');
           expect($scope.newWord.description).toEqual('');
           expect($scope.newWord.strictMatch).toBe(false);
+          expect($scope.newWord.group).toBe(Group.DEFAULT_GROUP_ID.toString());
         });
 
         it('resets the form', () => {
@@ -279,6 +305,7 @@ describe('wordsController', () => {
         $scope.dictionary[1].isEditing = true;
         $scope.dictionary[1].isDupe = true;
         $scope.dictionary[1].updatedAt = null;
+        $scope.dictionary[1].groupIdStr = '456';
 
         await $scope.save($scope.dictionary[1], dictionaryEntryForm);
       });
@@ -307,6 +334,10 @@ describe('wordsController', () => {
 
       it('updates the date', () => {
         expect($scope.dictionary[1].updatedAt).not.toBeNull();
+      });
+
+      it('updates the group id', () => {
+        expect($scope.dictionary[1].groupId).toBe(456);
       });
     });
 

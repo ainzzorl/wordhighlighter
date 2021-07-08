@@ -2,6 +2,7 @@
 ///<reference path="../../node_modules/@types/angular/index.d.ts" />
 ///<reference path="../../node_modules/@types/papaparse/index.d.ts" />
 ///<reference path="../../src/lib/common/dictionaryEntry.ts" />
+///<reference path="../../src/lib/common/group.ts" />
 
 describe('importExportController', () => {
   let controller;
@@ -17,6 +18,14 @@ describe('importExportController', () => {
       async saveDictionary(_dictionary: Array<DictionaryEntry>) {
         return Promise.resolve();
       },
+      async getGroups() {
+        let result = [
+          new Group(1, 'group-1', 'color-1'),
+          new Group(2, 'group-2', 'color-2'),
+          new Group(3, 'group-3', 'color-3'),
+        ];
+        return Promise.resolve(result);
+      },
     };
   });
 
@@ -27,6 +36,20 @@ describe('importExportController', () => {
       dao: dao,
     });
   }));
+
+  describe('load', () => {
+    beforeEach(async () => {
+      await $scope.load();
+    });
+
+    it('loads groups', () => {
+      expect(
+        $scope.groups.map(function (g: Group) {
+          return g.name;
+        })
+      ).toEqual(['group-1', 'group-2', 'group-3']);
+    });
+  });
 
   describe('onImportClicked', () => {
     let input;
@@ -236,7 +259,7 @@ describe('importExportController', () => {
     beforeEach(() => {
       dao.getDictionary = function () {
         return Promise.resolve([
-          new DictionaryEntry(null, 'w', 'd', now, now, true),
+          new DictionaryEntry(null, 'w', 'd', now, now, true, 123),
         ]);
       };
     });
@@ -257,6 +280,7 @@ describe('importExportController', () => {
         expect(result['words'][0]['word']).toEqual('w');
         expect(result['words'][0]['description']).toEqual('d');
         expect(result['words'][0]['strict']).toBe(true);
+        expect(result['words'][0]['groupId']).toBe(123);
         expect(result['words'][0]['createdAt']).not.toBeFalsy();
         expect(result['words'][0]['updatedAt']).not.toBeFalsy();
       });
@@ -281,11 +305,13 @@ describe('importExportController', () => {
         expect(result[0][2]).toEqual('strict');
         expect(result[0][3]).toEqual('created at');
         expect(result[0][4]).toEqual('updated at');
+        expect(result[0][5]).toEqual('group id');
         expect(result[1][0]).toEqual('w');
         expect(result[1][1]).toEqual('d');
         expect(result[1][2]).toEqual('true');
         expect(result[1][3]).not.toBeFalsy();
         expect(result[1][4]).not.toBeFalsy();
+        expect(result[1][5]).toEqual('123');
       });
     });
   });
@@ -336,10 +362,13 @@ describe('importExportController', () => {
     let input;
 
     beforeEach(async () => {
-      input = [new DictionaryEntry(null, 'word 1', 'desc 1')];
+      input = [
+        new DictionaryEntry(null, 'word 1', 'desc 1', now, now, false, 123),
+      ];
       spyOn(dao, 'saveDictionary').and.callThrough();
       $scope.showInputSuccessConfirmation = false;
       $scope.importInput.data = 'input-data';
+      $scope.importInput.groupIdStr = '123';
       await $scope.importAsReplacement(input);
     });
 
@@ -361,8 +390,16 @@ describe('importExportController', () => {
 
     beforeEach(async () => {
       input = [
-        new DictionaryEntry(null, 'new', 'new - desc', now, now),
-        new DictionaryEntry(null, 'both', 'both new - desc', now, now),
+        new DictionaryEntry(null, 'new', 'new - desc', now, now, false, 123),
+        new DictionaryEntry(
+          null,
+          'both',
+          'both new - desc',
+          now,
+          now,
+          false,
+          123
+        ),
       ];
       dao.getDictionary = function () {
         return Promise.resolve([
@@ -372,6 +409,7 @@ describe('importExportController', () => {
       };
       $scope.showInputSuccessConfirmation = false;
       $scope.importInput.data = 'input-data';
+      $scope.importInput.groupIdStr = '123';
       spyOn(dao, 'saveDictionary').and.callThrough();
       await $scope.importAndKeep(input);
     });
@@ -380,7 +418,7 @@ describe('importExportController', () => {
       expect(dao.saveDictionary).toHaveBeenCalledWith([
         new DictionaryEntry(null, 'old', 'old - desc', now, now),
         new DictionaryEntry(null, 'both', 'both old - desc', now, now),
-        new DictionaryEntry(null, 'new', 'new - desc', now, now),
+        new DictionaryEntry(null, 'new', 'new - desc', now, now, false, 123),
       ]);
     });
 
@@ -398,8 +436,16 @@ describe('importExportController', () => {
 
     beforeEach(async () => {
       input = [
-        new DictionaryEntry(null, 'new', 'new - desc', now, now),
-        new DictionaryEntry(null, 'both', 'both new - desc', now, now),
+        new DictionaryEntry(null, 'new', 'new - desc', now, now, false, 123),
+        new DictionaryEntry(
+          null,
+          'both',
+          'both new - desc',
+          now,
+          now,
+          false,
+          123
+        ),
       ];
       dao.getDictionary = function () {
         return Promise.resolve([
@@ -409,6 +455,7 @@ describe('importExportController', () => {
       };
       $scope.showInputSuccessConfirmation = false;
       $scope.importInput.data = 'input-data';
+      $scope.importInput.groupIdStr = '123';
       spyOn(dao, 'saveDictionary').and.callThrough();
       await $scope.importAndOverwrite(input);
     });
@@ -416,8 +463,16 @@ describe('importExportController', () => {
     it('saves the dictionary', () => {
       expect(dao.saveDictionary).toHaveBeenCalledWith([
         new DictionaryEntry(null, 'old', 'old - desc', now, now),
-        new DictionaryEntry(null, 'both', 'both new - desc', now, now),
-        new DictionaryEntry(null, 'new', 'new - desc', now, now),
+        new DictionaryEntry(
+          null,
+          'both',
+          'both new - desc',
+          now,
+          now,
+          false,
+          123
+        ),
+        new DictionaryEntry(null, 'new', 'new - desc', now, now, false, 123),
       ]);
     });
 

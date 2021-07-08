@@ -56,7 +56,12 @@ describe('background', () => {
       });
 
       it('adds the word', () => {
-        expect(dao.addEntry).toHaveBeenCalledWith('differentWord', '', false);
+        expect(dao.addEntry).toHaveBeenCalledWith(
+          'differentWord',
+          '',
+          false,
+          Group.DEFAULT_GROUP_ID
+        );
       });
     });
 
@@ -66,11 +71,7 @@ describe('background', () => {
       });
 
       it('does not add the word', () => {
-        expect(dao.addEntry).not.toHaveBeenCalledWith(
-          'existingWord',
-          '',
-          false
-        );
+        expect(dao.addEntry).not.toHaveBeenCalled();
       });
     });
   });

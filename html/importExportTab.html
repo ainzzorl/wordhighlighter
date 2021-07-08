@@ -43,8 +43,15 @@
       </div>
 
       <div class="row form-group" ng-hide="showConfirmationDialog">
-        <div class="col-xs-12">
-          <select class="form-control" ng-model="importInput.mode">
+        <label for="import-behavior" class="col-xs-3 col-form-label"
+          >Behavior:</label
+        >
+        <div class="col-xs-9">
+          <select
+            class="form-control"
+            ng-model="importInput.mode"
+            name="import-behavior"
+          >
             <option value="{{MODE_KEEP}}">
               If the word already exists, keep it
             </option>
@@ -53,6 +60,21 @@
             </option>
             <option value="{{MODE_REPLACE}}">
               Delete everything and import
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="import-group" class="col-xs-3 col-form-label">Group:</label>
+        <div class="col-xs-9">
+          <select
+            class="form-control"
+            ng-model="importInput.groupIdStr"
+            name="import-group"
+          >
+            <option ng-repeat="group in groups" value="{{group.id}}">
+              {{group.name}}
             </option>
           </select>
         </div>

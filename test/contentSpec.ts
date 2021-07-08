@@ -29,7 +29,9 @@ describe('content', function () {
       settings = new Settings();
       const wnd: any = window;
       const stemmer: Stemmer = wnd.stemmer;
-      highlightGenerator = new HighlightGenerator(new Settings());
+      highlightGenerator = new HighlightGenerator([
+        new Group(1, 'group-name', 'background-color'),
+      ]);
       matchFinder = new MatchFinderImpl(
         createDictionary(['people', 'profit']),
         stemmer

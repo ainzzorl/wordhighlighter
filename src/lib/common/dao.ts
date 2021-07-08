@@ -1,5 +1,6 @@
 ///<reference path="../../../node_modules/@types/chrome/index.d.ts" />
 ///<reference path="dictionaryEntry.ts" />
+///<reference path="group.ts" />
 ///<reference path="logger.ts" />
 ///<reference path="settings.ts" />
 ///<reference path="../highlightingLog/highlightingLog.ts" />
@@ -12,8 +13,10 @@
 class DAO {
   private static readonly KEYS = {
     dictionary: 'dictionary',
+    groups: 'groups',
     settings: 'settings',
-    idSequenceNumber: 'idSequenceNumber',
+    wordIdSequenceNumber: 'idSequenceNumber',
+    groupIdSequenceNumber: 'groupIdSequenceNumber',
     highlightingLog: 'highlightingLog',
   };
 
@@ -25,7 +28,8 @@ class DAO {
 
   init() {
     this.initDictionary();
-    this.initIdSequence();
+    this.initGroups();
+    this.initIdSequences();
     this.initSettings();
     this.initHighlightingLog();
   }
@@ -35,6 +39,15 @@ class DAO {
     return new Promise<Array<DictionaryEntry>>(function (resolve, _reject) {
       self.store.get(DAO.KEYS.dictionary, (result: { [key: string]: any }) => {
         resolve(self.deserializeDictionary(result.dictionary));
+      });
+    });
+  }
+
+  getGroups(): Promise<Array<Group>> {
+    let self: DAO = this;
+    return new Promise<Array<Group>>(function (resolve, _reject) {
+      self.store.get(DAO.KEYS.groups, (result: { [key: string]: any }) => {
+        resolve(self.deserializeGroups(result.groups));
       });
     });
   }
@@ -63,12 +76,13 @@ class DAO {
   addEntry(
     value: string,
     description: string,
-    strictMatch: boolean
+    strictMatch: boolean,
+    groupId: number
   ): Promise<DictionaryEntry> {
     let self: DAO = this;
     return new Promise<DictionaryEntry>((resolve, _reject) => {
       self.store.get(
-        [DAO.KEYS.dictionary, DAO.KEYS.idSequenceNumber],
+        [DAO.KEYS.dictionary, DAO.KEYS.wordIdSequenceNumber],
         (result: { [key: string]: any }) => {
           let dictionary = self.deserializeDictionary(result.dictionary);
           let now: Date = new Date();
@@ -78,7 +92,8 @@ class DAO {
             description,
             now,
             now,
-            strictMatch
+            strictMatch,
+            groupId
           );
           dictionary.push(entry);
           self.store.set(
@@ -91,6 +106,40 @@ class DAO {
                 'Word ' + entry.value + ' has been added to the storages'
               );
               resolve(self.serializeDictionaryEntry(entry));
+            }
+          );
+        }
+      );
+    });
+  }
+
+  addGroup(name: string, backgroundColor: string): Promise<Group> {
+    let self: DAO = this;
+    return new Promise<Group>((resolve, _reject) => {
+      self.store.get(
+        [DAO.KEYS.groups, DAO.KEYS.groupIdSequenceNumber],
+        (result: { [key: string]: any }) => {
+          let groups = self.deserializeGroups(result.groups);
+          let now: Date = new Date();
+          let group = new Group(
+            result.groupIdSequenceNumber,
+            name,
+            backgroundColor,
+            now,
+            now
+          );
+          groups.push(group);
+          let newGroupIdSequenceNumber = result.groupIdSequenceNumber + 1;
+          self.store.set(
+            {
+              groups: self.serializeGroups(groups),
+              groupIdSequenceNumber: newGroupIdSequenceNumber,
+            },
+            () => {
+              WHLogger.log(
+                `Group ${name} has been added to the storage. groupIdSequenceNumber: ${newGroupIdSequenceNumber}`
+              );
+              resolve(self.serializeGroup(group));
             }
           );
         }
@@ -117,7 +166,7 @@ class DAO {
         return;
       }
       self.store.get(
-        DAO.KEYS.idSequenceNumber,
+        DAO.KEYS.wordIdSequenceNumber,
         (result: { [key: string]: any }) => {
           let idSequenceNumber = result.idSequenceNumber;
           entriesWithNoIds.forEach((dictionaryEntry: DictionaryEntry) => {
@@ -132,6 +181,36 @@ class DAO {
               WHLogger.log(
                 'Saved the dictionary. New id sequence number: ' +
                   idSequenceNumber
+              );
+              resolve();
+            }
+          );
+        }
+      );
+    });
+  }
+
+  saveGroups(groups: Array<Group>): Promise<void> {
+    let self: DAO = this;
+    return new Promise<void>((resolve, _reject) => {
+      let groupsWithNoIds = groups.filter((group: Group) => {
+        return !group.id;
+      });
+      self.store.get(
+        DAO.KEYS.groupIdSequenceNumber,
+        (result: { [key: string]: any }) => {
+          let groupIdSequenceNumber = result.groupIdSequenceNumber;
+          groupsWithNoIds.forEach((group: Group) => {
+            group.id = groupIdSequenceNumber++;
+          });
+          self.store.set(
+            {
+              groupIdSequenceNumber: groupIdSequenceNumber,
+              groups: self.serializeGroups(groups),
+            },
+            () => {
+              WHLogger.log(
+                `Saved groups. New group id sequence number: ${groupIdSequenceNumber}`
               );
               resolve();
             }
@@ -173,6 +252,22 @@ class DAO {
     });
   }
 
+  private initGroups() {
+    let self: DAO = this;
+    self.store.get(DAO.KEYS.groups, (result: { [key: string]: any }) => {
+      if (!result.groups) {
+        let defaultGroup = new Group(
+          Group.DEFAULT_GROUP_ID,
+          'Default',
+          Settings.DEFAULT_BACKGROUND_COLOR
+        );
+        self.store.set({ groups: self.serializeGroups([defaultGroup]) }, () => {
+          WHLogger.log('Initialized groups');
+        });
+      }
+    });
+  }
+
   private initSettings() {
     let self: DAO = this;
     self.store.get(DAO.KEYS.settings, (result: { [key: string]: any }) => {
@@ -185,14 +280,24 @@ class DAO {
     });
   }
 
-  private initIdSequence() {
+  private initIdSequences() {
     let self: DAO = this;
     self.store.get(
-      DAO.KEYS.idSequenceNumber,
+      DAO.KEYS.wordIdSequenceNumber,
       (result: { [key: string]: any }) => {
         if (!result.idSequenceNumber) {
           self.store.set({ idSequenceNumber: 1 }, () => {
-            WHLogger.log('Initialized the id sequence');
+            WHLogger.log('Initialized the word id sequence');
+          });
+        }
+      }
+    );
+    self.store.get(
+      DAO.KEYS.groupIdSequenceNumber,
+      (result: { [key: string]: any }) => {
+        if (!result.groupIdSequenceNumber) {
+          self.store.set({ groupIdSequenceNumber: 2 }, () => {
+            WHLogger.log('Initialized the group id sequence');
           });
         }
       }
@@ -227,6 +332,13 @@ class DAO {
     return input.map(this.deserializeDictionaryEntry);
   }
 
+  private deserializeGroups(input: Array<any>): Array<Group> {
+    if (input === null) {
+      return null;
+    }
+    return input.map(this.deserializeGroup);
+  }
+
   private deserializeDictionaryEntry(input: any): DictionaryEntry {
     return new DictionaryEntry(
       input['id'],
@@ -234,7 +346,18 @@ class DAO {
       input['description'],
       input['createdAt'],
       input['updatedAt'],
-      input['strictMatch']
+      input['strictMatch'],
+      input['groupId'] || Group.DEFAULT_GROUP_ID
+    );
+  }
+
+  private deserializeGroup(input: any): Group {
+    return new Group(
+      input['id'],
+      input['name'],
+      input['backgroundColor'],
+      input['createdAt'],
+      input['updatedAt']
     );
   }
 
@@ -285,6 +408,24 @@ class DAO {
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
       strictMatch: input.strictMatch,
+      groupId: input.groupId,
+    };
+  }
+
+  private serializeGroups(input: Array<Group>): Array<any> {
+    if (input === null) {
+      return null;
+    }
+    return input.map(this.serializeGroup);
+  }
+
+  private serializeGroup(input: Group): any {
+    return {
+      id: input.id,
+      name: input.name,
+      backgroundColor: input.backgroundColor,
+      createdAt: input.createdAt,
+      updatedAt: input.updatedAt,
     };
   }
 

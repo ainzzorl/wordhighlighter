@@ -1,5 +1,6 @@
 ///<reference path="common/dao.ts" />
 ///<reference path="common/logger.ts" />
+///<reference path="common/group.ts" />
 
 /**
  * Implements background logic: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Background_scripts
@@ -24,7 +25,8 @@ class Background {
           return entry.value === value;
         }).length > 0;
       if (!isDupe) {
-        await dao.addEntry(value, '', false);
+        // TODO (https://github.com/ainzzorl/wordhighlighter/issues/91): allow picking group
+        await dao.addEntry(value, '', false, Group.DEFAULT_GROUP_ID);
         WHLogger.log(
           'Word ' +
             value +

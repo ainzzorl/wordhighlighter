@@ -1,3 +1,24 @@
+html {
+    width: 500px;
+    max-width: 500px;
+    min-width: 500px;
+}
+
+body {
+    width: 500px;
+    max-width: 500px;
+    min-width: 500px;
+}
+
+.content {
+    max-width: 490px;
+    min-width: 490px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
 #new-word-form {
     margin-top: 5px;
     margin-left: 5px;
@@ -7,35 +28,24 @@
     margin-bottom: 5px;
 }
 
-html {
-    width: 400px;
-    max-width: 400px;
-    min-width: 400px;
+#groups-tab .color-picker-swatch {
+    width: 100%;
 }
 
-body {
-    width: 400px;
-    max-width: 400px;
-    min-width: 400px;
-}
-
-.content {
-    max-width: 380px;
-    min-width: 380px;
-    padding-left: 0px;
-    padding-right: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
+#groups-tab {
+    margin-top: 5px;
+    margin-left: 5px;
 }
 
 #words-table {
-    max-width: 380px;
-    min-width: 380px;
+    max-width: 480px;
+    min-width: 480px;
 }
 
 #words-table .control-column {
     /* Width of 2 icons */
     min-width: 94px;
+    max-width: 94px;
 }
 
 #words-table .strict-match-column {
@@ -60,10 +70,6 @@ body {
 #settings-form {
     margin-top: 5px;
     margin-left: 5px;
-}
-
-#settings-form .color-picker-swatch {
-    width: 100%;
 }
 
 #history-table .count-column {

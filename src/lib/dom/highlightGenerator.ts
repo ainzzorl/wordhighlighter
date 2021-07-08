@@ -1,13 +1,14 @@
 ///<reference path="../common/dictionaryEntry.ts" />
+///<reference path="../common/group.ts" />
 
 /**
  * Class responsible for generating highlights for a word.
  */
 class HighlightGenerator {
-  private settings: Settings;
+  private groups: Array<Group>;
 
-  constructor(settings: Settings) {
-    this.settings = settings;
+  constructor(groups: Array<Group>) {
+    this.groups = groups;
   }
 
   /**
@@ -16,9 +17,9 @@ class HighlightGenerator {
    * @param dictionaryEntry Dictionary entry matching the word.
    */
   generate(word: string, dictionaryEntry: DictionaryEntry) {
-    return `<span class="highlighted-word" style="background-color: #${
-      this.settings.backgroundColor
-    };">${word}${this.tooltipContent(dictionaryEntry)}</span>`;
+    return `<span class="highlighted-word" style="background-color: #${this.getBackgroundColor(
+      dictionaryEntry
+    )};">${word}${this.tooltipContent(dictionaryEntry)}</span>`;
   }
 
   private tooltipContent(entry: DictionaryEntry) {
@@ -34,5 +35,10 @@ class HighlightGenerator {
                         ${wrappedDescription}
                     </div>
                 </div>`;
+  }
+
+  private getBackgroundColor(entry: DictionaryEntry) {
+    return this.groups.filter((group) => group.id === entry.groupId)[0]
+      .backgroundColor;
   }
 }

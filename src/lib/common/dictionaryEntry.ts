@@ -8,6 +8,7 @@ class DictionaryEntry {
   private _createdAt: Date;
   private _updatedAt: Date;
   private _strictMatch: boolean;
+  private _groupId: number;
 
   constructor(
     id: number,
@@ -15,7 +16,8 @@ class DictionaryEntry {
     description: string,
     createdAt: Date = undefined,
     updatedAt: Date = undefined,
-    strictMatch: boolean = false
+    strictMatch: boolean = false,
+    groupId: number = 0
   ) {
     this._id = id;
     this._value = value;
@@ -24,6 +26,7 @@ class DictionaryEntry {
     let now = new Date();
     this._createdAt = createdAt || now;
     this._updatedAt = updatedAt || now;
+    this._groupId = groupId || 0;
   }
 
   get id(): number {
@@ -72,6 +75,14 @@ class DictionaryEntry {
 
   set strictMatch(_strictMatch: boolean) {
     this._strictMatch = _strictMatch;
+  }
+
+  get groupId(): number {
+    return this._groupId;
+  }
+
+  set groupId(_groupId: number) {
+    this._groupId = _groupId;
   }
 
   touch(): void {

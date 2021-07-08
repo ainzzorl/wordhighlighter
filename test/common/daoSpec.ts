@@ -13,7 +13,7 @@ describe('DAO', () => {
   describe('dictionary', () => {
     it('creates, reads and updates the dictionary', async () => {
       dao.init();
-      await dao.addEntry('value1', 'description1', true);
+      await dao.addEntry('value1', 'description1', true, 123);
       let dictionary = await dao.getDictionary();
       expect(dictionary.length).toEqual(1);
       expect(dictionary[0].value).toEqual('value1');
@@ -22,6 +22,7 @@ describe('DAO', () => {
       expect(dictionary[0].createdAt).not.toBeNull();
       expect(dictionary[0].updatedAt).not.toBeNull();
       expect(dictionary[0].id).not.toBeNull();
+      expect(dictionary[0].groupId).toEqual(123);
       dictionary.push(new DictionaryEntry(null, 'value2', 'description2'));
       await dao.saveDictionary(dictionary);
       dictionary = await dao.getDictionary();
@@ -30,6 +31,7 @@ describe('DAO', () => {
       expect(dictionary[1].description).toEqual('description2');
       expect(dictionary[1].strictMatch).toEqual(false);
       expect(dictionary[1].id).not.toBeNull();
+      expect(dictionary[1].groupId).toEqual(Group.DEFAULT_GROUP_ID);
     });
   });
 
@@ -72,6 +74,36 @@ describe('DAO', () => {
             highlightingLog.entries
           );
         });
+    });
+  });
+
+  describe('groups', () => {
+    it('creates, reads and updates groups', async () => {
+      dao.init();
+
+      let groups = await dao.getGroups();
+      expect(groups.length).toEqual(1);
+      expect(groups[0].name).toEqual('Default');
+      expect(groups[0].backgroundColor).toEqual('ffff00');
+
+      await dao.addGroup('group-1-name', 'group-1-color');
+      groups = await dao.getGroups();
+      expect(groups.length).toEqual(2);
+      expect(groups[1].name).toEqual('group-1-name');
+      expect(groups[1].backgroundColor).toEqual('group-1-color');
+      expect(groups[1].createdAt).not.toBeNull();
+      expect(groups[1].updatedAt).not.toBeNull();
+      expect(groups[1].id).toEqual(2);
+
+      groups.push(new Group(null, 'group-2-name', 'group-2-color'));
+      await dao.saveGroups(groups);
+      groups = await dao.getGroups();
+      expect(groups.length).toEqual(3);
+      expect(groups[2].name).toEqual('group-2-name');
+      expect(groups[2].backgroundColor).toEqual('group-2-color');
+      expect(groups[2].createdAt).not.toBeNull();
+      expect(groups[2].updatedAt).not.toBeNull();
+      expect(groups[2].id).toEqual(3);
     });
   });
 

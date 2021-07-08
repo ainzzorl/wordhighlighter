@@ -1,0 +1,156 @@
+<div id="groups-tab" ng-controller="groupsController">
+  <div class="form-group row" ng-hide="showNewGroupForm">
+    <div class="col-xs-12">
+      <button class="btn btn-primary" ng-click="showNewGroupForm = true">
+        New Group
+      </button>
+    </div>
+  </div>
+
+  <div ng-show="showNewGroupForm">
+    <h4>New group:</h4>
+    <form
+      name="newGroupForm"
+      id="new-group-form"
+      ng-submit="onAddNewGroupClicked()"
+      novalidate
+      class="well well-sm"
+    >
+      <div class="form-group row">
+        <label for="new-group-name" class="col-xs-4 col-form-label"
+          >Group name:</label
+        >
+        <div class="col-xs-8">
+          <input
+            ng-model="newGroup.name"
+            name="name"
+            minlength="1"
+            type="text"
+            class="form-control"
+            required
+          />
+          <div ng-show="newGroupForm.$submitted" class="form-validation-error">
+            <div ng-show="newGroupForm.name.$error.required">Required</div>
+            <div ng-show="newGroupForm.name.$error.minlength">
+              Must be 1 characters or longer
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="new-group-background-color" class="col-xs-4 col-form-label">
+          <a
+            href="#"
+            data-toggle="tooltip"
+            title="Background color for highlights."
+          >
+            Background color:
+          </a>
+        </label>
+        <div class="col-xs-8">
+          <color-picker
+            ng-model="newGroup.backgroundColor"
+            options="colorPickerOptions"
+            event-api="colorEventApi"
+          ></color-picker>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-xs-4">&nbsp;</div>
+        <!-- offset-* doesn't work with xs' -->
+        <div class="col-xs-8">
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <hr />
+
+  <h4>Your groups:</h4>
+
+  <div class="well well-sm" ng-repeat="group in groups" ng-form="editGroupForm">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="form-group row">
+          <label class="col-xs-4 col-form-label">Group name:</label>
+          <div class="col-xs-8">
+            <input
+              name="name"
+              ng-model="group.name"
+              minlength="1"
+              type="text"
+              class="form-control"
+              ng-change="save(editGroupForm.$valid)"
+              required
+            />
+            <div class="form-validation-error">
+              <div ng-show="editGroupForm.name.$error.required">Required</div>
+              <div ng-show="editGroupForm.name.$error.minlength">
+                Must be 1 characters or longer
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-xs-4 col-form-label">
+            <a
+              href="#"
+              data-toggle="tooltip"
+              title="Background color for highlights."
+            >
+              Background color:
+            </a>
+          </label>
+          <div class="col-xs-8">
+            <color-picker
+              ng-model="group.backgroundColor"
+              options="colorPickerOptions"
+              event-api="colorEventApi"
+            ></color-picker>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-xs-4">&nbsp;</div>
+          <div class="col-xs-8">
+            <div ng-hide="group.isDeleting">
+              <button
+                type="delete"
+                class="btn btn-danger"
+                ng-disabled="group.id === DELETE_DISABLED_GROUP_ID"
+                ng-click="group.isDeleting = true"
+              >
+                Delete
+              </button>
+            </div>
+
+            <div ng-show="group.isDeleting">
+              <p>
+                Are you sure you want to delete this group? All words from it
+                will be moved the default group.
+              </p>
+              <div>
+                <button
+                  class="btn btn-danger btn-sm"
+                  ng-click="deleteGroup(group.id)"
+                >
+                  Confirm
+                </button>
+                <button
+                  class="btn btn-default btn-sm"
+                  ng-click="group.isDeleting = false"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

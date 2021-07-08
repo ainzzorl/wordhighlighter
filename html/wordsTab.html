@@ -36,6 +36,20 @@
       </div>
     </div>
     <div class="form-group row">
+      <label for="new-word-group" class="col-xs-3 col-form-label">Group:</label>
+      <div class="col-xs-9">
+        <select class="form-control" ng-model="newWord.group">
+          <option
+            ng-repeat="group in groups"
+            ng-form="dictionaryEntryForm"
+            value="{{group.id}}"
+          >
+            {{group.name}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
       <label for="new-word-strict-match" class="col-xs-3 col-form-label">
         <a href="#" data-toggle="tooltip" title="Highlight exact matches only.">
           Use strict match:
@@ -64,139 +78,192 @@
 
   <hr />
 
-  <table
-    id="words-table"
-    ng-table="tableParams"
-    class="table table-condensed table-bordered table-striped"
-  >
-    <tr
-      ng-repeat="dictionaryEntry in $data track by $index"
-      ng-form="dictionaryEntryForm"
-    >
-      <td
-        title="'Word'"
-        sortable="'value'"
-        ng-switch="dictionaryEntry.isEditing"
-        ng-form="value"
+  <div class="form-group row">
+    <label for="filter-by-group" class="col-xs-3 col-form-label">Group:</label>
+    <div class="col-xs-9">
+      <select
+        name="filter-by-group"
+        class="form-control"
+        ng-model="filterByGroup"
       >
-        <span ng-switch-default class="editable-text"
-          >{{dictionaryEntry.value}}</span
+        <option
+          value="0"
+          style="font-weight: bold; font-style: italic"
+          selected
         >
-        <div class="controls" ng-switch-when="true">
-          <input
-            type="text"
-            name="value"
-            minlength="1"
-            ng-model="dictionaryEntry.value"
-            class="editable-input form-control input-sm"
-            required
-          />
-          <div
-            ng-show="dictionaryEntryForm.value.$dirty"
-            class="form-validation-error"
-          >
-            <div ng-show="dictionaryEntryForm.value.$error.required">
-              Required
-            </div>
-            <div ng-show="dictionaryEntryForm.value.$error.minlength">
-              Must be 1 characters or longer
-            </div>
-          </div>
-        </div>
-        <div class="alert alert-danger" ng-show="dictionaryEntry.isDupe">
-          This word is already present in the dictionary.
-        </div>
-      </td>
-      <td
-        title="'Description'"
-        sortable="'description'"
-        ng-switch="dictionaryEntry.isEditing"
-        ng-form="description"
-        class="description-column"
+          <i>All</i>
+        </option>
+        <option ng-repeat="group in groups" value="{{group.id}}">
+          {{group.name}}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table
+        id="words-table"
+        ng-table="tableParams"
+        class="table table-condensed table-bordered table-striped"
       >
-        <span
-          ng-switch-default
-          class="editable-text"
-          ng-bind-html="dictionaryEntry.description | toSafeHtml"
-        ></span>
-        <div class="controls" ng-switch-when="true">
-          <textarea
-            name="description"
-            ng-model="dictionaryEntry.description"
-            class="editable-input form-control input-sm"
-          >
-          </textarea>
-        </div>
-      </td>
-      <td
-        title="'Strict'"
-        sortable="'strictMatch'"
-        ng-switch="dictionaryEntry.isEditing"
-        class="strict-match-column"
-        ng-form="strictMatch"
-      >
-        <span ng-switch-default
-          >{{dictionaryEntry.strictMatch ? 'Yes' : 'No'}}</span
+        <tr
+          ng-repeat="dictionaryEntry in $data track by $index"
+          ng-form="dictionaryEntryForm"
+          ng-show="filterByGroup === '0' || dictionaryEntry.groupId.toString() === filterByGroup"
         >
-        <div class="controls" ng-switch-when="true">
-          <input
-            type="checkbox"
-            name="strictMatch"
-            ng-model="dictionaryEntry.strictMatch"
-            class="form-control"
-          />
-        </div>
-      </td>
-      <td class="control-column">
-        <span ng-show="!dictionaryEntry.isDeleting">
-          <span ng-show="dictionaryEntry.isEditing">
-            <button
-              class="btn btn-primary btn-sm"
-              ng-click="save(dictionaryEntry, dictionaryEntryForm)"
-              ng-disabled="dictionaryEntryForm.$invalid"
+          <td
+            title="'Word'"
+            sortable="'value'"
+            ng-switch="dictionaryEntry.isEditing"
+            ng-form="value"
+          >
+            <span ng-switch-default class="editable-text"
+              >{{dictionaryEntry.value}}</span
             >
-              <span class="glyphicon glyphicon-ok"></span>
-            </button>
-            <button
-              class="btn btn-default btn-sm"
-              ng-click="cancel(dictionaryEntry, dictionaryEntryForm)"
+            <div class="controls" ng-switch-when="true">
+              <input
+                type="text"
+                name="value"
+                minlength="1"
+                ng-model="dictionaryEntry.value"
+                class="editable-input form-control input-sm"
+                required
+              />
+              <div
+                ng-show="dictionaryEntryForm.value.$dirty"
+                class="form-validation-error"
+              >
+                <div ng-show="dictionaryEntryForm.value.$error.required">
+                  Required
+                </div>
+                <div ng-show="dictionaryEntryForm.value.$error.minlength">
+                  Must be 1 characters or longer
+                </div>
+              </div>
+            </div>
+            <div class="alert alert-danger" ng-show="dictionaryEntry.isDupe">
+              This word is already present in the dictionary.
+            </div>
+          </td>
+          <td
+            title="'Description'"
+            sortable="'description'"
+            ng-switch="dictionaryEntry.isEditing"
+            ng-form="description"
+            class="description-column"
+          >
+            <span
+              ng-switch-default
+              class="editable-text"
+              ng-bind-html="dictionaryEntry.description | toSafeHtml"
+            ></span>
+            <div class="controls" ng-switch-when="true">
+              <textarea
+                name="description"
+                ng-model="dictionaryEntry.description"
+                class="editable-input form-control input-sm"
+              >
+              </textarea>
+            </div>
+          </td>
+          <td
+            title="'Group'"
+            sortable="'group'"
+            ng-switch="dictionaryEntry.isEditing"
+            class="group-column"
+            ng-form="group"
+          >
+            <span ng-switch-default
+              >{{groupIdToName[dictionaryEntry.groupId]}}</span
             >
-              <span class="glyphicon glyphicon-remove"></span>
-            </button>
-          </span>
-          <span ng-show="!dictionaryEntry.isEditing">
-            <button
-              class="btn btn-default btn-sm"
-              ng-click="dictionaryEntry.isEditing = true"
+            <div class="controls" ng-switch-when="true">
+              <select
+                class="form-control"
+                ng-model="dictionaryEntry.groupIdStr"
+              >
+                <option
+                  ng-repeat="group in groups"
+                  ng-form="dictionaryEntryForm"
+                  value="{{group.id}}"
+                  selected="group.id === 1"
+                >
+                  {{group.name}}
+                </option>
+              </select>
+            </div>
+          </td>
+          <td
+            title="'Strict'"
+            sortable="'strictMatch'"
+            ng-switch="dictionaryEntry.isEditing"
+            class="strict-match-column"
+            ng-form="strictMatch"
+          >
+            <span ng-switch-default
+              >{{dictionaryEntry.strictMatch ? 'Yes' : 'No'}}</span
             >
-              <span class="glyphicon glyphicon-pencil"></span>
-            </button>
-            <button
-              class="btn btn-danger btn-sm"
-              ng-click="dictionaryEntry.isDeleting = true"
-            >
-              <span class="glyphicon glyphicon-trash"></span>
-            </button>
-          </span>
-        </span>
-        <span ng-show="dictionaryEntry.isDeleting">
-          <div>Are you sure you want to delete this word?</div>
-          <div>
-            <button
-              class="btn btn-danger btn-sm"
-              ng-click="delete(dictionaryEntry)"
-            >
-              Confirm
-            </button>
-            <button
-              class="btn btn-default btn-sm"
-              ng-click="cancel(dictionaryEntry, dictionaryEntryForm)"
-            >
-              Cancel
-            </button>
-          </div>
-        </span>
-      </td>
-    </tr>
-  </table>
+            <div class="controls" ng-switch-when="true">
+              <input
+                type="checkbox"
+                name="strictMatch"
+                ng-model="dictionaryEntry.strictMatch"
+                class="form-control"
+              />
+            </div>
+          </td>
+          <td class="control-column">
+            <span ng-show="!dictionaryEntry.isDeleting">
+              <span ng-show="dictionaryEntry.isEditing">
+                <button
+                  class="btn btn-primary btn-sm"
+                  ng-click="save(dictionaryEntry, dictionaryEntryForm)"
+                  ng-disabled="dictionaryEntryForm.$invalid"
+                >
+                  <span class="glyphicon glyphicon-ok"></span>
+                </button>
+                <button
+                  class="btn btn-default btn-sm"
+                  ng-click="cancel(dictionaryEntry, dictionaryEntryForm)"
+                >
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
+              </span>
+              <span ng-show="!dictionaryEntry.isEditing">
+                <button
+                  class="btn btn-default btn-sm"
+                  ng-click="dictionaryEntry.isEditing = true"
+                >
+                  <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+                <button
+                  class="btn btn-danger btn-sm"
+                  ng-click="dictionaryEntry.isDeleting = true"
+                >
+                  <span class="glyphicon glyphicon-trash"></span>
+                </button>
+              </span>
+            </span>
+            <span ng-show="dictionaryEntry.isDeleting">
+              <div>Are you sure you want to delete this word?</div>
+              <div>
+                <button
+                  class="btn btn-danger btn-sm"
+                  ng-click="delete(dictionaryEntry)"
+                >
+                  Confirm
+                </button>
+                <button
+                  class="btn btn-default btn-sm"
+                  ng-click="cancel(dictionaryEntry, dictionaryEntryForm)"
+                >
+                  Cancel
+                </button>
+              </div>
+            </span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
 </div>
