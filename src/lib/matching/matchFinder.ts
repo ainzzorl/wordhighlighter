@@ -227,9 +227,9 @@ class MatchFinderImpl implements MatchFinder {
   }
 
   // Releasing memory.
+  // Can't cleanup tries - they need to be available if the page is updated -
+  // but it's safer to release stem cache.
   cleanup(): void {
-    this.strictTrie = new TrieNode();
-    this.nonStrictTrie = new TrieNode();
     this.contentWordStems = new Object();
   }
 

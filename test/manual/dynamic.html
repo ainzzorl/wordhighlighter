@@ -1,0 +1,38 @@
+<!--
+    Used to manually test highlighting words on dynamic pages.
+-->
+<html>
+    <head>
+        <script>
+            function onToggleHiddenClicked() {
+                let el = document.getElementById('initially-hidden');
+                let visibility = el.style.visibility;
+                if (visibility === 'hidden') {
+                    visibility = 'visible';
+                } else {
+                    visibility = 'hidden';
+                }
+                el.style.visibility = visibility;
+            }
+            function onAddClicked() {
+                let container = document.getElementById('new-nodes');
+
+                let text = document.createTextNode("word3 - added");
+                let p = document.createElement('p');
+                p.appendChild(text);
+                container.appendChild(p);
+            }
+        </script>
+    </head>
+    <body>
+        <p>word1 - visible right away</p>
+
+        <p id="initially-hidden" style="visibility: hidden;">word2 - initially hidden</p>
+
+        <div id="new-nodes"></div>
+
+        <button onclick="onToggleHiddenClicked()">Toggle hidden</button>
+
+        <button onclick="onAddClicked()">Add node</button>
+    </body>
+</html>

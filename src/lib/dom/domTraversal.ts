@@ -4,11 +4,22 @@
 class DomTraversal {
   private stopped = false;
 
-  private BLACKLISTED_TAGS: any = {
+  private readonly BLACKLISTED_TAGS: any = {
     SCRIPT: true,
     NOSCRIPT: true,
     STYLE: true,
     TITLE: true,
+  };
+
+  private readonly BLACKLISTED_IDS: any = {
+    // Generated stats - it should't highlight there.
+    'word-highlighter-per-word-stats': true,
+  };
+
+  //
+  private readonly BLACKLISTED_CLASSES: any = {
+    // Already highlighted.
+    'highlighted-word': true,
   };
 
   /**
@@ -54,6 +65,38 @@ class DomTraversal {
 
   private isBlacklisted(node: Node): boolean {
     let tagName = (<HTMLElement>node).tagName;
-    return tagName && this.BLACKLISTED_TAGS[tagName.toUpperCase()];
+    if (tagName && this.BLACKLISTED_TAGS[tagName.toUpperCase()]) {
+      return true;
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      let element = node as Element;
+
+      if (
+        this.getClasses(element).filter(
+          (clazz) => this.BLACKLISTED_CLASSES[clazz]
+        ).length
+      ) {
+        return true;
+      }
+
+      if (this.BLACKLISTED_IDS[element.id]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private getClasses(element: Element): Array<string> {
+    let classes: Array<string> = [];
+    let classList: any = element.classList;
+    // Using "forEach" seems a lot more reasonable,
+    // but for some reason it's not available here when testing with PhantomJS.
+    //  ¯\_(ツ)_/¯
+    for (let i = 0; i < classList.length; i++) {
+      classes.push(classList[i]);
+    }
+
+    return classes;
   }
 }

@@ -39,6 +39,20 @@ new DAO().getDictionary().then((dictionary: Array<DictionaryEntry>) => {
             seconds.toFixed(2) +
             ' seconds'
         );
+
+        // Listen to new nodes added to the page.
+        const onMutation = function (
+          mutations: Array<MutationRecord>,
+          _observer: any
+        ) {
+          for (const mutation of mutations) {
+            mutation.addedNodes.forEach((addedNode: any) => {
+              content.processNode(addedNode);
+            });
+          }
+        };
+        const observer = new MutationObserver(onMutation);
+        observer.observe(document, { childList: true, subtree: true });
       });
     });
   });

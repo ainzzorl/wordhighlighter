@@ -13,6 +13,12 @@ describe('DomTraversal', () => {
                                 <div>
                                     <span>Result 2</span>
                                 </div>
+                                <div>
+                                    <span class="highlighted-word some-other-class">Already highlighted</span>
+                                </div>
+                                <div id="word-highlighter-per-word-stats">
+                                    <span>In page stats</span>
+                                </div>
                             </child>`;
     domTraversal = new DomTraversal();
   });

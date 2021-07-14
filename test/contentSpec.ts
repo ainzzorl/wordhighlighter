@@ -45,13 +45,6 @@ describe('content', function () {
           return Promise.resolve();
         },
       };
-      content = new Content(
-        dao,
-        settings,
-        highlightInjector,
-        matchFinder,
-        highlightingLog
-      );
     });
 
     function readFixture(path: string): string {
@@ -145,6 +138,13 @@ describe('content', function () {
 
     async function doTest(testName: string) {
       const doc = parseDocument('content-test-' + testName + '-input.html');
+      content = new Content(
+        dao,
+        settings,
+        highlightInjector,
+        matchFinder,
+        highlightingLog
+      );
       await content.processDocument(doc);
       verifyOutput(doc, testName);
       verifyLog(doc, testName);

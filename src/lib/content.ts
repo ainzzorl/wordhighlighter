@@ -24,6 +24,7 @@ class Content {
   private pageStatsInfoGenerator: PageStatsInfoGenerator =
     new PageStatsInfoGenerator();
   private pageStats: PageStats = new PageStats();
+  private remainingTimeBudgetSeconds: number;
 
   constructor(
     dao: DAO,
@@ -37,32 +38,47 @@ class Content {
     this.highlightInjector = highlightInjector;
     this.matchFinder = matchFinder;
     this.highlightingLog = highlightingLog;
+    this.remainingTimeBudgetSeconds = settings.timeout;
   }
 
   async processDocument(doc: Document) {
     if (!this.settings.enableHighlighting) {
       return;
     }
-    this.startTime = performance.now();
     this.matchFinder.buildIndexes();
+    this.processNode(doc, true);
+  }
+
+  async processNode(root: Node, onRootDocument: boolean = false) {
+    if (!this.settings.enableHighlighting) {
+      return;
+    }
+    this.startTime = performance.now();
     let content: Content = this;
     return new Promise<void>((resolve, _reject) => {
       this.domTraversal.traverseEligibleTextNodes(
-        doc,
+        root,
         function (node: Text) {
           content.onFound(content, node);
         },
         function () {
-          content.onFinished(content, doc).then(resolve);
+          content.remainingTimeBudgetSeconds -= content.elapsedSeconds();
+          content.matchFinder.cleanup();
+          if (onRootDocument) {
+            content.onFinished(content, root as Document).then(resolve);
+          }
         }
       );
     });
   }
 
   private isTimeout(): boolean {
+    return this.elapsedSeconds() > this.remainingTimeBudgetSeconds;
+  }
+
+  private elapsedSeconds(): number {
     let now = performance.now();
-    let seconds = (now - this.startTime) / 1000;
-    return seconds > this.settings.timeout;
+    return (now - this.startTime) / 1000;
   }
 
   private onFound(content: Content, node: Text): void {
@@ -89,7 +105,6 @@ class Content {
       this.highlightingLog.log(content.pageStats);
       await this.dao.saveHighlightingLog(this.highlightingLog);
     }
-    this.matchFinder.cleanup();
   }
 
   private injectPageStatsInfo(content: Content, doc: Document): void {
