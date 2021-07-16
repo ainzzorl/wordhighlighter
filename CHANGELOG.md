@@ -1,3 +1,22 @@
+## v1.6.0 (2021-07-16)
+
+*  Update changelog [View](https://github.com/ainzzorl/wordhighlighter/commit/4c830be20e56504273fdfe85ac4e4c92adcab8d1)
+*  Remove workaround for the scroll bug - it's no longer needed #6 [View](https://github.com/ainzzorl/wordhighlighter/commit/8f71ed27b677398177c3e4a0e2ea8cd5b193b910)
+*  Auto-save settings #78 [View](https://github.com/ainzzorl/wordhighlighter/commit/b8bbc660861c23936c80ba3dd87e0df1a8f69df4)
+*  Remove pointless "optional" word from "Use strict match" label [View](https://github.com/ainzzorl/wordhighlighter/commit/749f9b6967744f9cb0dcb3aa70eb05c2d31dfda6)
+*  Support multiple word groups #81 [View](https://github.com/ainzzorl/wordhighlighter/commit/5234295ffa35719b7bb6363c9f979790ac683547)
+*  Highlight words on dynamically added nodes #11 #88 [View](https://github.com/ainzzorl/wordhighlighter/commit/4ae9714a6e101c7b62928162ecaf54b4d8bbdb43)
+*  Initialize the default group's background color with the legacy setting; rename Settings.backgroundColor to legacyBackgroundColor [View](https://github.com/ainzzorl/wordhighlighter/commit/2eb6171775cc4ae1bf8759832ba1504533db536b)
+*  Add backwards compatibility tests #80 [View](https://github.com/ainzzorl/wordhighlighter/commit/5526c05669df641e817bf7faed18a71552d4145a)
+*  Increase z-index for page stats [View](https://github.com/ainzzorl/wordhighlighter/commit/915e5ceaf6fbfd3d99398a0b4a884a89c28220d0)
+*  Achieve more consistent view of the stats highlight across pages [View](https://github.com/ainzzorl/wordhighlighter/commit/cf38b85ee993d46a97715c02a3e1462e83beed36)
+*  Achieve more consistent view of tooltips [View](https://github.com/ainzzorl/wordhighlighter/commit/4df66c8e36ee788eeb8ba3c36d8d81ed41e0411a)
+*  Prettify the Settings tab a little #49 [View](https://github.com/ainzzorl/wordhighlighter/commit/19c020d0b9668a75ac5eb000f8e2ea853f96513e)
+*  Fix margins in the main dialog [View](https://github.com/ainzzorl/wordhighlighter/commit/c9fc1bd0b8a7cb850a558c3fd77d5c15a3062043)
+*  Fix tab id in words-tab #92 [View](https://github.com/ainzzorl/wordhighlighter/commit/2fe345a3c79a399a2a9f952ac70e39e6bb5bc3cb)
+*  Bump manifest version [View](https://github.com/ainzzorl/wordhighlighter/commit/189a890200d862e02df6d05c3c4ebd4a774baa97)
+
+
 ## v1.5.4 (2021-06-06)
 
 *  Update README [View](https://github.com/ainzzorl/wordhighlighter/commit/0acc374c6cf5226ca5dbfb5e1b6ae0a4ab85283e)
