@@ -15,8 +15,12 @@ body {
     min-width: 490px;
     padding-left: 0px;
     padding-right: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.tab-body {
+    margin-top: 5px;
 }
 
 #new-word-form {
@@ -32,14 +36,9 @@ body {
     width: 100%;
 }
 
-#groups-tab {
-    margin-top: 5px;
-    margin-left: 5px;
-}
-
 #words-table {
-    max-width: 480px;
-    min-width: 480px;
+    max-width: 490px;
+    min-width: 490px;
 }
 
 #words-table .control-column {
@@ -48,38 +47,17 @@ body {
     max-width: 94px;
 }
 
-#words-table .strict-match-column {
-    width: 15px;
-}
-
 #import-tab {
-    width: 100%;
-    padding-left: 5px;
-}
-
-#import-data-row {
     width: 100%;
 }
 
 #import-data {
     width: 100%;
     margin-top: 10px;
-    margin-left: 15px;
  }
-
-#settings-tab {
-    margin-top: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
-}
 
 #history-table .count-column {
     width: 15px;
-}
-
-#history-tab {
-    margin-top: 5px;
-    margin-left: 5px;
 }
 
 .form-validation-error {

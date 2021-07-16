@@ -104,13 +104,15 @@
       </div>
 
       <div id="import-data-row" class="row form-group">
-        <textarea
-          id="import-data"
-          rows="4"
-          cols="50"
-          ng-model="importInput.data"
-          placeholder="{{placeholders[importInput.format]}}"
-        ></textarea>
+        <div class="col-xs-12">
+          <textarea
+            id="import-data"
+            rows="4"
+            cols="50"
+            ng-model="importInput.data"
+            placeholder="{{placeholders[importInput.format]}}"
+          ></textarea>
+        </div>
       </div>
 
       <div class="row form-group" ng-hide="showConfirmationDialog">
