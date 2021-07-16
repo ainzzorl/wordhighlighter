@@ -28,9 +28,9 @@ class DAO {
 
   init() {
     this.initDictionary();
+    this.initSettings();
     this.initGroups();
     this.initIdSequences();
-    this.initSettings();
     this.initHighlightingLog();
   }
 
@@ -254,18 +254,29 @@ class DAO {
 
   private initGroups() {
     let self: DAO = this;
-    self.store.get(DAO.KEYS.groups, (result: { [key: string]: any }) => {
-      if (!result.groups) {
-        let defaultGroup = new Group(
-          Group.DEFAULT_GROUP_ID,
-          'Default',
-          Settings.DEFAULT_BACKGROUND_COLOR
-        );
-        self.store.set({ groups: self.serializeGroups([defaultGroup]) }, () => {
-          WHLogger.log('Initialized groups');
-        });
+    self.store.get(
+      [DAO.KEYS.groups, DAO.KEYS.settings],
+      (result: { [key: string]: any }) => {
+        if (!result.groups) {
+          // The default group's is copied from the legacy setting, if present.
+          let backgroundColor = result.settings.backgroundColor
+            ? result.settings.backgroundColor
+            : Settings.DEFAULT_BACKGROUND_COLOR;
+
+          let defaultGroup = new Group(
+            Group.DEFAULT_GROUP_ID,
+            'Default',
+            backgroundColor
+          );
+          self.store.set(
+            { groups: self.serializeGroups([defaultGroup]) },
+            () => {
+              WHLogger.log('Initialized groups');
+            }
+          );
+        }
       }
-    });
+    );
   }
 
   private initSettings() {
@@ -385,11 +396,7 @@ class DAO {
       input.enablePageStats = Settings.DEFAULT_ENABLE_PAGE_STATS;
     }
     settings.enablePageStats = input.enablePageStats;
-    if (input.backgroundColor === undefined) {
-      // Was created before background color was implemented.
-      input.backgroundColor = Settings.DEFAULT_BACKGROUND_COLOR;
-    }
-    settings.backgroundColor = input.backgroundColor;
+    settings.legacyBackgroundColor = input.backgroundColor;
     return settings;
   }
 
@@ -434,7 +441,6 @@ class DAO {
       timeout: input.timeout,
       enableHighlighting: input.enableHighlighting,
       enablePageStats: input.enablePageStats,
-      backgroundColor: input.backgroundColor,
     };
   }
 

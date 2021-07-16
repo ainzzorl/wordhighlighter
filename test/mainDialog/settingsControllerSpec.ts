@@ -16,7 +16,6 @@ describe('settingsController', () => {
         let settings: Settings = new Settings();
         settings.enableHighlighting = true;
         settings.timeout = 123;
-        settings.backgroundColor = 'f0f0f0';
         return Promise.resolve(settings);
       },
       saveSettings(_settings: Settings) {
@@ -44,7 +43,6 @@ describe('settingsController', () => {
     it('loads the settings', () => {
       expect($scope.settings.enableHighlighting).toBe(true);
       expect($scope.settings.timeout).toEqual(123);
-      expect($scope.settings.backgroundColor).toEqual('f0f0f0');
     });
   });
 
@@ -55,7 +53,6 @@ describe('settingsController', () => {
       $scope.settings.timeout = 456;
       $scope.settings.enableHighlighting = false;
       $scope.settings.enablePageStats = false;
-      $scope.settings.backgroundColor = 'fefefe';
       await $scope.save(true);
     });
 

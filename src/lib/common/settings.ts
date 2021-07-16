@@ -10,25 +10,24 @@ class Settings {
   public static readonly DEFAULT: Settings = new Settings(
     Settings.DEFAULT_TIMEOUT,
     Settings.DEFAULT_ENABLE_HIGHLIGHTING,
-    Settings.DEFAULT_ENABLE_PAGE_STATS,
-    Settings.DEFAULT_BACKGROUND_COLOR
+    Settings.DEFAULT_ENABLE_PAGE_STATS
   );
 
   private _timeout: number;
   private _enableHighlighting: boolean;
   private _enablePageStats: boolean;
-  private _backgroundColor: string;
+  private _legacyBackgroundColor: string;
 
   constructor(
     _timeout: number = undefined,
     _enableHighlighting: boolean = undefined,
     _enablePageStats: boolean = undefined,
-    _backgroundColor: string = undefined
+    _legacyBackgroundColor: string = undefined
   ) {
     this._timeout = _timeout;
     this._enableHighlighting = _enableHighlighting;
     this._enablePageStats = _enablePageStats;
-    this._backgroundColor = _backgroundColor;
+    this._legacyBackgroundColor = _legacyBackgroundColor;
   }
 
   get timeout(): number {
@@ -55,11 +54,13 @@ class Settings {
     this._enablePageStats = _enablePageStats;
   }
 
-  get backgroundColor(): string {
-    return this._backgroundColor;
+  // Legacy setting.
+  // Use Group.backgroundColor instead.
+  get legacyBackgroundColor(): string {
+    return this._legacyBackgroundColor;
   }
 
-  set backgroundColor(_backgroundColor: string) {
-    this._backgroundColor = _backgroundColor;
+  set legacyBackgroundColor(_legacyBackgroundColor: string) {
+    this._legacyBackgroundColor = _legacyBackgroundColor;
   }
 }
