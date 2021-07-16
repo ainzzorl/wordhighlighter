@@ -178,11 +178,20 @@
 }
 
 .highlighted-word .highlighted-word-tooltip p {
+    font : initial !important;
+    font-family : initial !important;
+    font-variant : initial !important;
+    font-size: 16px !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    letter-spacing: initial !important;
+
     /* But not margin-left: it's used to position the tooltip. */
     margin-right: 0px;
     margin-top: 0px;
     margin-bottom: 0px;
-
+    background-color: black;
+    text-align: center;
     padding-top: 0px;
     color: #fff !important;
     width: initial;
