@@ -24,3 +24,4 @@ Visit the following web pages, verify that everything looks as expected.
 * https://reddit.com
 * https://old.reddit.com
 * http://www.hanselman.com/blog/YouAreNotYourCode.aspx
+* https://www.netmeister.org/blog/dns-rrs.html
