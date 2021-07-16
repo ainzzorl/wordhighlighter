@@ -1,74 +1,74 @@
-<div ng-controller="settingsController">
-  <form id="settings-form" ng-show="settings" name="settingsForm" novalidate>
-    <div class="form-group row">
-      <label for="enable-page-stats" class="col-xs-6 col-form-label">
-        <a
-          href="#"
-          data-toggle="tooltip"
-          title="The popup in the bottom right corner of the page."
-        >
-          Enable page load stats:
-        </a>
-      </label>
-      <div class="col-xs-6">
-        <input
-          type="checkbox"
-          class="form-control"
-          ng-model="settings.enablePageStats"
-          ng-change="save(settingsForm.$valid)"
-        />
+<div id="settings-tab" ng-controller="settingsController">
+  <div class="well well-sm">
+    <form id="settings-form" ng-show="settings" name="settingsForm" novalidate>
+      <div class="form-group row">
+        <label for="enable-page-stats" class="col-xs-6 col-form-label">
+          <a
+            href="#"
+            data-toggle="tooltip"
+            title="The popup in the bottom right corner of the page."
+          >
+            Enable page load stats:
+          </a>
+        </label>
+        <div class="col-xs-6">
+          <input
+            type="checkbox"
+            class="form-control"
+            ng-model="settings.enablePageStats"
+            ng-change="save(settingsForm.$valid)"
+          />
+        </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <label for="enable-highlighting" class="col-xs-6 col-form-label">
-        <a
-          href="#"
-          data-toggle="tooltip"
-          title="Disables word highlighting if unchecked."
-        >
-          Enable highlighting:
-        </a>
-      </label>
-      <div class="col-xs-6">
-        <input
-          type="checkbox"
-          class="form-control"
-          ng-model="settings.enableHighlighting"
-          ng-change="save(settingsForm.$valid)"
-        />
+      <div class="form-group row">
+        <label for="enable-highlighting" class="col-xs-6 col-form-label">
+          <a
+            href="#"
+            data-toggle="tooltip"
+            title="Disables word highlighting if unchecked."
+          >
+            Enable highlighting:
+          </a>
+        </label>
+        <div class="col-xs-6">
+          <input
+            type="checkbox"
+            class="form-control"
+            ng-model="settings.enableHighlighting"
+            ng-change="save(settingsForm.$valid)"
+          />
+        </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <label for="timeout" class="col-xs-6 col-form-label">
-        <a
-          href="#"
-          data-toggle="tooltip"
-          title="If the list of words is long and the page is big, highlighting all words can be rather slow. The timeout guarantees that Word Highlighter won't slow your browser down too much."
-        >
-          Timeout (seconds):
-        </a>
-      </label>
-      <div class="col-xs-6">
-        <input
-          id="timeout-input-box"
-          name="timeout"
-          class="form-control"
-          ng-model="settings.timeout"
-          type="number"
-          ng-change="save(settingsForm.$valid)"
-          required
-        />
-        <div class="form-validation-error">
-          <div ng-show="settingsForm.timeout.$error.required">Required</div>
-          <div ng-show="settingsForm.timeout.$error.number">
-            Not valid number
+      <div class="form-group row">
+        <label for="timeout" class="col-xs-6 col-form-label">
+          <a
+            href="#"
+            data-toggle="tooltip"
+            title="If the list of words is long and the page is big, highlighting all words can be rather slow. The timeout guarantees that Word Highlighter won't slow your browser down too much."
+          >
+            Timeout (seconds):
+          </a>
+        </label>
+        <div class="col-xs-6">
+          <input
+            id="timeout-input-box"
+            name="timeout"
+            class="form-control"
+            ng-model="settings.timeout"
+            type="number"
+            ng-change="save(settingsForm.$valid)"
+            required
+          />
+          <div class="form-validation-error">
+            <div ng-show="settingsForm.timeout.$error.required">Required</div>
+            <div ng-show="settingsForm.timeout.$error.number">
+              Not valid number
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
+  </div>
 
-    <hr />
-
-    <p>See more settings under the <i>Groups</i> tab.</p>
-  </form>
+  <p>See the <i>Groups</i> tab for more settings.</p>
 </div>

@@ -67,9 +67,10 @@ body {
     margin-left: 15px;
  }
 
-#settings-form {
+#settings-tab {
     margin-top: 5px;
     margin-left: 5px;
+    margin-right: 5px;
 }
 
 #history-table .count-column {
