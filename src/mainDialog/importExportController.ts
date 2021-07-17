@@ -66,7 +66,25 @@ angular
         });
     };
 
-    $scope.getExportString = function (format: string): Promise<string> {
+    $scope.onExportClicked = function (format: string) {
+      $scope.getBase64ExportString(format).then((exportString: string) => {
+        let a = document.createElement('a');
+        let dataURI = 'data:' + format + ';base64,' + exportString;
+        a.href = dataURI;
+        a['download'] = 'word-highlighter-export.' + format;
+        a.click();
+      });
+    };
+
+    $scope.getBase64ExportString = function (format: string): Promise<string> {
+      return new Promise(function (resolve, _reject) {
+        getExportString(format).then((exportString: string) => {
+          resolve(btoa(toBinary(exportString)));
+        });
+      });
+    };
+
+    function getExportString(format: string): Promise<string> {
       switch (format) {
         case 'json': {
           return getJsonExportString();
@@ -80,18 +98,7 @@ angular
           });
         }
       }
-    };
-
-    $scope.onExportClicked = function (format: string) {
-      $scope.getExportString(format).then((exportString: string) => {
-        let a = document.createElement('a');
-        let dataURI =
-          'data:' + format + ';base64,' + btoa(toBinary(exportString));
-        a.href = dataURI;
-        a['download'] = 'word-highlighter-export.' + format;
-        a.click();
-      });
-    };
+    }
 
     // convert a Unicode string to a string in which
     // each 16-bit unit occupies only one byte
@@ -101,7 +108,17 @@ angular
       for (let i = 0; i < codeUnits.length; i++) {
         codeUnits[i] = s.charCodeAt(i);
       }
-      return String.fromCharCode(...new Uint8Array(codeUnits.buffer));
+      let bytes = new Uint8Array(codeUnits.buffer);
+
+      // The MDN page suggests simple
+      // String.fromCharCode(...new Uint8Array(codeUnits.buffer));
+      // But it fails if the string is too long.
+      let binary = '';
+      let len = bytes.byteLength;
+      for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return binary;
     }
 
     function getJsonExportString(): Promise<string> {

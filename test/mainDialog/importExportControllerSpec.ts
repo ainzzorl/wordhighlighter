@@ -253,67 +253,143 @@ describe('importExportController', () => {
     });
   });
 
-  describe('getExportString', () => {
-    let result: any;
-
-    beforeEach(() => {
-      dao.getDictionary = function () {
-        return Promise.resolve([
-          new DictionaryEntry(null, 'w', 'd', now, now, true, 123),
-        ]);
-      };
-    });
+  describe('getBase64ExportString', () => {
+    let encoded: any;
+    let decoded: any;
+    let parsedDecoded: any;
 
     describe('json', () => {
-      beforeEach(async () => {
-        await $scope
-          .getExportString('json')
-          .then((s) => {
-            result = JSON.parse(s);
-          })
-          .catch((e) => {
-            fail(e);
-          });
+      describe('basic', async () => {
+        beforeEach(() => {
+          dao.getDictionary = function () {
+            return Promise.resolve([
+              new DictionaryEntry(null, 'w', 'd', now, now, true, 123),
+            ]);
+          };
+        });
+
+        it('can be decoded', async () => {
+          await process('json');
+          expect(parsedDecoded['words'].length).toBe(1);
+          expect(parsedDecoded['words'][0]['word']).toEqual('w');
+          expect(parsedDecoded['words'][0]['description']).toEqual('d');
+          expect(parsedDecoded['words'][0]['strict']).toBe(true);
+          expect(parsedDecoded['words'][0]['groupId']).toBe(123);
+          expect(parsedDecoded['words'][0]['createdAt']).not.toBeFalsy();
+          expect(parsedDecoded['words'][0]['updatedAt']).not.toBeFalsy();
+        });
       });
 
-      it('exports data', () => {
-        expect(result['words'][0]['word']).toEqual('w');
-        expect(result['words'][0]['description']).toEqual('d');
-        expect(result['words'][0]['strict']).toBe(true);
-        expect(result['words'][0]['groupId']).toBe(123);
-        expect(result['words'][0]['createdAt']).not.toBeFalsy();
-        expect(result['words'][0]['updatedAt']).not.toBeFalsy();
+      describe('unicode', async () => {
+        beforeEach(() => {
+          dao.getDictionary = function () {
+            return Promise.resolve([
+              new DictionaryEntry(
+                null,
+                '你好 - привет - 😋',
+                '',
+                now,
+                now,
+                true,
+                123
+              ),
+            ]);
+          };
+        });
+
+        it('can be decoded', async () => {
+          await process('json');
+          expect(parsedDecoded['words'].length).toBe(1);
+          expect(parsedDecoded['words'][0]['word']).toEqual(
+            '你好 - привет - 😋'
+          );
+        });
+      });
+
+      describe('very long input', async () => {
+        beforeEach(() => {
+          dao.getDictionary = function () {
+            let result = [];
+            for (let i = 0; i < 10000; i++) {
+              result.push(
+                new DictionaryEntry(null, `word #${i}`, '', now, now, true, 123)
+              );
+            }
+            return Promise.resolve(result);
+          };
+        });
+
+        it('can be decoded', async () => {
+          await process('json');
+          expect(parsedDecoded['words'].length).toBe(10000);
+          for (let i = 0; i < 10000; i++) {
+            expect(parsedDecoded['words'][i]['word']).toEqual(`word #${i}`);
+          }
+        });
       });
     });
 
     describe('csv', () => {
-      beforeEach(async () => {
-        await $scope
-          .getExportString('csv')
-          .then((s) => {
-            result = Papa.parse(s).data;
-          })
-          .catch((e) => {
-            fail(e);
-          });
-      });
+      describe('basic', async () => {
+        beforeEach(() => {
+          dao.getDictionary = function () {
+            return Promise.resolve([
+              new DictionaryEntry(null, 'w', 'd', now, now, true, 123),
+            ]);
+          };
+        });
 
-      it('exports data', () => {
-        expect(result.length).toEqual(2);
-        expect(result[0][0]).toEqual('word');
-        expect(result[0][1]).toEqual('description');
-        expect(result[0][2]).toEqual('strict');
-        expect(result[0][3]).toEqual('created at');
-        expect(result[0][4]).toEqual('updated at');
-        expect(result[0][5]).toEqual('group id');
-        expect(result[1][0]).toEqual('w');
-        expect(result[1][1]).toEqual('d');
-        expect(result[1][2]).toEqual('true');
-        expect(result[1][3]).not.toBeFalsy();
-        expect(result[1][4]).not.toBeFalsy();
-        expect(result[1][5]).toEqual('123');
+        it('can be decoded', async () => {
+          await process('csv');
+          expect(parsedDecoded.length).toEqual(2);
+          expect(parsedDecoded[0][0]).toEqual('word');
+          expect(parsedDecoded[0][1]).toEqual('description');
+          expect(parsedDecoded[0][2]).toEqual('strict');
+          expect(parsedDecoded[0][3]).toEqual('created at');
+          expect(parsedDecoded[0][4]).toEqual('updated at');
+          expect(parsedDecoded[0][5]).toEqual('group id');
+          expect(parsedDecoded[1][0]).toEqual('w');
+          expect(parsedDecoded[1][1]).toEqual('d');
+          expect(parsedDecoded[1][2]).toEqual('true');
+          expect(parsedDecoded[1][3]).not.toBeFalsy();
+          expect(parsedDecoded[1][4]).not.toBeFalsy();
+          expect(parsedDecoded[1][5]).toEqual('123');
+        });
       });
     });
+
+    async function process(format: string) {
+      await $scope
+        .getBase64ExportString(format)
+        .then((s: string) => {
+          encoded = s;
+          decoded = fromBinary(atob(encoded));
+          if (format === 'json') {
+            parsedDecoded = JSON.parse(decoded);
+          } else if (format === 'csv') {
+            parsedDecoded = Papa.parse(decoded).data;
+          } else {
+            fail(`Unknown format: ${format}`);
+          }
+        })
+        .catch((e: any) => {
+          fail(e);
+        });
+    }
+
+    function fromBinary(binary: string) {
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < bytes.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+
+      let arr = new Uint16Array(bytes.buffer);
+      let res = '';
+      for (let i = 0; i < arr.length; i++) {
+        res += String.fromCharCode(arr[i]);
+      }
+      return res;
+    }
   });
 
   describe('getDuplicateEntries', () => {
