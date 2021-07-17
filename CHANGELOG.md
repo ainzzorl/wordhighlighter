@@ -1,3 +1,11 @@
+## v1.6.1 (2021-07-17)
+
+*  Update CHANGELOG [View](https://github.com/ainzzorl/wordhighlighter/commit/fd8074fcd0e5c1b7eb8484b03d855da8e6da8d8d)
+*  Fix export failing if the dictionary is too big #90 [View](https://github.com/ainzzorl/wordhighlighter/commit/05de9e789d3dbf799d24fe01d891a44405d4f04e)
+*  Reduce line height in the stats tip a little [View](https://github.com/ainzzorl/wordhighlighter/commit/6e86ba31973a384f975561f8b20e39574520b48d)
+*  Bump manifest version [View](https://github.com/ainzzorl/wordhighlighter/commit/8ed988e75a17b96a233ee6394c75f890063e03c0)
+
+
 ## v1.6.0 (2021-07-16)
 
 *  Update changelog [View](https://github.com/ainzzorl/wordhighlighter/commit/4c830be20e56504273fdfe85ac4e4c92adcab8d1)
