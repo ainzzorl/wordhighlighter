@@ -425,6 +425,7 @@ div#word-highlighter-page-stats-tip {
 
     font-size: 12px !important;
     font-style: italic !important;
+    line-height: 0.9em !important;
 }
 
 #word-highlighter-page-stats-close {
