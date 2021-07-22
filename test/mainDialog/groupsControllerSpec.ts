@@ -16,18 +16,49 @@ describe('groupsController', () => {
       getGroups: function () {
         let result = [];
         result.push(
-          new Group(Group.DEFAULT_GROUP_ID, 'group-1-name', 'group-1-color')
+          new Group(
+            Group.DEFAULT_GROUP_ID,
+            'group-1-name',
+            'group-1-color',
+            true,
+            'group-1-language'
+          )
         );
         result.push(
-          new Group(Group.DEFAULT_GROUP_ID + 1, 'group-2-name', 'group-2-color')
+          new Group(
+            Group.DEFAULT_GROUP_ID + 1,
+            'group-2-name',
+            'group-2-color',
+            true,
+            'group-2-language'
+          )
         );
         result.push(
-          new Group(Group.DEFAULT_GROUP_ID + 2, 'group-3-name', 'group-3-color')
+          new Group(
+            Group.DEFAULT_GROUP_ID + 2,
+            'group-3-name',
+            'group-3-color',
+            true,
+            'group-3-language'
+          )
         );
         return Promise.resolve(result);
       },
-      addGroup(name: string, backgroundColor: string) {
-        return Promise.resolve(new Group(1, name, backgroundColor));
+      addGroup(
+        name: string,
+        backgroundColor: string,
+        enableSmartMatching: boolean,
+        smartMatchingLanguage: string
+      ) {
+        return Promise.resolve(
+          new Group(
+            1,
+            name,
+            backgroundColor,
+            enableSmartMatching,
+            smartMatchingLanguage
+          )
+        );
       },
       saveGroups(_groups: Array<Group>) {
         return Promise.resolve();
@@ -79,6 +110,8 @@ describe('groupsController', () => {
         $scope.newGroup = {
           name: 'new-group-name',
           backgroundColor: 'new-group-background-color',
+          enableSmartMatching: false,
+          smartMatchingLanguage: 'new-group-smart-matching-language',
         };
         await $scope.onAddNewGroupClicked();
       });
@@ -86,7 +119,9 @@ describe('groupsController', () => {
       it('persists the new group', () => {
         expect(dao.addGroup).toHaveBeenCalledWith(
           'new-group-name',
-          'new-group-background-color'
+          'new-group-background-color',
+          false,
+          'new-group-smart-matching-language'
         );
       });
 
@@ -96,12 +131,22 @@ describe('groupsController', () => {
         expect($scope.groups[0].backgroundColor).toEqual(
           'new-group-background-color'
         );
+        expect($scope.groups[0].enableSmartMatching).toBe(false);
+        expect($scope.groups[0].smartMatchingLanguage).toEqual(
+          'new-group-smart-matching-language'
+        );
       });
 
       it('resets the group', () => {
         expect($scope.newGroup.name).toEqual('');
         expect($scope.newGroup.backgroundColor).toEqual(
           Settings.DEFAULT_BACKGROUND_COLOR
+        );
+        expect($scope.newGroup.enableSmartMatching).toEqual(
+          Group.DEFAULT_ENABLE_SMART_MATCHING
+        );
+        expect($scope.newGroup.smartMatchingLanguage).toEqual(
+          Group.DEFAULT_SMART_MATCHING_LANGUAGE
         );
       });
 
@@ -161,6 +206,9 @@ describe('groupsController', () => {
 
       $scope.groups[0].name += '-updated';
       $scope.groups[0].backgroundColor += '-updated';
+      $scope.groups[0].enableSmartMatching =
+        !$scope.groups[0].enableSmartMatching;
+      $scope.groups[0].smartMatchingLanguage += '-updated';
 
       await $scope.save(true);
     });

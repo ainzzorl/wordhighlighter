@@ -8,7 +8,13 @@ describe('highlightInjector', () => {
 
   beforeEach(() => {
     highlightGenerator = new HighlightGenerator([
-      new Group(1, 'group-name', 'background-color'),
+      new Group(
+        1,
+        'group-name',
+        'background-color',
+        true,
+        'smart-matching-language'
+      ),
     ]);
     highlightGenerator.generate = (
       word: string,

@@ -8,7 +8,13 @@ describe('highlightGenerator', () => {
 
   beforeEach(() => {
     generator = new HighlightGenerator([
-      new Group(123, 'group-name', 'background-color'),
+      new Group(
+        123,
+        'group-name',
+        'background-color',
+        true,
+        'smart-matching-language'
+      ),
     ]);
     // Ignore all whitespace characters when comparing strings.
     // We use string interpolation a lot,

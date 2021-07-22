@@ -113,7 +113,12 @@ class DAO {
     });
   }
 
-  addGroup(name: string, backgroundColor: string): Promise<Group> {
+  addGroup(
+    name: string,
+    backgroundColor: string,
+    enableSmartMatching: boolean,
+    smartMatchingLanguage: string
+  ): Promise<Group> {
     let self: DAO = this;
     return new Promise<Group>((resolve, _reject) => {
       self.store.get(
@@ -125,6 +130,8 @@ class DAO {
             result.groupIdSequenceNumber,
             name,
             backgroundColor,
+            enableSmartMatching,
+            smartMatchingLanguage,
             now,
             now
           );
@@ -266,7 +273,9 @@ class DAO {
           let defaultGroup = new Group(
             Group.DEFAULT_GROUP_ID,
             'Default',
-            backgroundColor
+            backgroundColor,
+            Group.DEFAULT_ENABLE_SMART_MATCHING,
+            Group.DEFAULT_SMART_MATCHING_LANGUAGE
           );
           self.store.set(
             { groups: self.serializeGroups([defaultGroup]) },
@@ -367,6 +376,11 @@ class DAO {
       input['id'],
       input['name'],
       input['backgroundColor'],
+      input['enableSmartMatching'] !== null &&
+      input['enableSmartMatching'] !== undefined
+        ? input['enableSmartMatching']
+        : Group.DEFAULT_ENABLE_SMART_MATCHING,
+      input['smartMatchingLanguage'] || Group.DEFAULT_SMART_MATCHING_LANGUAGE,
       input['createdAt'],
       input['updatedAt']
     );
@@ -431,6 +445,8 @@ class DAO {
       id: input.id,
       name: input.name,
       backgroundColor: input.backgroundColor,
+      enableSmartMatching: input.enableSmartMatching,
+      smartMatchingLanguage: input.smartMatchingLanguage,
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     };

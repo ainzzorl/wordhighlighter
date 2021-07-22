@@ -30,7 +30,13 @@ describe('content', function () {
       const wnd: any = window;
       const stemmer: Stemmer = wnd.stemmer;
       highlightGenerator = new HighlightGenerator([
-        new Group(1, 'group-name', 'background-color'),
+        new Group(
+          1,
+          'group-name',
+          'background-color',
+          true,
+          'smart-matching-language'
+        ),
       ]);
       matchFinder = new MatchFinderImpl(
         createDictionary(['people', 'profit']),
