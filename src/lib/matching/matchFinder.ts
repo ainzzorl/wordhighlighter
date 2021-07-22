@@ -32,8 +32,10 @@ class TrieNode {
 }
 
 class MatchFinderImpl implements MatchFinder {
-  dictionary: Array<DictionaryEntry>;
-  stemmer: Stemmer;
+  private dictionary: Array<DictionaryEntry>;
+  // Map lang->Stemmer
+  private stemmers: any;
+  private groups: Array<Group>;
 
   // Trie data structure.
   // The need for Trie arises from multi-token phrases we may need to lookup,
@@ -42,24 +44,33 @@ class MatchFinderImpl implements MatchFinder {
   // Trie seems like an overkill since words/phrases in the dictionary are typically
   // very short (usually just one word, occasionally 2 or 3, very rarely more than that),
   // but we can't think of a significantly simpler way to do it without Tries.
-  strictTrie: TrieNode;
-  nonStrictTrie: TrieNode;
+  private strictTrie: TrieNode;
+  // Map language->TrieNode
+  private nonStrictTries: any;
 
   // A cache to avoid running somewhat expensive stemming more than once
   // on the same word.
+  // Map: language->(word->stem)
   // TODO: use maps.
   // TODO: maybe extract something like "CachingStemmer"?
-  contentWordStems: any;
+  private contentWordStems: any;
+
+  private smartMatchingLanguages: Array<string>;
 
   private IGNORED_PREFIXES = ['a ', 'an ', 'to '];
   private IGNORED_SUFFIXES = [', to'];
 
-  constructor(dictionary: Array<DictionaryEntry>, stemmer: Stemmer) {
+  constructor(
+    dictionary: Array<DictionaryEntry>,
+    stemmers: any,
+    groups: Array<Group>
+  ) {
     this.dictionary = dictionary;
-    this.stemmer = stemmer;
+    this.stemmers = stemmers;
+    this.groups = groups;
     this.strictTrie = new TrieNode();
-    this.nonStrictTrie = new TrieNode();
-    this.contentWordStems = new Object();
+    this.nonStrictTries = {};
+    this.contentWordStems = {};
   }
 
   // Detect words matching the dictionary in the input.
@@ -80,7 +91,8 @@ class MatchFinderImpl implements MatchFinder {
         tokens,
         i,
         this.strictTrie,
-        true
+        true,
+        null
       );
       if (match !== null) {
         // Found "strict" match.
@@ -97,12 +109,23 @@ class MatchFinderImpl implements MatchFinder {
         i = endIndex;
       } else {
         // Try finding a match in the "non-strict" trie, starting from tokens[i].
-        [endIndex, match] = this.matchWithTrie(
-          tokens,
-          i,
-          this.nonStrictTrie,
-          false
-        );
+        [endIndex, match] = [null, null];
+        for (
+          let languageIndex = 0;
+          languageIndex < this.smartMatchingLanguages.length;
+          languageIndex++
+        ) {
+          [endIndex, match] = this.matchWithTrie(
+            tokens,
+            i,
+            this.nonStrictTries[this.smartMatchingLanguages[languageIndex]],
+            false,
+            this.smartMatchingLanguages[languageIndex]
+          );
+          if (match !== null) {
+            break;
+          }
+        }
         if (match !== null) {
           // Found "non-strict" match.
           this.pushMatchIfNotEmpty(result, currentNoMatch, null);
@@ -140,7 +163,8 @@ class MatchFinderImpl implements MatchFinder {
     tokens: Array<Token>,
     firstTokenIndex: number,
     trie: TrieNode,
-    strict: boolean
+    strict: boolean,
+    smartMatchingLanguage: string
   ): [number, DictionaryEntry] {
     let node = trie;
     let i = firstTokenIndex;
@@ -157,12 +181,12 @@ class MatchFinderImpl implements MatchFinder {
       let key = word.toLowerCase();
       if (!strict) {
         // TODO: extract this block.
-        let cachedStem = this.contentWordStems[word];
+        let cachedStem = this.contentWordStems[smartMatchingLanguage][word];
         if (cachedStem) {
           key = cachedStem;
         } else {
-          key = this.stemmer.stem(key);
-          this.contentWordStems[word] = key;
+          key = this.stemmers[smartMatchingLanguage].stem(key);
+          this.contentWordStems[smartMatchingLanguage][word] = key;
         }
       }
       if (key in node.children) {
@@ -186,15 +210,40 @@ class MatchFinderImpl implements MatchFinder {
   // unnecessary calculations when highlighting is disabled.
   buildIndexes(): void {
     this.strictTrie = new TrieNode();
-    this.nonStrictTrie = new TrieNode();
-    this.contentWordStems = new Object();
-    if (!this.stemmer) {
+    this.nonStrictTries = new TrieNode();
+    this.contentWordStems = {};
+    this.smartMatchingLanguages = [];
+    if (!this.stemmers) {
       return;
     }
+    let groupIdToGroup: any = {};
+    this.groups.forEach((group: Group) => {
+      if (group.enableSmartMatching) {
+        this.nonStrictTries[group.smartMatchingLanguage] = new TrieNode();
+        if (
+          this.smartMatchingLanguages.indexOf(group.smartMatchingLanguage) < 0
+        ) {
+          this.smartMatchingLanguages.push(group.smartMatchingLanguage);
+          this.contentWordStems[group.smartMatchingLanguage] = {};
+        }
+      }
+      groupIdToGroup[group.id] = group;
+    });
     this.dictionary.forEach((entry: DictionaryEntry) => {
-      this.insertIntoTrie(entry, this.strictTrie, true);
-      if (!entry.strictMatch) {
-        this.insertIntoTrie(entry, this.nonStrictTrie, false);
+      let group: Group = groupIdToGroup[entry.groupId];
+      this.insertIntoTrie(
+        entry,
+        this.strictTrie,
+        true,
+        group.smartMatchingLanguage
+      );
+      if (!entry.strictMatch && group.enableSmartMatching) {
+        this.insertIntoTrie(
+          entry,
+          this.nonStrictTries[group.smartMatchingLanguage],
+          false,
+          group.smartMatchingLanguage
+        );
       }
     });
   }
@@ -202,15 +251,21 @@ class MatchFinderImpl implements MatchFinder {
   private insertIntoTrie(
     entry: DictionaryEntry,
     trie: TrieNode,
-    strict: boolean
+    strict: boolean,
+    stemmingLanguage: string
   ): void {
     let normalizedWords: string[];
     if (strict) {
-      normalizedWords = this.getNormalizedWords(entry.value, false);
+      normalizedWords = this.getNormalizedWords(
+        entry.value,
+        false,
+        stemmingLanguage
+      );
     } else {
       normalizedWords = this.getNormalizedWords(
         this.removeIgnoredSuffixes(this.removeIgnoredPrefixes(entry.value)),
-        true
+        true,
+        stemmingLanguage
       );
     }
     let node: TrieNode = trie;
@@ -230,11 +285,15 @@ class MatchFinderImpl implements MatchFinder {
   // Can't cleanup tries - they need to be available if the page is updated -
   // but it's safer to release stem cache.
   cleanup(): void {
-    this.contentWordStems = new Object();
+    this.contentWordStems = {};
   }
 
   // Breake the input into words and "normalize" them.
-  private getNormalizedWords(input: string, doStem: boolean): Array<string> {
+  private getNormalizedWords(
+    input: string,
+    doStem: boolean,
+    stemmingLanguage: string
+  ): Array<string> {
     let result: Array<string> = [];
     this.tokenize(input.toLowerCase()).forEach((token: Token) => {
       if (!token.isWord) {
@@ -242,7 +301,7 @@ class MatchFinderImpl implements MatchFinder {
       }
       let word = token.value;
       if (doStem) {
-        word = this.stemmer.stem(word);
+        word = this.stemmers[stemmingLanguage].stem(word);
         if (!word) {
           return;
         }

@@ -28,19 +28,21 @@ describe('content', function () {
     beforeEach(() => {
       settings = new Settings();
       const wnd: any = window;
-      const stemmer: Stemmer = wnd.stemmer;
-      highlightGenerator = new HighlightGenerator([
+      const stemmers: Stemmer = wnd.stemmers;
+      const groups = [
         new Group(
           1,
           'group-name',
           'background-color',
-          true,
-          'smart-matching-language'
+          Group.DEFAULT_ENABLE_SMART_MATCHING,
+          Group.DEFAULT_SMART_MATCHING_LANGUAGE
         ),
-      ]);
+      ];
+      highlightGenerator = new HighlightGenerator(groups);
       matchFinder = new MatchFinderImpl(
         createDictionary(['people', 'profit']),
-        stemmer
+        stemmers,
+        groups
       );
       spyOn(matchFinder, 'buildIndexes').and.callThrough();
       spyOn(matchFinder, 'cleanup').and.callThrough();

@@ -17,7 +17,7 @@ class DictionaryEntry {
     createdAt: Date = undefined,
     updatedAt: Date = undefined,
     strictMatch: boolean = false,
-    groupId: number = 0
+    groupId: number = Group.DEFAULT_GROUP_ID
   ) {
     this._id = id;
     this._value = value;
@@ -26,7 +26,7 @@ class DictionaryEntry {
     let now = new Date();
     this._createdAt = createdAt || now;
     this._updatedAt = updatedAt || now;
-    this._groupId = groupId || 0;
+    this._groupId = groupId;
   }
 
   get id(): number {

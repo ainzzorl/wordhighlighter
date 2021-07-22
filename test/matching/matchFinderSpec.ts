@@ -7,7 +7,9 @@
 describe('MatchFinder', () => {
   let matchFinder: MatchFinder;
   let stemmer: Stemmer;
+  let stemmers: any;
   let dictionary: Array<DictionaryEntry>;
+  let groups: Array<Group>;
   let matchResult: Array<MatchResultEntry>;
 
   describe('findMatches', () => {
@@ -18,6 +20,9 @@ describe('MatchFinder', () => {
             return word;
           },
         };
+        stemmers = {};
+        stemmers[Group.DEFAULT_SMART_MATCHING_LANGUAGE] = stemmer;
+
         dictionary = [];
         dictionary.push(
           new DictionaryEntry(1, 'people', '', new Date(), new Date())
@@ -45,8 +50,17 @@ describe('MatchFinder', () => {
         dictionary.push(
           new DictionaryEntry(7, 'français', '', new Date(), new Date(), true)
         );
+        groups = [
+          new Group(
+            Group.DEFAULT_GROUP_ID,
+            'Default',
+            'color',
+            Group.DEFAULT_ENABLE_SMART_MATCHING,
+            Group.DEFAULT_SMART_MATCHING_LANGUAGE
+          ),
+        ];
 
-        matchFinder = new MatchFinderImpl(dictionary, stemmer);
+        matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
         matchFinder.buildIndexes();
       });
 
@@ -218,7 +232,19 @@ describe('MatchFinder', () => {
             return word;
           },
         };
-        matchFinder = new MatchFinderImpl(dictionary, stemmer);
+        stemmers = {};
+        stemmers[Group.DEFAULT_SMART_MATCHING_LANGUAGE] = stemmer;
+        groups = [
+          new Group(
+            Group.DEFAULT_GROUP_ID,
+            'Default',
+            'color',
+            Group.DEFAULT_ENABLE_SMART_MATCHING,
+            Group.DEFAULT_SMART_MATCHING_LANGUAGE
+          ),
+        ];
+
+        matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
         matchFinder.buildIndexes();
       });
 
@@ -286,6 +312,9 @@ describe('MatchFinder', () => {
             return word;
           },
         };
+        stemmers = {};
+        stemmers[Group.DEFAULT_SMART_MATCHING_LANGUAGE] = stemmer;
+
         dictionary = [];
         dictionary.push(
           new DictionaryEntry(1, 'three', '', new Date(), new Date())
@@ -299,7 +328,16 @@ describe('MatchFinder', () => {
         dictionary.push(
           new DictionaryEntry(4, 'OnE-tWo-ThReEs', '', new Date(), new Date())
         );
-        matchFinder = new MatchFinderImpl(dictionary, stemmer);
+        groups = [
+          new Group(
+            Group.DEFAULT_GROUP_ID,
+            'Default',
+            'color',
+            Group.DEFAULT_ENABLE_SMART_MATCHING,
+            Group.DEFAULT_SMART_MATCHING_LANGUAGE
+          ),
+        ];
+        matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
         matchFinder.buildIndexes();
       });
 
@@ -371,6 +409,9 @@ describe('MatchFinder', () => {
               return word;
             },
           };
+          stemmers = {};
+          stemmers[Group.DEFAULT_SMART_MATCHING_LANGUAGE] = stemmer;
+
           dictionary = [
             new DictionaryEntry(1, 'one', '', new Date(), new Date()),
             new DictionaryEntry(2, 'two', '', new Date(), new Date()),
@@ -378,7 +419,16 @@ describe('MatchFinder', () => {
             new DictionaryEntry(4, 'one two', '', new Date(), new Date()),
             new DictionaryEntry(5, 'one two three', '', new Date(), new Date()),
           ];
-          matchFinder = new MatchFinderImpl(dictionary, stemmer);
+          groups = [
+            new Group(
+              Group.DEFAULT_GROUP_ID,
+              'Default',
+              'color',
+              Group.DEFAULT_ENABLE_SMART_MATCHING,
+              Group.DEFAULT_SMART_MATCHING_LANGUAGE
+            ),
+          ];
+          matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
           matchFinder.buildIndexes();
         });
 
@@ -394,6 +444,133 @@ describe('MatchFinder', () => {
             expect(matchResult[1].value).toEqual(' four');
             expect(matchResult[1].matchOf).toBeNull();
           });
+        });
+      });
+    });
+
+    // TODO: one more group
+    describe('group configs', () => {
+      beforeEach(() => {
+        dictionary = [
+          new DictionaryEntry(
+            1,
+            'cherry',
+            '',
+            new Date(),
+            new Date(),
+            false,
+            1
+          ),
+          new DictionaryEntry(2, 'apple', '', new Date(), new Date(), true, 1),
+
+          new DictionaryEntry(3, 'gato', '', new Date(), new Date(), false, 2),
+          new DictionaryEntry(4, 'perro', '', new Date(), new Date(), true, 3),
+          new DictionaryEntry(5, 'vaca', '', new Date(), new Date(), true, 4),
+
+          new DictionaryEntry(6, 'пень', '', new Date(), new Date(), false, 5),
+          new DictionaryEntry(
+            7,
+            'колоды',
+            '',
+            new Date(),
+            new Date(),
+            false,
+            5
+          ),
+        ];
+        groups = [
+          new Group(1, 'English', '', false, 'English'),
+
+          new Group(2, 'Spanish 1', '', true, 'es'),
+          new Group(3, 'Spanish 2', '', true, 'es'),
+          new Group(4, 'Spanish 3', '', false, 'es'),
+
+          new Group(5, 'Russian', '', true, 'ru'),
+        ];
+
+        let stemmerEn = {
+          stem: function (word: string) {
+            switch (word) {
+              case 'cherries':
+                return 'cherry';
+              case 'apples':
+                return 'apple';
+              default:
+                return word;
+            }
+          },
+        };
+        let stemmerEs = {
+          stem: function (word: string) {
+            switch (word) {
+              case 'gatos':
+                return 'gato';
+              case 'perros':
+                return 'perro';
+              case 'vacas':
+                return 'vaca';
+              default:
+                return word;
+            }
+          },
+        };
+        let stemmerRu = {
+          stem: function (word: string) {
+            switch (word) {
+              case 'колоды':
+                return 'колод';
+              case 'колода':
+                return 'колод';
+              default:
+                return word;
+            }
+          },
+        };
+        stemmers = {
+          en: stemmerEn,
+          es: stemmerEs,
+          ru: stemmerRu,
+        };
+
+        matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
+        matchFinder.buildIndexes();
+      });
+
+      function findWordMatch(input: string) {
+        let result = matchFinder.findMatches(input);
+        expect(result.length).toEqual(1);
+        return result[0].matchOf ? result[0].matchOf.value : null;
+      }
+
+      describe('smart matching disabled for group', () => {
+        it('finds exact match', () => {
+          expect(findWordMatch('cherry')).toEqual('cherry');
+          expect(findWordMatch('apple')).toEqual('apple');
+          expect(findWordMatch('vaca')).toEqual('vaca');
+        });
+
+        it('does not do smart match', () => {
+          expect(findWordMatch('cherries')).toBeNull();
+          expect(findWordMatch('apples')).toBeNull();
+          expect(findWordMatch('vacas')).toBeNull();
+        });
+      });
+
+      describe('smart matching enabled for group', () => {
+        it('finds exact match', () => {
+          expect(findWordMatch('gato')).toEqual('gato');
+          expect(findWordMatch('perro')).toEqual('perro');
+          expect(findWordMatch('пень')).toEqual('пень');
+          expect(findWordMatch('колоды')).toEqual('колоды');
+        });
+
+        it('finds stem match if not restricted to strict match', () => {
+          expect(findWordMatch('gatos')).toEqual('gato');
+          expect(findWordMatch('колода')).toEqual('колоды');
+        });
+
+        it('does not find stem match if restricted to strict match', () => {
+          expect(findWordMatch('perros')).toBeNull();
         });
       });
     });

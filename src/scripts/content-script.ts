@@ -11,16 +11,15 @@ new DAO().getDictionary().then((dictionary: Array<DictionaryEntry>) => {
   new DAO().getSettings().then((settings: Settings) => {
     new DAO().getHighlightingLog().then((highlightingLog: HighlightingLog) => {
       new DAO().getGroups().then((groups: Array<Group>) => {
-        // "stemmer" is not in Window class,
+        // "stemmers" is not in Window class,
         // so we need to convert the object to "any" to read the property.
         let wnd: any = window;
-        let stemmer: Stemmer = wnd.stemmer;
 
         let dao = new DAO();
         let highlightInjector = new HighlightInjectorImpl(
           new HighlightGenerator(groups)
         );
-        let matchFinder = new MatchFinderImpl(dictionary, stemmer);
+        let matchFinder = new MatchFinderImpl(dictionary, wnd.stemmers, groups);
 
         let content = new Content(
           dao,
