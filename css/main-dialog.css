@@ -24,12 +24,7 @@ body {
 }
 
 #new-word-form {
-    margin-top: 5px;
-    margin-left: 5px;
-}
-
-#new-word-form .form-group {
-    margin-bottom: 5px;
+    padding: 5px;
 }
 
 #groups-tab .color-picker-swatch {
