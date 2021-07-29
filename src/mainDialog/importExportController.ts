@@ -314,18 +314,18 @@ angular
       entries: Array<DictionaryEntry>
     ): Array<string> {
       let result: Array<string> = [];
-      let found: { [key: string]: number } = {};
+      let found = new Map<string, number>();
       entries.forEach(function (entry: DictionaryEntry) {
         let word = entry.value.toLowerCase();
-        let pastCount: number = found[word];
+        let pastCount: number = found.get(word);
         if (pastCount === 1) {
           result.push(entry.value);
-          found[word] = pastCount + 1;
+          found.set(word, pastCount + 1);
         } else {
           if (pastCount !== undefined) {
-            found[word] = pastCount + 1;
+            found.set(word, pastCount + 1);
           } else {
-            found[word] = 1;
+            found.set(word, 1);
           }
         }
       });

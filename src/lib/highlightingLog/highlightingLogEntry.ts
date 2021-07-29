@@ -6,12 +6,12 @@ class HighlightingLogEntry {
   readonly url: string;
   readonly date: Date;
   // dictionaryEntryId -> count.
-  readonly highlights: { [key: number]: number };
+  readonly highlights: Map<number, number>;
 
   constructor(
     url: string,
     date: Date = new Date(),
-    highlights: { [key: number]: number } = {}
+    highlights: Map<number, number> = new Map<number, number>()
   ) {
     this.url = url;
     this.date = date;

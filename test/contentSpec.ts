@@ -177,6 +177,11 @@ describe('content', function () {
       );
       expectedLog.forEach((e: any) => {
         e['url'] = window.location.href;
+        let highlights = new Map<number, number>();
+        Object.keys(e['highlights']).forEach((key: string) => {
+          highlights.set(parseInt(key), e['highlights'][key]);
+        });
+        e['highlights'] = highlights;
       });
       const actualLog = highlightingLog.entries.map(
         (e: HighlightingLogEntry) => {

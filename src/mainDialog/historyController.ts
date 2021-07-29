@@ -45,8 +45,8 @@ angular
         dictionary: Array<DictionaryEntry>,
         highlightingLog: HighlightingLog
       ) {
-        let totals: { [key: number]: number } = {}; // dictionary entry id -> total highlight count.
-        let pages: { [key: number]: any } = {}; // dictionary entry id -> url -> 1.
+        let totals = new Map<number, number>(); // dictionary entry id -> total highlight count.
+        let pages = new Map<number, Map<string, number>>(); // dictionary entry id -> url -> 1.
         let now = new Date();
         for (let i = highlightingLog.entries.length - 1; i >= 0; i--) {
           let highlightingLogEntry = highlightingLog.entries[i];
@@ -56,24 +56,26 @@ angular
           if (daysAgo > $scope.interval.value) {
             break;
           }
-          Object.keys(highlightingLogEntry.highlights).forEach(
-            (dictionaryEntryIdStr) => {
-              let dictionaryEntryId = Number(dictionaryEntryIdStr);
-              let total: number = totals[dictionaryEntryId] || 0;
-              totals[dictionaryEntryId] =
-                total + highlightingLogEntry.highlights[dictionaryEntryId];
-              let wordPages: any = pages[dictionaryEntryId] || {};
-              wordPages[highlightingLogEntry.url] = 1;
-              pages[dictionaryEntryId] = wordPages;
+          Array.from(highlightingLogEntry.highlights.keys()).forEach(
+            (dictionaryEntryId: number) => {
+              let total = totals.get(dictionaryEntryId) || 0;
+              totals.set(
+                dictionaryEntryId,
+                total + highlightingLogEntry.highlights.get(dictionaryEntryId)
+              );
+              let wordPages =
+                pages.get(dictionaryEntryId) || new Map<string, number>();
+              wordPages.set(highlightingLogEntry.url, 1);
+              pages.set(dictionaryEntryId, wordPages);
             }
           );
         }
         return dictionary.map((dictionaryEntry: DictionaryEntry) => {
           return {
             word: dictionaryEntry.value,
-            total: totals[dictionaryEntry.id] || 0,
-            uniquePages: pages[dictionaryEntry.id]
-              ? Object.keys(pages[dictionaryEntry.id]).length
+            total: totals.get(dictionaryEntry.id) || 0,
+            uniquePages: pages.has(dictionaryEntry.id)
+              ? pages.get(dictionaryEntry.id).size
               : 0,
           };
         });

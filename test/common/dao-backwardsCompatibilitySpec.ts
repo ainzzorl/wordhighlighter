@@ -18,6 +18,7 @@ describe('backwards compatibility', () => {
 
   // Major data changes in 1.7:
   // - Added group smart maching and smart matching language.
+  // - Highlight key type changed from string to number.
   describe('1.6', () => {
     beforeEach(() => {
       data['dictionary'] = [
@@ -121,7 +122,7 @@ describe('backwards compatibility', () => {
       expect(highlightingLog.entries[0].url).toEqual(
         'https://example.com/page1'
       );
-      expect(highlightingLog.entries[0].highlights).toEqual({ '1': 3 });
+      expect(highlightingLog.entries[0].highlights).toEqual(new Map([[1, 3]]));
     });
 
     it('can read groups', async () => {
@@ -211,7 +212,7 @@ describe('backwards compatibility', () => {
       expect(highlightingLog.entries[0].url).toEqual(
         'https://example.com/page1'
       );
-      expect(highlightingLog.entries[0].highlights).toEqual({ '1': 3 });
+      expect(highlightingLog.entries[0].highlights).toEqual(new Map([[1, 3]]));
     });
 
     it('initializes groups', async () => {
@@ -305,7 +306,7 @@ describe('backwards compatibility', () => {
       expect(highlightingLog.entries[0].url).toEqual(
         'https://example.com/page1'
       );
-      expect(highlightingLog.entries[0].highlights).toEqual({ '1': 3 });
+      expect(highlightingLog.entries[0].highlights).toEqual(new Map([[1, 3]]));
     });
 
     it('initializes groups', async () => {

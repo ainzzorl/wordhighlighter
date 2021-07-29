@@ -10,19 +10,22 @@ interface WordAppeances {
  */
 class PageStats {
   // (dictionary entry id)->(number of appearances)
-  readonly counts: { [id: number]: number } = {};
+  readonly counts: Map<number, number> = new Map<number, number>();
   // Need 2 maps because DictionaryEntry can't be a key of a map.
   // (dictionary entry id)->(dictionaryEntry)
-  private entries: { [id: number]: DictionaryEntry } = {};
+  private entries: Map<number, DictionaryEntry> = new Map<
+    number,
+    DictionaryEntry
+  >();
   private totalApparances = 0;
 
   registerMatch(dictionaryEntry: DictionaryEntry): void {
-    let oldCount = this.counts[dictionaryEntry.id];
+    let oldCount = this.counts.get(dictionaryEntry.id);
     if (oldCount) {
-      this.counts[dictionaryEntry.id] = oldCount + 1;
+      this.counts.set(dictionaryEntry.id, oldCount + 1);
     } else {
-      this.counts[dictionaryEntry.id] = 1;
-      this.entries[dictionaryEntry.id] = dictionaryEntry;
+      this.counts.set(dictionaryEntry.id, 1);
+      this.entries.set(dictionaryEntry.id, dictionaryEntry);
     }
     this.totalApparances++;
   }
@@ -33,10 +36,10 @@ class PageStats {
   get wordAppearanceStats(): Array<WordAppeances> {
     let counts = this.counts;
     let entries = this.entries;
-    return Object.keys(this.entries).map((id): WordAppeances => {
+    return Array.from(this.entries.keys()).map((id): WordAppeances => {
       return {
-        count: counts[parseInt(id)],
-        dictionaryEntry: entries[parseInt(id)],
+        count: counts.get(id),
+        dictionaryEntry: entries.get(id),
       };
     });
   }
@@ -45,7 +48,7 @@ class PageStats {
    * Total number of dictionary words appearing on the page.
    */
   get totalAppearedWords(): number {
-    return Object.keys(this.entries).length;
+    return this.entries.size;
   }
 
   /**

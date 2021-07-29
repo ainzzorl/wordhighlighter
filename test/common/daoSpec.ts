@@ -63,7 +63,14 @@ describe('DAO', () => {
           expect(highlightingLog.entries).toEqual([]);
         });
       let highlightingLog: HighlightingLog = new HighlightingLog([
-        new HighlightingLogEntry('example.com', new Date(), { 1: 12, 2: 34 }),
+        new HighlightingLogEntry(
+          'example.com',
+          new Date(),
+          new Map([
+            [1, 12],
+            [2, 34],
+          ])
+        ),
       ]);
       await dao.saveHighlightingLog(highlightingLog);
       await dao

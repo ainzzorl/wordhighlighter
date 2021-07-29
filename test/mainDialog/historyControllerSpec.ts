@@ -54,30 +54,42 @@ describe('historyController', () => {
           let entries: Array<HighlightingLogEntry> = [];
           // Outside of the interval.
           entries.push(
-            new HighlightingLogEntry('example3.com', dateDaysAgo(20), {
-              1: 10,
-              2: 10,
-              3: 10,
-            })
+            new HighlightingLogEntry(
+              'example3.com',
+              dateDaysAgo(20),
+              new Map([
+                [1, 10],
+                [2, 10],
+                [3, 10],
+              ])
+            )
           );
           // Inside the interval.
           entries.push(
-            new HighlightingLogEntry('example2.com', dateDaysAgo(9), {
-              2: 60,
-            })
+            new HighlightingLogEntry(
+              'example2.com',
+              dateDaysAgo(9),
+              new Map([[2, 60]])
+            )
           );
           // Inside the interval.
           entries.push(
-            new HighlightingLogEntry('example1.com', dateDaysAgo(5), {
-              1: 1,
-              2: 2,
-            })
+            new HighlightingLogEntry(
+              'example1.com',
+              dateDaysAgo(5),
+              new Map([
+                [1, 1],
+                [2, 2],
+              ])
+            )
           );
           // Inside the interval.
           entries.push(
-            new HighlightingLogEntry('example1.com', dateDaysAgo(1), {
-              1: 10,
-            })
+            new HighlightingLogEntry(
+              'example1.com',
+              dateDaysAgo(1),
+              new Map([[1, 10]])
+            )
           );
           return Promise.resolve(new HighlightingLog(entries));
         };

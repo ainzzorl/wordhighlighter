@@ -394,10 +394,11 @@ class DAO {
     return new HighlightingLogEntry(
       input['url'],
       new Date(input['date']),
-      input['highlights'].reduce((result: any, h: any) => {
-        result[h[0]] = h[1];
+      input['highlights'].reduce((result: Map<number, number>, h: any) => {
+        let key = typeof h[0] === 'string' ? parseInt(h[0]) : h[0];
+        result.set(key, h[1]);
         return result;
-      }, {})
+      }, new Map<number, number>())
     );
   }
 
@@ -468,8 +469,8 @@ class DAO {
     return {
       url: input.url,
       date: input.date.getTime(),
-      highlights: Object.keys(input.highlights).map((k: any) => {
-        return [k, input.highlights[k]];
+      highlights: Array.from(input.highlights.keys()).map((k: number) => {
+        return [k, input.highlights.get(k)];
       }),
     };
   }
