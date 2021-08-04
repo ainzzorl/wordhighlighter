@@ -307,4 +307,4 @@ function swallowError(error) {
   this.emit('end');
 }
 
-gulp.task('default', gulp.series('fast-build'));
+gulp.task('default', gulp.series('watch-fast-build'));
