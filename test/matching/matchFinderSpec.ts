@@ -20,8 +20,9 @@ describe('MatchFinder', () => {
             return word;
           },
         };
-        stemmers = {};
-        stemmers[Group.DEFAULT_SMART_MATCHING_LANGUAGE] = stemmer;
+        stemmers = new Map<string, Stemmer>([
+          [Group.DEFAULT_SMART_MATCHING_LANGUAGE, stemmer],
+        ]);
 
         dictionary = [];
         dictionary.push(
@@ -232,8 +233,9 @@ describe('MatchFinder', () => {
             return word;
           },
         };
-        stemmers = {};
-        stemmers[Group.DEFAULT_SMART_MATCHING_LANGUAGE] = stemmer;
+        stemmers = new Map<string, Stemmer>([
+          [Group.DEFAULT_SMART_MATCHING_LANGUAGE, stemmer],
+        ]);
         groups = [
           new Group(
             Group.DEFAULT_GROUP_ID,
@@ -312,8 +314,9 @@ describe('MatchFinder', () => {
             return word;
           },
         };
-        stemmers = {};
-        stemmers[Group.DEFAULT_SMART_MATCHING_LANGUAGE] = stemmer;
+        stemmers = new Map<string, Stemmer>([
+          [Group.DEFAULT_SMART_MATCHING_LANGUAGE, stemmer],
+        ]);
 
         dictionary = [];
         dictionary.push(
@@ -409,8 +412,9 @@ describe('MatchFinder', () => {
               return word;
             },
           };
-          stemmers = {};
-          stemmers[Group.DEFAULT_SMART_MATCHING_LANGUAGE] = stemmer;
+          stemmers = new Map<string, Stemmer>([
+            [Group.DEFAULT_SMART_MATCHING_LANGUAGE, stemmer],
+          ]);
 
           dictionary = [
             new DictionaryEntry(1, 'one', '', new Date(), new Date()),
@@ -526,12 +530,11 @@ describe('MatchFinder', () => {
             }
           },
         };
-        stemmers = {
-          en: stemmerEn,
-          es: stemmerEs,
-          ru: stemmerRu,
-        };
-
+        stemmers = new Map<string, Stemmer>([
+          ['en', stemmerEn],
+          ['es', stemmerEs],
+          ['ru', stemmerRu],
+        ]);
         matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
         matchFinder.buildIndexes();
       });

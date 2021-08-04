@@ -35,7 +35,7 @@ class TrieNode {
 class MatchFinderImpl implements MatchFinder {
   private dictionary: Array<DictionaryEntry>;
   // Map lang->Stemmer
-  private stemmers: any;
+  private stemmers: Map<string, Stemmer>;
   private groups: Array<Group>;
 
   // Trie data structure.
@@ -61,7 +61,7 @@ class MatchFinderImpl implements MatchFinder {
 
   constructor(
     dictionary: Array<DictionaryEntry>,
-    stemmers: any,
+    stemmers: Map<string, Stemmer>,
     groups: Array<Group>
   ) {
     this.dictionary = dictionary;
@@ -218,7 +218,7 @@ class MatchFinderImpl implements MatchFinder {
           this.smartMatchingLanguages.push(group.smartMatchingLanguage);
           this.cachingStemmers.set(
             group.smartMatchingLanguage,
-            new CachingStemmer(this.stemmers[group.smartMatchingLanguage])
+            new CachingStemmer(this.stemmers.get(group.smartMatchingLanguage))
           );
         }
       }
@@ -297,7 +297,7 @@ class MatchFinderImpl implements MatchFinder {
       }
       let word = token.value;
       if (doStem) {
-        word = this.stemmers[stemmingLanguage].stem(word);
+        word = this.stemmers.get(stemmingLanguage).stem(word);
         if (!word) {
           return;
         }

@@ -28,7 +28,7 @@ describe('content', function () {
     beforeEach(() => {
       settings = new Settings();
       const wnd: any = window;
-      const stemmers: Stemmer = wnd.stemmers;
+      const stemmers = new Map<string, Stemmer>(Object.entries(wnd.stemmers));
       const groups = [
         new Group(
           1,

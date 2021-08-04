@@ -19,7 +19,11 @@ new DAO().getDictionary().then((dictionary: Array<DictionaryEntry>) => {
         let highlightInjector = new HighlightInjectorImpl(
           new HighlightGenerator(groups)
         );
-        let matchFinder = new MatchFinderImpl(dictionary, wnd.stemmers, groups);
+        let matchFinder = new MatchFinderImpl(
+          dictionary,
+          new Map<string, Stemmer>(Object.entries(wnd.stemmers)),
+          groups
+        );
 
         let content = new Content(
           dao,
