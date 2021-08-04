@@ -1,10 +1,6 @@
 <div id="import-tab" ng-controller="importExportController">
   <div class="well well-sm">
-    <div class="row">
-      <div class="col-xs-12">
-        <label class="form-label" for="customFile">Export:</label>
-      </div>
-    </div>
+    <h4>Export</h4>
     <div class="row">
       <div class="col-xs-12">
         <button class="btn btn-primary" ng-click="onExportClicked('json')">
@@ -19,9 +15,9 @@
 
   <div class="well well-sm">
     <form>
-      <div class="row form-group">
+      <div class="row">
         <div class="col-xs-12">
-          <label class="form-label" for="customFile">Import:</label>
+          <h4>Import</h4>
         </div>
       </div>
 
@@ -44,7 +40,7 @@
 
       <div class="row form-group" ng-hide="showConfirmationDialog">
         <label for="import-behavior" class="col-xs-3 col-form-label"
-          >Behavior:</label
+          >Behavior</label
         >
         <div class="col-xs-9">
           <select
@@ -66,7 +62,7 @@
       </div>
 
       <div class="form-group row">
-        <label for="import-group" class="col-xs-3 col-form-label">Group:</label>
+        <label for="import-group" class="col-xs-3 col-form-label">Group</label>
         <div class="col-xs-9">
           <select
             class="form-control"
@@ -81,9 +77,13 @@
       </div>
 
       <div class="row form-group" ng-hide="showConfirmationDialog">
-        <div class="col-xs-12">
+        <label for="import-format" class="col-xs-3 col-form-label"
+          >Format</label
+        >
+        <div class="col-xs-9">
           <label class="radio-inline">
             <input
+              name="import-format"
               type="radio"
               ng-model="importInput.format"
               value="ssv"
@@ -92,13 +92,20 @@
           </label>
           <label class="radio-inline">
             <input
+              name="import-format"
+              name="import-format"
               type="radio"
               ng-model="importInput.format"
               value="json"
             />JSON
           </label>
           <label class="radio-inline">
-            <input type="radio" ng-model="importInput.format" value="csv" />CSV
+            <input
+              name="import-format"
+              type="radio"
+              ng-model="importInput.format"
+              value="csv"
+            />CSV
           </label>
         </div>
       </div>
@@ -115,7 +122,7 @@
         </div>
       </div>
 
-      <div class="row form-group" ng-hide="showConfirmationDialog">
+      <div class="row" ng-hide="showConfirmationDialog">
         <div class="col-xs-12">
           <button
             class="btn btn-primary"
