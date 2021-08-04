@@ -1,3 +1,4 @@
+///<reference path="cachingStemmer.ts" />
 ///<reference path="stemmer.ts" />
 ///<reference path="matchResultEntry.ts" />
 ///<reference path="token.ts" />
@@ -48,10 +49,10 @@ class MatchFinderImpl implements MatchFinder {
   // Map: language->TrieNode
   private nonStrictTries: Map<string, TrieNode>;
 
-  // A cache to avoid running somewhat expensive stemming more than once
+  // Caches to avoid running somewhat expensive stemming more than once
   // on the same word.
-  // Map: language->(word->stem)
-  private contentWordStems: Map<string, Map<string, string>>;
+  // Map: language->stemmer
+  private cachingStemmers: Map<string, CachingStemmer>;
 
   private smartMatchingLanguages: Array<string>;
 
@@ -68,7 +69,7 @@ class MatchFinderImpl implements MatchFinder {
     this.groups = groups;
     this.strictTrie = new TrieNode();
     this.nonStrictTries = new Map<string, TrieNode>();
-    this.contentWordStems = new Map<string, Map<string, string>>();
+    this.cachingStemmers = new Map<string, CachingStemmer>();
   }
 
   // Detect words matching the dictionary in the input.
@@ -178,16 +179,7 @@ class MatchFinderImpl implements MatchFinder {
       let word = tokens[i].value;
       let key = word.toLowerCase();
       if (!strict) {
-        // TODO: extract this block.
-        let cachedStem = this.contentWordStems
-          .get(smartMatchingLanguage)
-          .get(word);
-        if (cachedStem) {
-          key = cachedStem;
-        } else {
-          key = this.stemmers[smartMatchingLanguage].stem(key);
-          this.contentWordStems.get(smartMatchingLanguage).set(word, key);
-        }
+        key = this.cachingStemmers.get(smartMatchingLanguage).stem(word);
       }
       if (node.children.has(key)) {
         node = node.children.get(key);
@@ -211,7 +203,7 @@ class MatchFinderImpl implements MatchFinder {
   buildIndexes(): void {
     this.strictTrie = new TrieNode();
     this.nonStrictTries = new Map<string, TrieNode>();
-    this.contentWordStems = new Map<string, Map<string, string>>();
+    this.cachingStemmers = new Map<string, CachingStemmer>();
     this.smartMatchingLanguages = [];
     if (!this.stemmers) {
       return;
@@ -224,9 +216,9 @@ class MatchFinderImpl implements MatchFinder {
           this.smartMatchingLanguages.indexOf(group.smartMatchingLanguage) < 0
         ) {
           this.smartMatchingLanguages.push(group.smartMatchingLanguage);
-          this.contentWordStems.set(
+          this.cachingStemmers.set(
             group.smartMatchingLanguage,
-            new Map<string, string>()
+            new CachingStemmer(this.stemmers[group.smartMatchingLanguage])
           );
         }
       }
@@ -289,10 +281,10 @@ class MatchFinderImpl implements MatchFinder {
   // Can't cleanup tries - they need to be available if the page is updated -
   // but it's safer to release stem cache.
   cleanup(): void {
-    this.contentWordStems = new Map<string, Map<string, string>>();
+    this.cachingStemmers.forEach((stemmer) => stemmer.clear());
   }
 
-  // Breake the input into words and "normalize" them.
+  // Break the input into words and "normalize" them.
   private getNormalizedWords(
     input: string,
     doStem: boolean,
