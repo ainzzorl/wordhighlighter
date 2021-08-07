@@ -114,7 +114,9 @@ describe('content', function () {
       });
 
       it('does not highlight anything if it times out', async () => {
-        settings.timeout = 0;
+        // Negative because when it was 0 it would occasionally not trigger timeout
+        // on headless Chrome.
+        settings.timeout = -1;
         await doTest('timeout');
       });
     });

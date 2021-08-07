@@ -7,7 +7,7 @@ describe('highlightingLog', () => {
   // Everything else is tested via content spec.
   describe('logging many records', () => {
     let LIMIT = 100 * 1000;
-    let MANY = LIMIT * 10;
+    let MANY = LIMIT + 100;
 
     beforeEach(() => {
       highlightingLog = new HighlightingLog();

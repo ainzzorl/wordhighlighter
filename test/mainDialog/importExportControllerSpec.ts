@@ -232,7 +232,7 @@ describe('importExportController', () => {
           })
           .catch((error: any) => {
             expect(error.toString()).toEqual(
-              'SyntaxError: JSON Parse error: Unexpected identifier "not"'
+              'SyntaxError: Unexpected token o in JSON at position 1'
             );
           });
       });
