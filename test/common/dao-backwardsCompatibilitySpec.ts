@@ -19,6 +19,7 @@ describe('backwards compatibility', () => {
   // Major data changes in 1.7:
   // - Added group smart maching and smart matching language.
   // - Highlight key type changed from string to number.
+  // - Added settings.showTooltip
   describe('1.6', () => {
     beforeEach(() => {
       data['dictionary'] = [
@@ -114,6 +115,7 @@ describe('backwards compatibility', () => {
       expect(settings.timeout).toEqual(5);
       expect(settings.enableHighlighting).toEqual(true);
       expect(settings.enablePageStats).toEqual(true);
+      expect(settings.showTooltip).toEqual(ShowTooltip.ALWAYS);
     });
 
     it('can read highlighting log', async () => {
@@ -204,6 +206,7 @@ describe('backwards compatibility', () => {
       expect(settings.timeout).toEqual(5);
       expect(settings.enableHighlighting).toEqual(true);
       expect(settings.enablePageStats).toEqual(true);
+      expect(settings.showTooltip).toEqual(ShowTooltip.ALWAYS);
     });
 
     it('can read highlighting log', async () => {
@@ -298,6 +301,7 @@ describe('backwards compatibility', () => {
       expect(settings.timeout).toEqual(5);
       expect(settings.enableHighlighting).toEqual(true);
       expect(settings.enablePageStats).toEqual(true);
+      expect(settings.showTooltip).toEqual(ShowTooltip.ALWAYS);
     });
 
     it('can read highlighting log', async () => {

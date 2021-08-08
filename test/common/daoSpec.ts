@@ -46,6 +46,7 @@ describe('DAO', () => {
       settings.enableHighlighting = false;
       settings.enablePageStats = false;
       settings.timeout = 123;
+      settings.showTooltip = ShowTooltip.NEVER;
       await dao.saveSettings(settings);
       await dao.getSettings().then((receivedSettings: Settings) => {
         expect(receivedSettings).toEqual(settings);

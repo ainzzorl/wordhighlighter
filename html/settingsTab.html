@@ -67,6 +67,29 @@
           </div>
         </div>
       </div>
+      <div class="form-group row">
+        <label for="show-tooltip" class="col-xs-6 col-form-label">
+          <a
+            href="#"
+            data-toggle="tooltip"
+            title="When it shows tooltops on hovering over highlighted words."
+          >
+            Show tooltips on hover
+          </a>
+        </label>
+        <div class="col-xs-6">
+          <select
+            name="show-tooltip"
+            class="form-control"
+            ng-model="settings.showTooltip"
+            ng-change="save(settingsForm.$valid)"
+          >
+            <option value="WITH_DESCRIPTION">When the word has a description</option>
+            <option value="ALWAYS">Always</option>
+            <option value="NEVER">Never</option>
+          </select>
+        </div>
+      </div>
     </form>
   </div>
 

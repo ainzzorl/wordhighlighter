@@ -16,6 +16,7 @@ describe('settingsController', () => {
         let settings: Settings = new Settings();
         settings.enableHighlighting = true;
         settings.timeout = 123;
+        settings.showTooltip = ShowTooltip.ALWAYS;
         return Promise.resolve(settings);
       },
       saveSettings(_settings: Settings) {
@@ -43,6 +44,7 @@ describe('settingsController', () => {
     it('loads the settings', () => {
       expect($scope.settings.enableHighlighting).toBe(true);
       expect($scope.settings.timeout).toEqual(123);
+      expect($scope.settings.showTooltip).toEqual(ShowTooltip.ALWAYS);
     });
   });
 
@@ -53,6 +55,7 @@ describe('settingsController', () => {
       $scope.settings.timeout = 456;
       $scope.settings.enableHighlighting = false;
       $scope.settings.enablePageStats = false;
+      $scope.settings.showTooltip = ShowTooltip.NEVER;
       await $scope.save(true);
     });
 
