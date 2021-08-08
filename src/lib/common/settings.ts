@@ -2,9 +2,9 @@
  * When to show the tooltip on hovering over highlighted words.
  */
 enum ShowTooltip {
-  ALWAYS = "ALWAYS",
-  WITH_DESCRIPTION = "WITH_DESCRIPTION",
-  NEVER = "NEVER"
+  ALWAYS = 'ALWAYS',
+  WITH_DESCRIPTION = 'WITH_DESCRIPTION',
+  NEVER = 'NEVER',
 }
 
 /**
@@ -21,7 +21,7 @@ class Settings {
     Settings.DEFAULT_TIMEOUT,
     Settings.DEFAULT_ENABLE_HIGHLIGHTING,
     Settings.DEFAULT_ENABLE_PAGE_STATS,
-    Settings.DEFAULT_SHOW_TOOLTIP,
+    Settings.DEFAULT_SHOW_TOOLTIP
   );
 
   private _timeout: number;
@@ -35,7 +35,7 @@ class Settings {
     _enableHighlighting: boolean = undefined,
     _enablePageStats: boolean = undefined,
     _showTooltip: ShowTooltip = undefined,
-    _legacyBackgroundColor: string = undefined,
+    _legacyBackgroundColor: string = undefined
   ) {
     this._timeout = _timeout;
     this._enableHighlighting = _enableHighlighting;

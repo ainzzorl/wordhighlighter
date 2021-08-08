@@ -38,7 +38,7 @@ describe('content', function () {
           Group.DEFAULT_SMART_MATCHING_LANGUAGE
         ),
       ];
-      highlightGenerator = new HighlightGenerator(groups);
+      highlightGenerator = new HighlightGenerator(groups, Settings.DEFAULT);
       matchFinder = new MatchFinderImpl(
         createDictionary(['people', 'profit']),
         stemmers,

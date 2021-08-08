@@ -415,7 +415,8 @@ class DAO {
     if (input.showTooltip === undefined) {
       settings.showTooltip = ShowTooltip.ALWAYS;
     } else {
-      settings.showTooltip = ShowTooltip[input.showTooltip as keyof typeof ShowTooltip];
+      settings.showTooltip =
+        ShowTooltip[input.showTooltip as keyof typeof ShowTooltip];
     }
     return settings;
   }
@@ -463,7 +464,7 @@ class DAO {
       timeout: input.timeout,
       enableHighlighting: input.enableHighlighting,
       enablePageStats: input.enablePageStats,
-      showTooltip: input.showTooltip
+      showTooltip: input.showTooltip,
     };
   }
 

@@ -7,15 +7,18 @@ describe('highlightInjector', () => {
   let highlightGenerator: HighlightGenerator;
 
   beforeEach(() => {
-    highlightGenerator = new HighlightGenerator([
-      new Group(
-        1,
-        'group-name',
-        'background-color',
-        true,
-        'smart-matching-language'
-      ),
-    ]);
+    highlightGenerator = new HighlightGenerator(
+      [
+        new Group(
+          1,
+          'group-name',
+          'background-color',
+          true,
+          'smart-matching-language'
+        ),
+      ],
+      Settings.DEFAULT
+    );
     highlightGenerator.generate = (
       word: string,
       dictionaryEntry: DictionaryEntry

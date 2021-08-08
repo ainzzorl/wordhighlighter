@@ -6,9 +6,11 @@
  */
 class HighlightGenerator {
   private groups: Array<Group>;
+  private settings: Settings;
 
-  constructor(groups: Array<Group>) {
+  constructor(groups: Array<Group>, settings: Settings) {
     this.groups = groups;
+    this.settings = settings;
   }
 
   /**
@@ -23,6 +25,9 @@ class HighlightGenerator {
   }
 
   private tooltipContent(entry: DictionaryEntry) {
+    if (!this.showTooltip(entry)) {
+      return '';
+    }
     let wrappedDescription = entry.description
       ? `<div class="highlighted-word-description">${entry.description}</div>`
       : '';
@@ -40,5 +45,9 @@ class HighlightGenerator {
   private getBackgroundColor(entry: DictionaryEntry) {
     return this.groups.filter((group) => group.id === entry.groupId)[0]
       .backgroundColor;
+  }
+
+  private showTooltip(entry: DictionaryEntry) {
+    return this.settings.showTooltip == ShowTooltip.ALWAYS || this.settings.showTooltip == ShowTooltip.WITH_DESCRIPTION && entry.description;
   }
 }

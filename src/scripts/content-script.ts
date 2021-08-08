@@ -17,7 +17,7 @@ new DAO().getDictionary().then((dictionary: Array<DictionaryEntry>) => {
 
         let dao = new DAO();
         let highlightInjector = new HighlightInjectorImpl(
-          new HighlightGenerator(groups)
+          new HighlightGenerator(groups, settings)
         );
         let matchFinder = new MatchFinderImpl(
           dictionary,
