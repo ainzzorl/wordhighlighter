@@ -48,6 +48,10 @@ class HighlightGenerator {
   }
 
   private showTooltip(entry: DictionaryEntry) {
-    return this.settings.showTooltip == ShowTooltip.ALWAYS || this.settings.showTooltip == ShowTooltip.WITH_DESCRIPTION && entry.description;
+    return (
+      this.settings.showTooltip == ShowTooltip.ALWAYS ||
+      (this.settings.showTooltip == ShowTooltip.WITH_DESCRIPTION &&
+        entry.description)
+    );
   }
 }
