@@ -110,7 +110,6 @@
             class="form-control"
             ng-model="newGroup.smartMatchingLanguage"
             name="new-group-smart-matching-language"
-            ng-disabled="newGroup.matchingType != 'SMART'"
           >
             <option value="cn">Chinese/中文</option>
             <option value="nl">Dutch/Nederlands</option>
@@ -232,7 +231,6 @@
             <select
               class="form-control"
               ng-model="group.smartMatchingLanguage"
-              ng-disabled="group.matchingType != 'SMART'"
               ng-change="save(editGroupForm.$valid)"
             >
               <option value="cn">Chinese/中文</option>
