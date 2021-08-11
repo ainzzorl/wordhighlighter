@@ -2,6 +2,7 @@
 ///<reference path="stemmer.ts" />
 ///<reference path="matchResultEntry.ts" />
 ///<reference path="token.ts" />
+///<reference path="tokenizer.ts" />
 ///<reference path="../common/dictionaryEntry.ts" />
 ///<reference path="../common/group.ts" />
 
@@ -56,6 +57,8 @@ class MatchFinderImpl implements MatchFinder {
 
   private smartMatchingLanguages: Array<string>;
 
+  private tokenizer: Tokenizer;
+
   private IGNORED_PREFIXES = ['a ', 'an ', 'to '];
   private IGNORED_SUFFIXES = [', to'];
 
@@ -70,12 +73,13 @@ class MatchFinderImpl implements MatchFinder {
     this.strictTrie = new TrieNode();
     this.nonStrictTries = new Map<string, TrieNode>();
     this.cachingStemmers = new Map<string, CachingStemmer>();
+    this.tokenizer = new Tokenizer();
   }
 
   // Detect words matching the dictionary in the input.
   findMatches(input: string): Array<MatchResultEntry> {
     let result: Array<MatchResultEntry> = [];
-    let tokens = this.tokenize(input);
+    let tokens = this.tokenizer.tokenize(input);
     let i = 0;
     let currentNoMatch = '';
     while (i < tokens.length) {
@@ -291,7 +295,7 @@ class MatchFinderImpl implements MatchFinder {
     stemmingLanguage: string
   ): Array<string> {
     let result: Array<string> = [];
-    this.tokenize(input.toLowerCase()).forEach((token: Token) => {
+    this.tokenizer.tokenize(input.toLowerCase()).forEach((token: Token) => {
       if (!token.isWord) {
         return;
       }
@@ -305,42 +309,6 @@ class MatchFinderImpl implements MatchFinder {
       result.push(word);
     });
     return result;
-  }
-
-  private tokenize(input: String): Array<Token> {
-    let result: Array<Token> = [];
-    let currentWord = '';
-    let currentNonWord = '';
-    for (let i = 0; i < input.length; ++i) {
-      if (this.isWordCharacter(input[i])) {
-        this.pushTokenIfNotEmpty(result, currentNonWord, false);
-        currentNonWord = '';
-        currentWord += input[i];
-      } else {
-        this.pushTokenIfNotEmpty(result, currentWord, true);
-        currentWord = '';
-        currentNonWord += input[i];
-      }
-    }
-    this.pushTokenIfNotEmpty(result, currentNonWord, false);
-    this.pushTokenIfNotEmpty(result, currentWord, true);
-    return result;
-  }
-
-  private isWordCharacter(char: string) {
-    return (
-      (char[0] >= '0' && char[0] <= '9') ||
-      // Latin
-      (char[0] >= 'a' && char[0] <= 'z') ||
-      (char[0] >= 'A' && char[0] <= 'Z') ||
-      // Chinese or Japanese
-      char[0].match(/[\u3400-\u9FBF]/) ||
-      // Russian
-      (char[0] >= 'а' && char[0] <= 'я') ||
-      (char[0] >= 'А' && char[0] <= 'Я') ||
-      // Misc diacritics
-      (char[0] >= 'À' && char[0] <= 'ÿ')
-    );
   }
 
   private removeIgnoredPrefixes(input: string): string {
@@ -372,19 +340,6 @@ class MatchFinderImpl implements MatchFinder {
       result.push({
         value: value,
         matchOf: matchOf,
-      });
-    }
-  }
-
-  private pushTokenIfNotEmpty(
-    result: Array<Token>,
-    value: string,
-    isWord: boolean
-  ) {
-    if (value.length > 0) {
-      result.push({
-        value: value,
-        isWord: isWord,
       });
     }
   }
