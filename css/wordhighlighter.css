@@ -4,9 +4,9 @@
     display: inline-block !important;
 }
 
-.highlighted-word .highlighted-word-tooltip {
+.highlighted-word div.highlighted-word-tooltip {
     visibility: hidden;
-    width: 200px;
+    width: 200px !important;
     background-color: black;
     color: #fff;
     text-align: center;
