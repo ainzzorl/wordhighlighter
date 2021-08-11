@@ -110,7 +110,7 @@
             class="form-control"
             ng-model="newGroup.smartMatchingLanguage"
             name="new-group-smart-matching-language"
-            ng-disabled="!newGroup.enableSmartMatching"
+            ng-disabled="newGroup.matchingType != 'SMART'"
           >
             <option value="en">English</option>
             <option value="es">Spanish/Español</option>
@@ -189,7 +189,6 @@
               <label>
                 <input
                   type="radio"
-                  name="group-smart-matching"
                   ng-model="group.matchingType"
                   ng-change="save(editGroupForm.$valid)"
                   value="SMART"
@@ -210,7 +209,6 @@
               <label>
                 <input
                   type="radio"
-                  name="group-smart-matching"
                   ng-model="group.matchingType"
                   ng-change="save(editGroupForm.$valid)"
                   value="STRICT"
@@ -231,7 +229,7 @@
             <select
               class="form-control"
               ng-model="group.smartMatchingLanguage"
-              ng-disabled="!group.enableSmartMatching"
+              ng-disabled="group.matchingType != 'SMART'"
               ng-change="save(editGroupForm.$valid)"
             >
               <option value="en">English</option>
