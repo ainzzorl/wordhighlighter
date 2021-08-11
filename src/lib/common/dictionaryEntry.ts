@@ -1,3 +1,5 @@
+///<reference path="group.ts" />
+
 /**
  * A persistent entry in the dictionary.
  */

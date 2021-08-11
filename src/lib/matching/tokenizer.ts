@@ -1,3 +1,5 @@
+///<reference path="token.ts" />
+
 class Tokenizer {
   tokenize(input: string): Array<Token> {
     let result: Array<Token> = [];

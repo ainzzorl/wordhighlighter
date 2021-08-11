@@ -1,3 +1,5 @@
+///<reference path="stemmer.ts" />
+
 /**
  * A wrapper for stemmers that caches the results.
  */
