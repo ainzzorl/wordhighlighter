@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Word Highlighter",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "permissions": ["storage", "contextMenus"],
   "background": {
     "scripts": [ "js/lib.js", "scripts/background-script.js" ]
