@@ -1,5 +1,6 @@
 ///<reference path="../lib/common/dao.ts" />
 ///<reference path="../lib/common/dictionaryEntry.ts" />
+///<reference path="../lib/common/group.ts" />
 ///<reference path="../lib/common/settings.ts" />
 
 angular
@@ -9,7 +10,7 @@ angular
     $scope.newGroup = {
       value: '',
       backgroundColor: 'ffff00',
-      enableSmartMatching: Group.DEFAULT_ENABLE_SMART_MATCHING,
+      matchingType: Group.DEFAULT_MATCHING_TYPE,
       smartMatchingLanguage: Group.DEFAULT_SMART_MATCHING_LANGUAGE,
     };
     $scope.showNewGroupForm = false;
@@ -38,6 +39,15 @@ angular
         label: 'Reset',
         class: '',
       },
+    };
+
+    $scope.showMatchingInfoState = {
+      SMART: false,
+      STRICT: false,
+    };
+
+    $scope.showMatchingInfo = (matchingType: MatchingType) => {
+      $scope.showMatchingInfoState[matchingType.toString()] = true;
     };
 
     $scope.colorEventApi = {
@@ -83,7 +93,7 @@ angular
           .addGroup(
             name,
             $scope.newGroup.backgroundColor,
-            $scope.newGroup.enableSmartMatching,
+            $scope.newGroup.matchingType,
             $scope.newGroup.smartMatchingLanguage
           )
           .then((group: Group) => {
@@ -91,8 +101,7 @@ angular
           });
         $scope.newGroup.name = '';
         $scope.newGroup.backgroundColor = Settings.DEFAULT_BACKGROUND_COLOR;
-        $scope.newGroup.enableSmartMatching =
-          Group.DEFAULT_ENABLE_SMART_MATCHING;
+        $scope.newGroup.matchingType = Group.DEFAULT_MATCHING_TYPE;
         $scope.newGroup.smartMatchingLanguage =
           Group.DEFAULT_SMART_MATCHING_LANGUAGE;
         $scope.newGroupForm.$setPristine();

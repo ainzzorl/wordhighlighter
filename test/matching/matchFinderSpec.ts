@@ -56,7 +56,7 @@ describe('MatchFinder', () => {
             Group.DEFAULT_GROUP_ID,
             'Default',
             'color',
-            Group.DEFAULT_ENABLE_SMART_MATCHING,
+            Group.DEFAULT_MATCHING_TYPE,
             Group.DEFAULT_SMART_MATCHING_LANGUAGE
           ),
         ];
@@ -241,7 +241,7 @@ describe('MatchFinder', () => {
             Group.DEFAULT_GROUP_ID,
             'Default',
             'color',
-            Group.DEFAULT_ENABLE_SMART_MATCHING,
+            Group.DEFAULT_MATCHING_TYPE,
             Group.DEFAULT_SMART_MATCHING_LANGUAGE
           ),
         ];
@@ -336,7 +336,7 @@ describe('MatchFinder', () => {
             Group.DEFAULT_GROUP_ID,
             'Default',
             'color',
-            Group.DEFAULT_ENABLE_SMART_MATCHING,
+            Group.DEFAULT_MATCHING_TYPE,
             Group.DEFAULT_SMART_MATCHING_LANGUAGE
           ),
         ];
@@ -428,7 +428,7 @@ describe('MatchFinder', () => {
               Group.DEFAULT_GROUP_ID,
               'Default',
               'color',
-              Group.DEFAULT_ENABLE_SMART_MATCHING,
+              Group.DEFAULT_MATCHING_TYPE,
               Group.DEFAULT_SMART_MATCHING_LANGUAGE
             ),
           ];
@@ -483,13 +483,13 @@ describe('MatchFinder', () => {
           ),
         ];
         groups = [
-          new Group(1, 'English', '', false, 'English'),
+          new Group(1, 'English', '', MatchingType.STRICT, 'English'),
 
-          new Group(2, 'Spanish 1', '', true, 'es'),
-          new Group(3, 'Spanish 2', '', true, 'es'),
-          new Group(4, 'Spanish 3', '', false, 'es'),
+          new Group(2, 'Spanish 1', '', MatchingType.SMART, 'es'),
+          new Group(3, 'Spanish 2', '', MatchingType.SMART, 'es'),
+          new Group(4, 'Spanish 3', '', MatchingType.STRICT, 'es'),
 
-          new Group(5, 'Russian', '', true, 'ru'),
+          new Group(5, 'Russian', '', MatchingType.SMART, 'ru'),
         ];
 
         let stemmerEn = {

@@ -20,7 +20,7 @@ describe('groupsController', () => {
             Group.DEFAULT_GROUP_ID,
             'group-1-name',
             'group-1-color',
-            true,
+            MatchingType.SMART,
             'group-1-language'
           )
         );
@@ -29,7 +29,7 @@ describe('groupsController', () => {
             Group.DEFAULT_GROUP_ID + 1,
             'group-2-name',
             'group-2-color',
-            true,
+            MatchingType.SMART,
             'group-2-language'
           )
         );
@@ -38,7 +38,7 @@ describe('groupsController', () => {
             Group.DEFAULT_GROUP_ID + 2,
             'group-3-name',
             'group-3-color',
-            true,
+            MatchingType.SMART,
             'group-3-language'
           )
         );
@@ -47,7 +47,7 @@ describe('groupsController', () => {
       addGroup(
         name: string,
         backgroundColor: string,
-        enableSmartMatching: boolean,
+        matchingType: MatchingType,
         smartMatchingLanguage: string
       ) {
         return Promise.resolve(
@@ -55,7 +55,7 @@ describe('groupsController', () => {
             1,
             name,
             backgroundColor,
-            enableSmartMatching,
+            matchingType,
             smartMatchingLanguage
           )
         );
@@ -110,7 +110,7 @@ describe('groupsController', () => {
         $scope.newGroup = {
           name: 'new-group-name',
           backgroundColor: 'new-group-background-color',
-          enableSmartMatching: false,
+          matchingType: MatchingType.STRICT,
           smartMatchingLanguage: 'new-group-smart-matching-language',
         };
         await $scope.onAddNewGroupClicked();
@@ -120,7 +120,7 @@ describe('groupsController', () => {
         expect(dao.addGroup).toHaveBeenCalledWith(
           'new-group-name',
           'new-group-background-color',
-          false,
+          MatchingType.STRICT,
           'new-group-smart-matching-language'
         );
       });
@@ -131,7 +131,7 @@ describe('groupsController', () => {
         expect($scope.groups[0].backgroundColor).toEqual(
           'new-group-background-color'
         );
-        expect($scope.groups[0].enableSmartMatching).toBe(false);
+        expect($scope.groups[0].matchingType).toBe(MatchingType.STRICT);
         expect($scope.groups[0].smartMatchingLanguage).toEqual(
           'new-group-smart-matching-language'
         );
@@ -142,8 +142,8 @@ describe('groupsController', () => {
         expect($scope.newGroup.backgroundColor).toEqual(
           Settings.DEFAULT_BACKGROUND_COLOR
         );
-        expect($scope.newGroup.enableSmartMatching).toEqual(
-          Group.DEFAULT_ENABLE_SMART_MATCHING
+        expect($scope.newGroup.matchingType).toEqual(
+          Group.DEFAULT_MATCHING_TYPE
         );
         expect($scope.newGroup.smartMatchingLanguage).toEqual(
           Group.DEFAULT_SMART_MATCHING_LANGUAGE
@@ -206,8 +206,7 @@ describe('groupsController', () => {
 
       $scope.groups[0].name += '-updated';
       $scope.groups[0].backgroundColor += '-updated';
-      $scope.groups[0].enableSmartMatching =
-        !$scope.groups[0].enableSmartMatching;
+      $scope.groups[0].matchingType = !$scope.groups[0].matchingType;
       $scope.groups[0].smartMatchingLanguage += '-updated';
 
       await $scope.save(true);

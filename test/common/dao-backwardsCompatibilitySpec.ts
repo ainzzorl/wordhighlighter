@@ -17,7 +17,7 @@ describe('backwards compatibility', () => {
   });
 
   // Major data changes in 1.7:
-  // - Added group smart maching and smart matching language.
+  // - Added group matching type and smart matching language.
   // - Highlight key type changed from string to number.
   // - Added settings.showTooltip
   describe('1.6', () => {
@@ -102,7 +102,7 @@ describe('backwards compatibility', () => {
       await dao.addGroup(
         'group 10',
         'group 10 color',
-        true,
+        MatchingType.SMART,
         'group 10 language'
       );
       let groups = await dao.getGroups();
@@ -134,7 +134,7 @@ describe('backwards compatibility', () => {
       expect(groups[0].name).toBe('group-1');
       expect(groups[0].backgroundColor).toBe('group-1-color');
       // Defaults
-      expect(groups[0].enableSmartMatching).toBe(true);
+      expect(groups[0].matchingType).toBe(MatchingType.SMART);
       expect(groups[0].smartMatchingLanguage).toBe('en');
     });
   });
@@ -225,11 +225,16 @@ describe('backwards compatibility', () => {
       // Inherited from Settings
       expect(groups[0].backgroundColor).toEqual('eeff00');
       expect(groups[0].name).toEqual('Default');
-      expect(groups[0].enableSmartMatching).toBe(true);
+      expect(groups[0].matchingType).toBe(MatchingType.SMART);
       expect(groups[0].smartMatchingLanguage).toBe('en');
 
       // Checking that the sequence number is correct
-      await dao.addGroup('group-2', 'aabbcc', true, 'group-2-language');
+      await dao.addGroup(
+        'group-2',
+        'aabbcc',
+        MatchingType.SMART,
+        'group-2-language'
+      );
       groups = await dao.getGroups();
       expect(groups.length).toEqual(2);
       expect(groups[1].id).toEqual(2);
@@ -321,11 +326,16 @@ describe('backwards compatibility', () => {
         Settings.DEFAULT_BACKGROUND_COLOR
       );
       expect(groups[0].name).toEqual('Default');
-      expect(groups[0].enableSmartMatching).toBe(true);
+      expect(groups[0].matchingType).toBe(MatchingType.SMART);
       expect(groups[0].smartMatchingLanguage).toBe('en');
 
       // Checking that the sequence number is correct
-      await dao.addGroup('group-2', 'aabbcc', true, 'group-2-language');
+      await dao.addGroup(
+        'group-2',
+        'aabbcc',
+        MatchingType.SMART,
+        'group-2-language'
+      );
       groups = await dao.getGroups();
       expect(groups.length).toEqual(2);
       expect(groups[1].id).toEqual(2);

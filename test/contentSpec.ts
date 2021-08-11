@@ -34,7 +34,7 @@ describe('content', function () {
           1,
           'group-name',
           'background-color',
-          Group.DEFAULT_ENABLE_SMART_MATCHING,
+          Group.DEFAULT_MATCHING_TYPE,
           Group.DEFAULT_SMART_MATCHING_LANGUAGE
         ),
       ];

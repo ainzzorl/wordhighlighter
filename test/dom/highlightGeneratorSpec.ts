@@ -57,7 +57,7 @@ describe('highlightGenerator', () => {
           123,
           'group-name',
           'background-color',
-          true,
+          MatchingType.SMART,
           'smart-matching-language'
         ),
       ],

@@ -62,20 +62,39 @@
           for="new-group-smart-matching-color"
           class="col-xs-4 col-form-label"
         >
-          <a
-            href="#"
-            data-toggle="tooltip"
-            title='Will also highlight different forms of this word. E.g. if you add the word "cherry" it will also highlight "cherries".'
-          >
-            Smart matching
-          </a>
+          Matching
         </label>
         <div class="col-xs-8">
-          <input
-            type="checkbox"
-            class="form-control"
-            ng-model="newGroup.enableSmartMatching"
-          />
+          <div class="radio">
+            <label>
+              <input
+                type="radio"
+                name="new-group-smart-matching"
+                ng-model="newGroup.matchingType"
+                value="SMART"
+              />Smart
+              <a
+                href="#"
+                ng-hide="showMatchingInfoState['SMART']"
+                ng-click="showMatchingInfo('SMART')"
+                >What is it?</a
+              >
+              <p ng-show="showMatchingInfoState['SMART']">
+                Highlight different word forms. E.g. if you add a word
+                <i>cherry</i> it will also highlight <i>cherries</i>.
+              </p>
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input
+                type="radio"
+                name="new-group-smart-matching"
+                ng-model="newGroup.matchingType"
+                value="STRICT"
+              />Strict
+            </label>
+          </div>
         </div>
       </div>
 
@@ -164,22 +183,40 @@
         </div>
 
         <div class="form-group row">
-          <label class="col-xs-4 col-form-label">
-            <a
-              href="#"
-              data-toggle="tooltip"
-              title='Will also highlight different forms of this word. E.g. if you add the word "cherry" it will also highlight "cherries".'
-            >
-              Smart matching
-            </a>
-          </label>
+          <label class="col-xs-4 col-form-label"> Matching </label>
           <div class="col-xs-8">
-            <input
-              type="checkbox"
-              class="form-control"
-              ng-model="group.enableSmartMatching"
-              ng-change="save(editGroupForm.$valid)"
-            />
+            <div class="radio">
+              <label>
+                <input
+                  type="radio"
+                  name="group-smart-matching"
+                  ng-model="group.matchingType"
+                  ng-change="save(editGroupForm.$valid)"
+                  value="SMART"
+                />Smart
+                <a
+                  href="#"
+                  ng-hide="showMatchingInfoState['SMART']"
+                  ng-click="showMatchingInfo('SMART')"
+                  >What is it?</a
+                >
+                <p ng-show="showMatchingInfoState['SMART']">
+                  Highlight different word forms. E.g. if you add a word
+                  <i>cherry</i> it will also highlight <i>cherries</i>.
+                </p>
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input
+                  type="radio"
+                  name="group-smart-matching"
+                  ng-model="group.matchingType"
+                  ng-change="save(editGroupForm.$valid)"
+                  value="STRICT"
+                />Strict
+              </label>
+            </div>
           </div>
         </div>
 

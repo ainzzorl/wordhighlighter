@@ -13,7 +13,7 @@ describe('highlightInjector', () => {
           1,
           'group-name',
           'background-color',
-          true,
+          MatchingType.SMART,
           'smart-matching-language'
         ),
       ],

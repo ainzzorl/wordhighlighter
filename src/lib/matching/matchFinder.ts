@@ -210,7 +210,7 @@ class MatchFinderImpl implements MatchFinder {
     }
     let groupIdToGroup = new Map<number, Group>();
     this.groups.forEach((group: Group) => {
-      if (group.enableSmartMatching) {
+      if (group.matchingType === MatchingType.SMART) {
         this.nonStrictTries.set(group.smartMatchingLanguage, new TrieNode());
         if (
           this.smartMatchingLanguages.indexOf(group.smartMatchingLanguage) < 0
@@ -232,7 +232,7 @@ class MatchFinderImpl implements MatchFinder {
         true,
         group.smartMatchingLanguage
       );
-      if (!entry.strictMatch && group.enableSmartMatching) {
+      if (!entry.strictMatch && group.matchingType == MatchingType.SMART) {
         this.insertIntoTrie(
           entry,
           this.nonStrictTries.get(group.smartMatchingLanguage),

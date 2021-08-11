@@ -1,15 +1,20 @@
+enum MatchingType {
+  STRICT = 'STRICT',
+  SMART = 'SMART',
+}
+
 /**
  * A persistent group.
  */
 class Group {
   public static readonly DEFAULT_GROUP_ID = 1;
-  public static readonly DEFAULT_ENABLE_SMART_MATCHING = true;
+  public static readonly DEFAULT_MATCHING_TYPE = MatchingType.SMART;
   public static readonly DEFAULT_SMART_MATCHING_LANGUAGE = 'en';
 
   private _id: number;
   private _name: string;
   private _backgroundColor: string;
-  private _enableSmartMatching: boolean;
+  private _matchingType: MatchingType;
   private _smartMatchingLanguage: string;
   private _createdAt: Date;
   private _updatedAt: Date;
@@ -18,7 +23,7 @@ class Group {
     id: number,
     name: string,
     backgroundColor: string,
-    enableSmartMatching: boolean,
+    matchingType: MatchingType,
     smartMatchingLanguage: string,
     createdAt: Date = undefined,
     updatedAt: Date = undefined
@@ -26,7 +31,7 @@ class Group {
     this._id = id;
     this._name = name;
     this._backgroundColor = backgroundColor;
-    this._enableSmartMatching = enableSmartMatching;
+    this._matchingType = matchingType;
     this._smartMatchingLanguage = smartMatchingLanguage;
     let now = new Date();
     this._createdAt = createdAt || now;
@@ -57,12 +62,12 @@ class Group {
     this._backgroundColor = _backgroundColor;
   }
 
-  get enableSmartMatching(): boolean {
-    return this._enableSmartMatching;
+  get matchingType(): MatchingType {
+    return this._matchingType;
   }
 
-  set enableSmartMatching(_enableSmartMatching: boolean) {
-    this._enableSmartMatching = _enableSmartMatching;
+  set matchingType(_matchingType: MatchingType) {
+    this._matchingType = _matchingType;
   }
 
   get smartMatchingLanguage(): string {

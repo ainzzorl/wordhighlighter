@@ -32,9 +32,9 @@ describe('wordsController', () => {
       },
       getGroups: function () {
         let result = [
-          new Group(1, 'group-1', 'color-1', true, 'language-1'),
-          new Group(2, 'group-2', 'color-2', true, 'language-2'),
-          new Group(3, 'group-3', 'color-3', true, 'language-3'),
+          new Group(1, 'group-1', 'color-1', MatchingType.SMART, 'language-1'),
+          new Group(2, 'group-2', 'color-2', MatchingType.SMART, 'language-2'),
+          new Group(3, 'group-3', 'color-3', MatchingType.SMART, 'language-3'),
         ];
         return Promise.resolve(result);
       },

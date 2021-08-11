@@ -96,14 +96,14 @@ describe('DAO', () => {
       await dao.addGroup(
         'group-1-name',
         'group-1-color',
-        true,
+        MatchingType.SMART,
         'group-1-language'
       );
       groups = await dao.getGroups();
       expect(groups.length).toEqual(2);
       expect(groups[1].name).toEqual('group-1-name');
       expect(groups[1].backgroundColor).toEqual('group-1-color');
-      expect(groups[1].enableSmartMatching).toBe(true);
+      expect(groups[1].matchingType).toBe(MatchingType.SMART);
       expect(groups[1].smartMatchingLanguage).toEqual('group-1-language');
       expect(groups[1].createdAt).not.toBeNull();
       expect(groups[1].updatedAt).not.toBeNull();
@@ -114,7 +114,7 @@ describe('DAO', () => {
           null,
           'group-2-name',
           'group-2-color',
-          false,
+          MatchingType.STRICT,
           'group-2-language'
         )
       );
@@ -123,7 +123,7 @@ describe('DAO', () => {
       expect(groups.length).toEqual(3);
       expect(groups[2].name).toEqual('group-2-name');
       expect(groups[2].backgroundColor).toEqual('group-2-color');
-      expect(groups[2].enableSmartMatching).toEqual(false);
+      expect(groups[2].matchingType).toEqual(MatchingType.STRICT);
       expect(groups[2].smartMatchingLanguage).toEqual('group-2-language');
       expect(groups[2].createdAt).not.toBeNull();
       expect(groups[2].updatedAt).not.toBeNull();
