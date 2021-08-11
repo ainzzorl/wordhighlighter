@@ -48,16 +48,10 @@ describe('groupsController', () => {
         name: string,
         backgroundColor: string,
         matchingType: MatchingType,
-        smartMatchingLanguage: string
+        matchingLanguage: string
       ) {
         return Promise.resolve(
-          new Group(
-            1,
-            name,
-            backgroundColor,
-            matchingType,
-            smartMatchingLanguage
-          )
+          new Group(1, name, backgroundColor, matchingType, matchingLanguage)
         );
       },
       saveGroups(_groups: Array<Group>) {
@@ -111,7 +105,7 @@ describe('groupsController', () => {
           name: 'new-group-name',
           backgroundColor: 'new-group-background-color',
           matchingType: MatchingType.STRICT,
-          smartMatchingLanguage: 'new-group-smart-matching-language',
+          matchingLanguage: 'new-group-smart-matching-language',
         };
         await $scope.onAddNewGroupClicked();
       });
@@ -132,7 +126,7 @@ describe('groupsController', () => {
           'new-group-background-color'
         );
         expect($scope.groups[0].matchingType).toBe(MatchingType.STRICT);
-        expect($scope.groups[0].smartMatchingLanguage).toEqual(
+        expect($scope.groups[0].matchingLanguage).toEqual(
           'new-group-smart-matching-language'
         );
       });
@@ -145,8 +139,8 @@ describe('groupsController', () => {
         expect($scope.newGroup.matchingType).toEqual(
           Group.DEFAULT_MATCHING_TYPE
         );
-        expect($scope.newGroup.smartMatchingLanguage).toEqual(
-          Group.DEFAULT_SMART_MATCHING_LANGUAGE
+        expect($scope.newGroup.matchingLanguage).toEqual(
+          Group.DEFAULT_MATCHING_LANGUAGE
         );
       });
 
@@ -207,7 +201,7 @@ describe('groupsController', () => {
       $scope.groups[0].name += '-updated';
       $scope.groups[0].backgroundColor += '-updated';
       $scope.groups[0].matchingType = !$scope.groups[0].matchingType;
-      $scope.groups[0].smartMatchingLanguage += '-updated';
+      $scope.groups[0].matchingLanguage += '-updated';
 
       await $scope.save(true);
     });

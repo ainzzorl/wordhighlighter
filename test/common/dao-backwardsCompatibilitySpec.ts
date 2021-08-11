@@ -135,7 +135,7 @@ describe('backwards compatibility', () => {
       expect(groups[0].backgroundColor).toBe('group-1-color');
       // Defaults
       expect(groups[0].matchingType).toBe(MatchingType.SMART);
-      expect(groups[0].smartMatchingLanguage).toBe('en');
+      expect(groups[0].matchingLanguage).toBe('en');
     });
   });
 
@@ -226,7 +226,7 @@ describe('backwards compatibility', () => {
       expect(groups[0].backgroundColor).toEqual('eeff00');
       expect(groups[0].name).toEqual('Default');
       expect(groups[0].matchingType).toBe(MatchingType.SMART);
-      expect(groups[0].smartMatchingLanguage).toBe('en');
+      expect(groups[0].matchingLanguage).toBe('en');
 
       // Checking that the sequence number is correct
       await dao.addGroup(
@@ -327,7 +327,7 @@ describe('backwards compatibility', () => {
       );
       expect(groups[0].name).toEqual('Default');
       expect(groups[0].matchingType).toBe(MatchingType.SMART);
-      expect(groups[0].smartMatchingLanguage).toBe('en');
+      expect(groups[0].matchingLanguage).toBe('en');
 
       // Checking that the sequence number is correct
       await dao.addGroup(

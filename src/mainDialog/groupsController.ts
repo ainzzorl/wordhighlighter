@@ -11,7 +11,7 @@ angular
       value: '',
       backgroundColor: 'ffff00',
       matchingType: Group.DEFAULT_MATCHING_TYPE,
-      smartMatchingLanguage: Group.DEFAULT_SMART_MATCHING_LANGUAGE,
+      matchingLanguage: Group.DEFAULT_MATCHING_LANGUAGE,
     };
     $scope.showNewGroupForm = false;
 
@@ -94,7 +94,7 @@ angular
             name,
             $scope.newGroup.backgroundColor,
             $scope.newGroup.matchingType,
-            $scope.newGroup.smartMatchingLanguage
+            $scope.newGroup.matchingLanguage
           )
           .then((group: Group) => {
             $scope.groups.push(group);
@@ -102,8 +102,7 @@ angular
         $scope.newGroup.name = '';
         $scope.newGroup.backgroundColor = Settings.DEFAULT_BACKGROUND_COLOR;
         $scope.newGroup.matchingType = Group.DEFAULT_MATCHING_TYPE;
-        $scope.newGroup.smartMatchingLanguage =
-          Group.DEFAULT_SMART_MATCHING_LANGUAGE;
+        $scope.newGroup.matchingLanguage = Group.DEFAULT_MATCHING_LANGUAGE;
         $scope.newGroupForm.$setPristine();
         $scope.showNewGroupForm = false;
         $scope.$apply();

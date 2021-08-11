@@ -117,7 +117,7 @@ class DAO {
     name: string,
     backgroundColor: string,
     matchingType: MatchingType,
-    smartMatchingLanguage: string
+    matchingLanguage: string
   ): Promise<Group> {
     let self: DAO = this;
     return new Promise<Group>((resolve, _reject) => {
@@ -131,7 +131,7 @@ class DAO {
             name,
             backgroundColor,
             matchingType,
-            smartMatchingLanguage,
+            matchingLanguage,
             now,
             now
           );
@@ -275,7 +275,7 @@ class DAO {
             'Default',
             backgroundColor,
             Group.DEFAULT_MATCHING_TYPE,
-            Group.DEFAULT_SMART_MATCHING_LANGUAGE
+            Group.DEFAULT_MATCHING_LANGUAGE
           );
           self.store.set(
             { groups: self.serializeGroups([defaultGroup]) },
@@ -379,7 +379,7 @@ class DAO {
       input['matchingType'] !== null && input['matchingType'] !== undefined
         ? input['matchingType']
         : Group.DEFAULT_MATCHING_TYPE,
-      input['smartMatchingLanguage'] || Group.DEFAULT_SMART_MATCHING_LANGUAGE,
+      input['matchingLanguage'] || Group.DEFAULT_MATCHING_LANGUAGE,
       input['createdAt'],
       input['updatedAt']
     );
@@ -452,7 +452,7 @@ class DAO {
       name: input.name,
       backgroundColor: input.backgroundColor,
       matchingType: input.matchingType,
-      smartMatchingLanguage: input.smartMatchingLanguage,
+      matchingLanguage: input.matchingLanguage,
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     };

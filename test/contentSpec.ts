@@ -35,7 +35,7 @@ describe('content', function () {
           'group-name',
           'background-color',
           Group.DEFAULT_MATCHING_TYPE,
-          Group.DEFAULT_SMART_MATCHING_LANGUAGE
+          Group.DEFAULT_MATCHING_LANGUAGE
         ),
       ];
       highlightGenerator = new HighlightGenerator(groups, Settings.DEFAULT);

@@ -55,7 +55,7 @@ class MatchFinderImpl implements MatchFinder {
   // Map: language->stemmer
   private cachingStemmers: Map<string, CachingStemmer>;
 
-  private smartMatchingLanguages: Array<string>;
+  private matchingLanguages: Array<string>;
 
   private tokenizer: Tokenizer;
 
@@ -115,15 +115,15 @@ class MatchFinderImpl implements MatchFinder {
         [endIndex, match] = [null, null];
         for (
           let languageIndex = 0;
-          languageIndex < this.smartMatchingLanguages.length;
+          languageIndex < this.matchingLanguages.length;
           languageIndex++
         ) {
           [endIndex, match] = this.matchWithTrie(
             tokens,
             i,
-            this.nonStrictTries.get(this.smartMatchingLanguages[languageIndex]),
+            this.nonStrictTries.get(this.matchingLanguages[languageIndex]),
             false,
-            this.smartMatchingLanguages[languageIndex]
+            this.matchingLanguages[languageIndex]
           );
           if (match !== null) {
             break;
@@ -167,7 +167,7 @@ class MatchFinderImpl implements MatchFinder {
     firstTokenIndex: number,
     trie: TrieNode,
     strict: boolean,
-    smartMatchingLanguage: string
+    matchingLanguage: string
   ): [number, DictionaryEntry] {
     let node = trie;
     let i = firstTokenIndex;
@@ -183,7 +183,7 @@ class MatchFinderImpl implements MatchFinder {
       let word = tokens[i].value;
       let key = word.toLowerCase();
       if (!strict) {
-        key = this.cachingStemmers.get(smartMatchingLanguage).stem(word);
+        key = this.cachingStemmers.get(matchingLanguage).stem(word);
       }
       if (node.children.has(key)) {
         node = node.children.get(key);
@@ -208,21 +208,19 @@ class MatchFinderImpl implements MatchFinder {
     this.strictTrie = new TrieNode();
     this.nonStrictTries = new Map<string, TrieNode>();
     this.cachingStemmers = new Map<string, CachingStemmer>();
-    this.smartMatchingLanguages = [];
+    this.matchingLanguages = [];
     if (!this.stemmers) {
       return;
     }
     let groupIdToGroup = new Map<number, Group>();
     this.groups.forEach((group: Group) => {
       if (this.shouldSmartMatch(group)) {
-        this.nonStrictTries.set(group.smartMatchingLanguage, new TrieNode());
-        if (
-          this.smartMatchingLanguages.indexOf(group.smartMatchingLanguage) < 0
-        ) {
-          this.smartMatchingLanguages.push(group.smartMatchingLanguage);
+        this.nonStrictTries.set(group.matchingLanguage, new TrieNode());
+        if (this.matchingLanguages.indexOf(group.matchingLanguage) < 0) {
+          this.matchingLanguages.push(group.matchingLanguage);
           this.cachingStemmers.set(
-            group.smartMatchingLanguage,
-            new CachingStemmer(this.stemmers.get(group.smartMatchingLanguage))
+            group.matchingLanguage,
+            new CachingStemmer(this.stemmers.get(group.matchingLanguage))
           );
         }
       }
@@ -230,18 +228,13 @@ class MatchFinderImpl implements MatchFinder {
     });
     this.dictionary.forEach((entry: DictionaryEntry) => {
       let group = groupIdToGroup.get(entry.groupId);
-      this.insertIntoTrie(
-        entry,
-        this.strictTrie,
-        true,
-        group.smartMatchingLanguage
-      );
+      this.insertIntoTrie(entry, this.strictTrie, true, group.matchingLanguage);
       if (!entry.strictMatch && this.shouldSmartMatch(group)) {
         this.insertIntoTrie(
           entry,
-          this.nonStrictTries.get(group.smartMatchingLanguage),
+          this.nonStrictTries.get(group.matchingLanguage),
           false,
-          group.smartMatchingLanguage
+          group.matchingLanguage
         );
       }
     });
@@ -250,7 +243,7 @@ class MatchFinderImpl implements MatchFinder {
   private shouldSmartMatch(group: Group) {
     return (
       group.matchingType == MatchingType.SMART &&
-      this.stemmers.has(group.smartMatchingLanguage)
+      this.stemmers.has(group.matchingLanguage)
     );
   }
 

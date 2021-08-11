@@ -21,7 +21,7 @@ describe('MatchFinder', () => {
           },
         };
         stemmers = new Map<string, Stemmer>([
-          [Group.DEFAULT_SMART_MATCHING_LANGUAGE, stemmer],
+          [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
         ]);
 
         dictionary = [];
@@ -57,7 +57,7 @@ describe('MatchFinder', () => {
             'Default',
             'color',
             Group.DEFAULT_MATCHING_TYPE,
-            Group.DEFAULT_SMART_MATCHING_LANGUAGE
+            Group.DEFAULT_MATCHING_LANGUAGE
           ),
         ];
 
@@ -234,7 +234,7 @@ describe('MatchFinder', () => {
           },
         };
         stemmers = new Map<string, Stemmer>([
-          [Group.DEFAULT_SMART_MATCHING_LANGUAGE, stemmer],
+          [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
         ]);
         groups = [
           new Group(
@@ -242,7 +242,7 @@ describe('MatchFinder', () => {
             'Default',
             'color',
             Group.DEFAULT_MATCHING_TYPE,
-            Group.DEFAULT_SMART_MATCHING_LANGUAGE
+            Group.DEFAULT_MATCHING_LANGUAGE
           ),
         ];
 
@@ -315,7 +315,7 @@ describe('MatchFinder', () => {
           },
         };
         stemmers = new Map<string, Stemmer>([
-          [Group.DEFAULT_SMART_MATCHING_LANGUAGE, stemmer],
+          [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
         ]);
 
         dictionary = [];
@@ -337,7 +337,7 @@ describe('MatchFinder', () => {
             'Default',
             'color',
             Group.DEFAULT_MATCHING_TYPE,
-            Group.DEFAULT_SMART_MATCHING_LANGUAGE
+            Group.DEFAULT_MATCHING_LANGUAGE
           ),
         ];
         matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
@@ -413,7 +413,7 @@ describe('MatchFinder', () => {
             },
           };
           stemmers = new Map<string, Stemmer>([
-            [Group.DEFAULT_SMART_MATCHING_LANGUAGE, stemmer],
+            [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
           ]);
 
           dictionary = [
@@ -429,7 +429,7 @@ describe('MatchFinder', () => {
               'Default',
               'color',
               Group.DEFAULT_MATCHING_TYPE,
-              Group.DEFAULT_SMART_MATCHING_LANGUAGE
+              Group.DEFAULT_MATCHING_LANGUAGE
             ),
           ];
           matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);

@@ -100,16 +100,16 @@
 
       <div class="form-group row">
         <label
-          for="new-group-smart-matching-language"
+          for="new-group-matching-language"
           class="col-xs-4 col-form-label"
         >
-          Smart matching language
+          Matching language
         </label>
         <div class="col-xs-8">
           <select
             class="form-control"
-            ng-model="newGroup.smartMatchingLanguage"
-            name="new-group-smart-matching-language"
+            ng-model="newGroup.matchingLanguage"
+            name="new-group-matching-language"
           >
             <option value="cn">Chinese/中文</option>
             <option value="nl">Dutch/Nederlands</option>
@@ -222,15 +222,15 @@
 
         <div class="form-group row">
           <label
-            for="new-group-smart-matching-language"
+            for="new-group-matching-language"
             class="col-xs-4 col-form-label"
           >
-            Smart matching language
+            Matching language
           </label>
           <div class="col-xs-8">
             <select
               class="form-control"
-              ng-model="group.smartMatchingLanguage"
+              ng-model="group.matchingLanguage"
               ng-change="save(editGroupForm.$valid)"
             >
               <option value="cn">Chinese/中文</option>
