@@ -265,7 +265,7 @@ class DAO {
       [DAO.KEYS.groups, DAO.KEYS.settings],
       (result: { [key: string]: any }) => {
         if (!result.groups) {
-          // The default group's is copied from the legacy setting, if present.
+          // The default group's color is copied from the legacy setting, if present.
           let backgroundColor = result.settings.backgroundColor
             ? result.settings.backgroundColor
             : Settings.DEFAULT_BACKGROUND_COLOR;
@@ -316,9 +316,12 @@ class DAO {
       DAO.KEYS.groupIdSequenceNumber,
       (result: { [key: string]: any }) => {
         if (!result.groupIdSequenceNumber) {
-          self.store.set({ groupIdSequenceNumber: 2 }, () => {
-            WHLogger.log('Initialized the group id sequence');
-          });
+          self.store.set(
+            { groupIdSequenceNumber: Group.DEFAULT_GROUP_ID + 1 },
+            () => {
+              WHLogger.log('Initialized the group id sequence');
+            }
+          );
         }
       }
     );
