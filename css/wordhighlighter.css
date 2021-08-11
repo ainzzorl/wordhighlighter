@@ -395,6 +395,7 @@
     color: initial !important;
     letter-spacing: initial !important;
     background-color: initial !important;
+    clear : initial;
 
     margin-bottom: 0px !important;
     margin-top: 0px !important;
@@ -444,6 +445,7 @@ div#word-highlighter-page-stats-tip {
     font-style: initial !important;
 }
 
+
 #word-highlighter-page-stats a {
     color: #0000ff;
     text-decoration: unset;
@@ -462,13 +464,6 @@ div#word-highlighter-page-stats-tip {
 .word-highlighter-per-word-stats-count {
     width: 25%;
     float: left;
-}
-
-#word-highlighter-page-stats-close {
-    float: right;
-    display: block;
-    padding: 2px 5px;
-    background:#ccc;
 }
 
 .word-highlighter-stats-aggregate {

@@ -15,6 +15,8 @@ Open the main dialog, go to "Import/Export", insert the text below, select "Dele
 filibuster;an irregular military adventurer.
 comment;a verbal or written remark expressing an opinion or reaction.
 programmer;A programmer, computer programmer, developer, dev, coder, or software engineer is a person who creates computer software.
+experimental;(of a new invention or product) based on untested ideas or techniques and not yet established or finalized.
+peculiar;strange or odd; unusual.
 ```
 
 ### Websites
@@ -25,3 +27,4 @@ Visit the following web pages, verify that everything looks as expected.
 * https://old.reddit.com
 * http://www.hanselman.com/blog/YouAreNotYourCode.aspx
 * https://www.netmeister.org/blog/dns-rrs.html
+* https://stackoverflow.com/questions/11227809/why-is-processing-a-sorted-array-faster-than-processing-an-unsorted-array
