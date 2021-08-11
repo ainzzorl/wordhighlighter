@@ -214,7 +214,7 @@ class MatchFinderImpl implements MatchFinder {
     }
     let groupIdToGroup = new Map<number, Group>();
     this.groups.forEach((group: Group) => {
-      if (group.matchingType === MatchingType.SMART) {
+      if (this.shouldSmartMatch(group)) {
         this.nonStrictTries.set(group.smartMatchingLanguage, new TrieNode());
         if (
           this.smartMatchingLanguages.indexOf(group.smartMatchingLanguage) < 0
@@ -236,7 +236,7 @@ class MatchFinderImpl implements MatchFinder {
         true,
         group.smartMatchingLanguage
       );
-      if (!entry.strictMatch && group.matchingType == MatchingType.SMART) {
+      if (!entry.strictMatch && this.shouldSmartMatch(group)) {
         this.insertIntoTrie(
           entry,
           this.nonStrictTries.get(group.smartMatchingLanguage),
@@ -245,6 +245,13 @@ class MatchFinderImpl implements MatchFinder {
         );
       }
     });
+  }
+
+  private shouldSmartMatch(group: Group) {
+    return (
+      group.matchingType == MatchingType.SMART &&
+      this.stemmers.has(group.smartMatchingLanguage)
+    );
   }
 
   private insertIntoTrie(

@@ -577,5 +577,36 @@ describe('MatchFinder', () => {
         });
       });
     });
+
+    describe('language not supporting smart matching', () => {
+      beforeEach(() => {
+        dictionary = [
+          new DictionaryEntry(1, '日本語', '', new Date(), new Date()),
+        ];
+        stemmers = new Map<string, Stemmer>();
+        groups = [
+          new Group(
+            Group.DEFAULT_GROUP_ID,
+            'Default',
+            'color',
+            MatchingType.SMART,
+            'jp'
+          ),
+        ];
+
+        matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
+        matchFinder.buildIndexes();
+      });
+
+      function findWordMatch(input: string) {
+        let result = matchFinder.findMatches(input);
+        expect(result.length).toEqual(1);
+        return result[0].matchOf ? result[0].matchOf.value : null;
+      }
+
+      it('finds matches', () => {
+        expect(findWordMatch('日本語')).toEqual('日本語');
+      });
+    });
   });
 });
