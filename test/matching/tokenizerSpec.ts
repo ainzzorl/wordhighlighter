@@ -97,5 +97,23 @@ describe('Tokenizer', () => {
         ]);
       });
     });
+
+    describe('Misc diacritics', () => {
+      it('tokenizes words with diacritics', () => {
+        expect(
+          tokenizer.tokenize('Aragonés Čeština Lietuvių Português Türkçe')
+        ).toEqual([
+          { value: 'Aragonés', isWord: true },
+          { value: ' ', isWord: false },
+          { value: 'Čeština', isWord: true },
+          { value: ' ', isWord: false },
+          { value: 'Lietuvių', isWord: true },
+          { value: ' ', isWord: false },
+          { value: 'Português', isWord: true },
+          { value: ' ', isWord: false },
+          { value: 'Türkçe', isWord: true },
+        ]);
+      });
+    });
   });
 });

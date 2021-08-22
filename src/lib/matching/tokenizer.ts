@@ -45,7 +45,10 @@ class Tokenizer {
       (char[0] >= 'а' && char[0] <= 'я') ||
       (char[0] >= 'А' && char[0] <= 'Я') ||
       // Misc diacritics
-      (char[0] >= 'À' && char[0] <= 'ÿ')
+      // See https://unicode-table.com/
+      (char[0] >= 'À' && char[0] <= 'ö') ||
+      (char[0] >= 'ø' && char[0] <= 'ƿ') ||
+      (char[0] >= 'Ǆ' && char[0] <= 'ʫ')
     );
   }
 
