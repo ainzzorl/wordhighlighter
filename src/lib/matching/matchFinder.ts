@@ -176,7 +176,7 @@ class MatchFinderImpl implements MatchFinder {
     // Walk down the trie until we find a match.
     while (i < tokens.length) {
       if (!tokens[i].isWord) {
-        // Stip this token.
+        // Strip this token.
         i++;
         continue;
       }
@@ -227,6 +227,9 @@ class MatchFinderImpl implements MatchFinder {
       groupIdToGroup.set(group.id, group);
     });
     this.dictionary.forEach((entry: DictionaryEntry) => {
+      if (!groupIdToGroup.has(entry.groupId)) {
+        return;
+      }
       let group = groupIdToGroup.get(entry.groupId);
       this.insertIntoTrie(entry, this.strictTrie, true, group.matchingLanguage);
       if (!entry.strictMatch && this.shouldSmartMatch(group)) {

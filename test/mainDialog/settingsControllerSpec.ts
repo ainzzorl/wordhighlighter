@@ -17,6 +17,8 @@ describe('settingsController', () => {
         settings.enableHighlighting = true;
         settings.timeout = 123;
         settings.showTooltip = ShowTooltip.ALWAYS;
+        settings.blockedWebsites = ['blocked.example.com'];
+        settings.allowedWebsites = ['allowed.example.com'];
         return Promise.resolve(settings);
       },
       saveSettings(_settings: Settings) {
@@ -45,10 +47,14 @@ describe('settingsController', () => {
       expect($scope.settings.enableHighlighting).toBe(true);
       expect($scope.settings.timeout).toEqual(123);
       expect($scope.settings.showTooltip).toEqual(ShowTooltip.ALWAYS);
+      expect($scope.settings.blockedWebsites).toEqual(['blocked.example.com']);
+      expect($scope.settings.allowedWebsites).toEqual(['allowed.example.com']);
     });
   });
 
   describe('save', () => {
+    let expected: any;
+
     beforeEach(async () => {
       spyOn(dao, 'saveSettings').and.callThrough();
       $scope.settings = new Settings();
@@ -56,11 +62,19 @@ describe('settingsController', () => {
       $scope.settings.enableHighlighting = false;
       $scope.settings.enablePageStats = false;
       $scope.settings.showTooltip = ShowTooltip.NEVER;
+      $scope.settings.blockedWebsitesStr =
+        '  \nblocked-1\n\n\n   blocked-2   \n  \n';
+      $scope.settings.allowedWebsitesStr =
+        '  \nallowed-1\n\n\n   allowed-2   \n  \n';
+
+      expected = angular.copy($scope.settings);
+      expected.blockedWebsites = ['blocked-1', 'blocked-2'];
+      expected.allowedWebsites = ['allowed-1', 'allowed-2'];
       await $scope.save(true);
     });
 
     it('saves the settings', () => {
-      expect(dao.saveSettings).toHaveBeenCalledWith($scope.settings);
+      expect(dao.saveSettings).toHaveBeenCalledWith(expected);
     });
   });
 });

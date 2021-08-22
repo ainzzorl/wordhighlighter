@@ -128,6 +128,34 @@
       </div>
 
       <div class="form-group row">
+        <label for="new-group-denylist" class="col-xs-4 col-form-label">
+          Don't highlight on these pages. You can use wildcards, e.g. * and ?
+        </label>
+        <div class="col-xs-8">
+          <textarea
+            rows="4"
+            cols="43"
+            ng-model="newGroup.blockedWebsitesStr"
+            placeholder="e.g. *.wikipedia.org"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="new-group-allowlist" class="col-xs-4 col-form-label">
+          Except on these pages
+        </label>
+        <div class="col-xs-8">
+          <textarea
+            rows="4"
+            cols="43"
+            ng-model="newGroup.allowedWebsitesStr"
+            placeholder="e.g. en.wikipedia.org"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="form-group row">
         <div class="col-xs-4">&nbsp;</div>
         <!-- offset-* doesn't work with xs' -->
         <div class="col-xs-8">
@@ -246,6 +274,36 @@
               <option value="sv">Swedish/Svenska</option>
               <option value="other">Other</option>
             </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="new-group-denylist" class="col-xs-4 col-form-label">
+            Don't highlight on these pages. You can use wildcards, e.g. * and ?
+          </label>
+          <div class="col-xs-8">
+            <textarea
+              rows="4"
+              cols="43"
+              ng-model="group.blockedWebsitesStr"
+              ng-change="save(editGroupForm.$valid)"
+              placeholder="e.g. *.wikipedia.org"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="new-group-allowlist" class="col-xs-4 col-form-label">
+            Except on these pages
+          </label>
+          <div class="col-xs-8">
+            <textarea
+              rows="4"
+              cols="43"
+              ng-model="group.allowedWebsitesStr"
+              ng-change="save(editGroupForm.$valid)"
+              placeholder="e.g. en.wikipedia.org"
+            ></textarea>
           </div>
         </div>
 

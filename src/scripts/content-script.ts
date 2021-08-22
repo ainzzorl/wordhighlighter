@@ -2,6 +2,7 @@
 ///<reference path="../lib/common/dao.ts" />
 ///<reference path="../lib/common/logger.ts" />
 ///<reference path="../lib/common/group.ts" />
+///<reference path="../lib/common/blocklist.ts" />
 
 // Content script: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Anatomy_of_a_WebExtension#Content_scripts
 
@@ -14,6 +15,28 @@ new DAO().getDictionary().then((dictionary: Array<DictionaryEntry>) => {
         // "stemmers" is not in Window class,
         // so we need to convert the object to "any" to read the property.
         let wnd: any = window;
+
+        if (
+          isBlocked(
+            window.location.href,
+            settings.blockedWebsites,
+            settings.allowedWebsites
+          )
+        ) {
+          WHLogger.log(`URL ${window.location.href} is blocked globally`);
+          return;
+        }
+        groups = groups.filter((group: Group) => {
+          return !isBlocked(
+            window.location.href,
+            group.blockedWebsites,
+            group.allowedWebsites
+          );
+        });
+        if (groups.length === 0) {
+          WHLogger.log(`URL ${window.location.href} is blocked for all groups`);
+          return;
+        }
 
         let dao = new DAO();
         let highlightInjector = new HighlightInjectorImpl(

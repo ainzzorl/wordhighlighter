@@ -16,6 +16,8 @@ class Group {
   private _backgroundColor: string;
   private _matchingType: MatchingType;
   private _matchingLanguage: string;
+  private _blockedWebsites: Array<string>;
+  private _allowedWebsites: Array<string>;
   private _createdAt: Date;
   private _updatedAt: Date;
 
@@ -25,6 +27,8 @@ class Group {
     backgroundColor: string,
     matchingType: MatchingType,
     matchingLanguage: string,
+    _blockedWebsites: Array<string> = undefined,
+    _allowedWebsites: Array<string> = undefined,
     createdAt: Date = undefined,
     updatedAt: Date = undefined
   ) {
@@ -33,6 +37,8 @@ class Group {
     this._backgroundColor = backgroundColor;
     this._matchingType = matchingType;
     this._matchingLanguage = matchingLanguage;
+    this._blockedWebsites = _blockedWebsites;
+    this._allowedWebsites = _allowedWebsites;
     let now = new Date();
     this._createdAt = createdAt || now;
     this._updatedAt = updatedAt || now;
@@ -76,6 +82,22 @@ class Group {
 
   set matchingLanguage(_matchingLanguage: string) {
     this._matchingLanguage = _matchingLanguage;
+  }
+
+  get blockedWebsites(): Array<string> {
+    return this._blockedWebsites;
+  }
+
+  set blockedWebsites(_blockedWebsites: Array<string>) {
+    this._blockedWebsites = _blockedWebsites;
+  }
+
+  get allowedWebsites(): Array<string> {
+    return this._allowedWebsites;
+  }
+
+  set allowedWebsites(_allowedWebsites: Array<string>) {
+    this._allowedWebsites = _allowedWebsites;
   }
 
   get createdAt(): Date {

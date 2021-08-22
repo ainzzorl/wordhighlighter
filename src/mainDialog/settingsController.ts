@@ -1,4 +1,5 @@
 ///<reference path="../lib/common/dao.ts" />
+///<reference path="websiteLists.ts" />
 
 angular
   .module('mainDialog')
@@ -47,15 +48,35 @@ angular
     $scope.load = async () => {
       return dao.getSettings().then((settings: Settings) => {
         $scope.settings = settings;
+        websiteListsToStrings($scope.settings);
         $scope.$apply();
       });
     };
 
     $scope.save = async (isValid: boolean) => {
       if (isValid) {
+        stringsToWebsiteLists($scope.settings);
         return dao.saveSettings($scope.settings);
       }
     };
+
+    function websiteListsToStrings(settings: any) {
+      settings.blockedWebsitesStr = websiteListToStrings(
+        settings.blockedWebsites
+      );
+      settings.allowedWebsitesStr = websiteListToStrings(
+        settings.allowedWebsites
+      );
+    }
+
+    function stringsToWebsiteLists(settings: any) {
+      settings.blockedWebsites = stringToWebsiteList(
+        settings.blockedWebsitesStr
+      );
+      settings.allowedWebsites = stringToWebsiteList(
+        settings.allowedWebsitesStr
+      );
+    }
 
     $scope.load();
   });

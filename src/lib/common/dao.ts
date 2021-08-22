@@ -117,7 +117,9 @@ class DAO {
     name: string,
     backgroundColor: string,
     matchingType: MatchingType,
-    matchingLanguage: string
+    matchingLanguage: string,
+    blockedWebsites: Array<string>,
+    allowedWebsites: Array<string>
   ): Promise<Group> {
     let self: DAO = this;
     return new Promise<Group>((resolve, _reject) => {
@@ -132,6 +134,8 @@ class DAO {
             backgroundColor,
             matchingType,
             matchingLanguage,
+            blockedWebsites,
+            allowedWebsites,
             now,
             now
           );
@@ -275,7 +279,9 @@ class DAO {
             'Default',
             backgroundColor,
             Group.DEFAULT_MATCHING_TYPE,
-            Group.DEFAULT_MATCHING_LANGUAGE
+            Group.DEFAULT_MATCHING_LANGUAGE,
+            Settings.DEFAULT_BLOCKED_WEBSITES,
+            Settings.DEFAULT_ALLOWED_WEBSITES
           );
           self.store.set(
             { groups: self.serializeGroups([defaultGroup]) },
@@ -383,6 +389,8 @@ class DAO {
         ? input['matchingType']
         : Group.DEFAULT_MATCHING_TYPE,
       input['matchingLanguage'] || Group.DEFAULT_MATCHING_LANGUAGE,
+      input['blockedWebsites'] || Settings.DEFAULT_BLOCKED_WEBSITES,
+      input['allowedWebsites'] || Settings.DEFAULT_ALLOWED_WEBSITES,
       input['createdAt'],
       input['updatedAt']
     );
@@ -420,6 +428,10 @@ class DAO {
       settings.showTooltip =
         ShowTooltip[input.showTooltip as keyof typeof ShowTooltip];
     }
+    settings.blockedWebsites =
+      input.blockedWebsites || Settings.DEFAULT_BLOCKED_WEBSITES;
+    settings.allowedWebsites =
+      input.allowedWebsites || Settings.DEFAULT_ALLOWED_WEBSITES;
     return settings;
   }
 
@@ -456,6 +468,8 @@ class DAO {
       backgroundColor: input.backgroundColor,
       matchingType: input.matchingType,
       matchingLanguage: input.matchingLanguage,
+      blockedWebsites: input.blockedWebsites,
+      allowedWebsites: input.allowedWebsites,
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     };
@@ -467,6 +481,8 @@ class DAO {
       enableHighlighting: input.enableHighlighting,
       enablePageStats: input.enablePageStats,
       showTooltip: input.showTooltip,
+      allowedWebsites: input.allowedWebsites,
+      blockedWebsites: input.blockedWebsites,
     };
   }
 

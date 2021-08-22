@@ -608,5 +608,29 @@ describe('MatchFinder', () => {
         expect(findWordMatch('日本語')).toEqual('日本語');
       });
     });
+
+    describe('some groups are not provided', () => {
+      beforeEach(() => {
+        dictionary = [
+          new DictionaryEntry(1, 'hello', '', new Date(), new Date(), true, 1),
+          // this group is not passed
+          new DictionaryEntry(2, 'hola', '', new Date(), new Date(), true, 2),
+        ];
+        stemmers = new Map<string, Stemmer>();
+        groups = [new Group(1, 'Default', 'color', MatchingType.SMART, 'en')];
+
+        matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
+        matchFinder.buildIndexes();
+      });
+
+      it('finds matches only from present groups', () => {
+        let matchResult = matchFinder.findMatches('hello hola');
+        expect(matchResult.length).toEqual(2);
+        expect(matchResult[0].value).toEqual('hello');
+        expect(matchResult[0].matchOf.value).toEqual('hello');
+        expect(matchResult[1].value).toEqual(' hola');
+        expect(matchResult[1].matchOf).toBeNull();
+      });
+    });
   });
 });

@@ -47,6 +47,8 @@ describe('DAO', () => {
       settings.enablePageStats = false;
       settings.timeout = 123;
       settings.showTooltip = ShowTooltip.NEVER;
+      settings.allowedWebsites = ['allowed.example.com'];
+      settings.blockedWebsites = ['blocked.example.com'];
       await dao.saveSettings(settings);
       await dao.getSettings().then((receivedSettings: Settings) => {
         expect(receivedSettings).toEqual(settings);
@@ -92,12 +94,16 @@ describe('DAO', () => {
       expect(groups.length).toEqual(1);
       expect(groups[0].name).toEqual('Default');
       expect(groups[0].backgroundColor).toEqual('ffff00');
+      expect(groups[0].blockedWebsites).toEqual([]);
+      expect(groups[0].allowedWebsites).toEqual([]);
 
       await dao.addGroup(
         'group-1-name',
         'group-1-color',
         MatchingType.SMART,
-        'group-1-language'
+        'group-1-language',
+        ['blocked-1.example.com'],
+        ['allowed-1.example.com']
       );
       groups = await dao.getGroups();
       expect(groups.length).toEqual(2);
@@ -105,6 +111,8 @@ describe('DAO', () => {
       expect(groups[1].backgroundColor).toEqual('group-1-color');
       expect(groups[1].matchingType).toBe(MatchingType.SMART);
       expect(groups[1].matchingLanguage).toEqual('group-1-language');
+      expect(groups[1].blockedWebsites).toEqual(['blocked-1.example.com']);
+      expect(groups[1].allowedWebsites).toEqual(['allowed-1.example.com']);
       expect(groups[1].createdAt).not.toBeNull();
       expect(groups[1].updatedAt).not.toBeNull();
       expect(groups[1].id).toEqual(2);
@@ -115,7 +123,9 @@ describe('DAO', () => {
           'group-2-name',
           'group-2-color',
           MatchingType.STRICT,
-          'group-2-language'
+          'group-2-language',
+          ['blocked-2.example.com'],
+          ['allowed-2.example.com']
         )
       );
       await dao.saveGroups(groups);
@@ -125,6 +135,8 @@ describe('DAO', () => {
       expect(groups[2].backgroundColor).toEqual('group-2-color');
       expect(groups[2].matchingType).toEqual(MatchingType.STRICT);
       expect(groups[2].matchingLanguage).toEqual('group-2-language');
+      expect(groups[2].blockedWebsites).toEqual(['blocked-2.example.com']);
+      expect(groups[2].allowedWebsites).toEqual(['allowed-2.example.com']);
       expect(groups[2].createdAt).not.toBeNull();
       expect(groups[2].updatedAt).not.toBeNull();
       expect(groups[2].id).toEqual(3);

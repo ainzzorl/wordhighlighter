@@ -21,7 +21,9 @@ describe('groupsController', () => {
             'group-1-name',
             'group-1-color',
             MatchingType.SMART,
-            'group-1-language'
+            'group-1-language',
+            ['blocked-1.example.com'],
+            ['allowed-1.example.com']
           )
         );
         result.push(
@@ -30,7 +32,9 @@ describe('groupsController', () => {
             'group-2-name',
             'group-2-color',
             MatchingType.SMART,
-            'group-2-language'
+            'group-2-language',
+            ['blocked-2.example.com'],
+            ['allowed-2.example.com']
           )
         );
         result.push(
@@ -39,7 +43,9 @@ describe('groupsController', () => {
             'group-3-name',
             'group-3-color',
             MatchingType.SMART,
-            'group-3-language'
+            'group-3-language',
+            ['blocked-3.example.com'],
+            ['allowed-3.example.com']
           )
         );
         return Promise.resolve(result);
@@ -48,10 +54,20 @@ describe('groupsController', () => {
         name: string,
         backgroundColor: string,
         matchingType: MatchingType,
-        matchingLanguage: string
+        matchingLanguage: string,
+        blockedWebsites: Array<string>,
+        allowedWebsites: Array<string>
       ) {
         return Promise.resolve(
-          new Group(1, name, backgroundColor, matchingType, matchingLanguage)
+          new Group(
+            1,
+            name,
+            backgroundColor,
+            matchingType,
+            matchingLanguage,
+            blockedWebsites,
+            allowedWebsites
+          )
         );
       },
       saveGroups(_groups: Array<Group>) {
@@ -106,6 +122,10 @@ describe('groupsController', () => {
           backgroundColor: 'new-group-background-color',
           matchingType: MatchingType.STRICT,
           matchingLanguage: 'new-group-smart-matching-language',
+          blockedWebsitesStr:
+            '\n  new-group-blocked-1 \n  new-group-blocked-2    \n',
+          allowedWebsitesStr:
+            '\n  new-group-allowed-1 \n  new-group-allowed-2    \n',
         };
         await $scope.onAddNewGroupClicked();
       });
@@ -115,7 +135,9 @@ describe('groupsController', () => {
           'new-group-name',
           'new-group-background-color',
           MatchingType.STRICT,
-          'new-group-smart-matching-language'
+          'new-group-smart-matching-language',
+          ['new-group-blocked-1', 'new-group-blocked-2'],
+          ['new-group-allowed-1', 'new-group-allowed-2']
         );
       });
 
@@ -129,6 +151,14 @@ describe('groupsController', () => {
         expect($scope.groups[0].matchingLanguage).toEqual(
           'new-group-smart-matching-language'
         );
+        expect($scope.groups[0].blockedWebsites).toEqual([
+          'new-group-blocked-1',
+          'new-group-blocked-2',
+        ]);
+        expect($scope.groups[0].allowedWebsites).toEqual([
+          'new-group-allowed-1',
+          'new-group-allowed-2',
+        ]);
       });
 
       it('resets the group', () => {
@@ -142,6 +172,8 @@ describe('groupsController', () => {
         expect($scope.newGroup.matchingLanguage).toEqual(
           Group.DEFAULT_MATCHING_LANGUAGE
         );
+        expect($scope.newGroup.blockedWebsitesStr).toEqual('');
+        expect($scope.newGroup.allowedWebsitesStr).toEqual('');
       });
 
       it('resets the form', () => {
@@ -195,6 +227,8 @@ describe('groupsController', () => {
   });
 
   describe('save', () => {
+    let expected: any;
+
     beforeEach(async () => {
       spyOn(dao, 'saveGroups').and.callThrough();
 
@@ -202,12 +236,19 @@ describe('groupsController', () => {
       $scope.groups[0].backgroundColor += '-updated';
       $scope.groups[0].matchingType = !$scope.groups[0].matchingType;
       $scope.groups[0].matchingLanguage += '-updated';
+      $scope.groups[0].blockedWebsitesStr =
+        '\n  blocked-website-updated \n\n  ';
+      $scope.groups[0].allowedWebsitesStr =
+        '\n  allowed-website-updated \n\n  ';
 
+      expected = angular.copy($scope.groups);
+      expected[0].blockedWebsites = ['blocked-website-updated'];
+      expected[0].allowedWebsites = ['allowed-website-updated'];
       await $scope.save(true);
     });
 
     it('persists the groups', () => {
-      expect(dao.saveGroups).toHaveBeenCalledWith($scope.groups);
+      expect(dao.saveGroups).toHaveBeenCalledWith(expected);
     });
   });
 });

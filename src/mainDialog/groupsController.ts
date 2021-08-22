@@ -2,6 +2,7 @@
 ///<reference path="../lib/common/dictionaryEntry.ts" />
 ///<reference path="../lib/common/group.ts" />
 ///<reference path="../lib/common/settings.ts" />
+///<reference path="websiteLists.ts" />
 
 angular
   .module('mainDialog')
@@ -12,6 +13,8 @@ angular
       backgroundColor: 'ffff00',
       matchingType: Group.DEFAULT_MATCHING_TYPE,
       matchingLanguage: Group.DEFAULT_MATCHING_LANGUAGE,
+      blockedWebsitesStr: '',
+      allowedWebsitesStr: '',
     };
     $scope.showNewGroupForm = false;
 
@@ -70,6 +73,7 @@ angular
     $scope.load = async function () {
       return dao.getGroups().then((groups: Array<Group>) => {
         $scope.groups = groups;
+        websiteListsToStrings($scope.groups);
         $scope.$apply();
       });
     };
@@ -82,6 +86,7 @@ angular
 
     $scope.save = async (isValid: boolean) => {
       if (isValid) {
+        stringsToWebsiteLists($scope.groups);
         return dao.saveGroups($scope.groups);
       }
     };
@@ -94,19 +99,39 @@ angular
             name,
             $scope.newGroup.backgroundColor,
             $scope.newGroup.matchingType,
-            $scope.newGroup.matchingLanguage
+            $scope.newGroup.matchingLanguage,
+            stringToWebsiteList($scope.newGroup.blockedWebsitesStr),
+            stringToWebsiteList($scope.newGroup.allowedWebsitesStr)
           )
           .then((group: Group) => {
             $scope.groups.push(group);
+            websiteListsToStrings($scope.groups);
           });
         $scope.newGroup.name = '';
         $scope.newGroup.backgroundColor = Settings.DEFAULT_BACKGROUND_COLOR;
         $scope.newGroup.matchingType = Group.DEFAULT_MATCHING_TYPE;
         $scope.newGroup.matchingLanguage = Group.DEFAULT_MATCHING_LANGUAGE;
+        $scope.newGroup.blockedWebsitesStr = '';
+        $scope.newGroup.allowedWebsitesStr = '';
         $scope.newGroupForm.$setPristine();
         $scope.showNewGroupForm = false;
         $scope.$apply();
       }
     };
+
+    function websiteListsToStrings(groups: any) {
+      groups.forEach((group: any) => {
+        group.blockedWebsitesStr = websiteListToStrings(group.blockedWebsites);
+        group.allowedWebsitesStr = websiteListToStrings(group.allowedWebsites);
+      });
+    }
+
+    function stringsToWebsiteLists(groups: any) {
+      groups.forEach((group: any) => {
+        group.blockedWebsites = stringToWebsiteList(group.blockedWebsitesStr);
+        group.allowedWebsites = stringToWebsiteList(group.allowedWebsitesStr);
+      });
+    }
+
     await $scope.load();
   });
