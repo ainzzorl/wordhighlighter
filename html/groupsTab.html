@@ -134,7 +134,7 @@
         <div class="col-xs-8">
           <textarea
             rows="4"
-            cols="43"
+            class="form-control"
             ng-model="newGroup.blockedWebsitesStr"
             placeholder="e.g. *.wikipedia.org"
           ></textarea>
@@ -148,7 +148,7 @@
         <div class="col-xs-8">
           <textarea
             rows="4"
-            cols="43"
+            class="form-control"
             ng-model="newGroup.allowedWebsitesStr"
             placeholder="e.g. en.wikipedia.org"
           ></textarea>
@@ -284,7 +284,7 @@
           <div class="col-xs-8">
             <textarea
               rows="4"
-              cols="43"
+              class="form-control"
               ng-model="group.blockedWebsitesStr"
               ng-change="save(editGroupForm.$valid)"
               placeholder="e.g. *.wikipedia.org"
@@ -299,7 +299,7 @@
           <div class="col-xs-8">
             <textarea
               rows="4"
-              cols="43"
+              class="form-control"
               ng-model="group.allowedWebsitesStr"
               ng-change="save(editGroupForm.$valid)"
               placeholder="e.g. en.wikipedia.org"
