@@ -1,5 +1,3 @@
-Create a list of words and phrases you are interested in. See them highlighted on every page you visit.
-
 The extension can be used to expand your vocabulary. When you learn a new word, add it to Word Highlighter, and you won't forget the word because it will be highlighted every time you encounter it.
 
 Word Highlighter is smart about how it matches words on the page with words in the dictionary. It understands that "cherry" and "cherries", "aprender Español" and "aprendemos Español" are the same. Smart matching is supported in English, Spanish, French, Italian, Dutch, Norwegian, Portuguese, Russian and Swedish.
@@ -11,6 +9,7 @@ Word Highlighter is smart about how it matches words on the page with words in t
 - Supports exporting words to and importing from csv and json.
 - Supports customizing highlight color.
 - Supports having multiple groups of words with different settings.
+- Supports disabling all highlights or specific groups on selected pages.
 - Tracks how often each word was found.
 - Respects your privacy - it doesn't send any of your data anywhere.
 - Free and open-source.
