@@ -1,3 +1,18 @@
+## v1.7.1 (2021-08-22)
+
+*  Update changelog [View](https://github.com/ainzzorl/wordhighlighter/commit/a24f05172b3f375881fb83223b94c8e50ad38680)
+*  Fix minor typo and magic number in DAO [View](https://github.com/ainzzorl/wordhighlighter/commit/02cfeeebc1e8e43b9515abab7725558314a3a573)
+*  Add missing type references [View](https://github.com/ainzzorl/wordhighlighter/commit/93ab0d0546c796b4e8f94c6ce51fe4beda1266da)
+*  Fix spelling of 'Portuguese' [View](https://github.com/ainzzorl/wordhighlighter/commit/5aa17f32a94ac5d54993a159397960302f78f0a9)
+*  Fix typo in 'tooltips' [View](https://github.com/ainzzorl/wordhighlighter/commit/9b793f7fbc58670b00c3bbb7b14d7bb9cc05c927)
+*  Support blocking websites, globally or per group #86 [View](https://github.com/ainzzorl/wordhighlighter/commit/2320e4a47192d7eb807c8ad80c93af39cc64d24b)
+*  Bring back tokenizer spec [View](https://github.com/ainzzorl/wordhighlighter/commit/ddbfa94a4710c72487eb8786331c432ba45e2cc1)
+*  Support more diacritics #112 [View](https://github.com/ainzzorl/wordhighlighter/commit/9b9e253a6397f9187420f2522c4fe108c7a4fa41)
+*  Add a description to manifest.json [View](https://github.com/ainzzorl/wordhighlighter/commit/1ccee4199486710fdcbf2d24eee16fa6b3a44101)
+*  Fix allow/deny list width #86 [View](https://github.com/ainzzorl/wordhighlighter/commit/8f1eb6fcafee24a3c92ec99e91b0867e9712eec6)
+*  Bump manifest version [View](https://github.com/ainzzorl/wordhighlighter/commit/14ac5019bba4dee20806073c04725d2ee358a4db)
+
+
 ## v1.7.0 (2021-08-11)
 
 *  Update changelog [View](https://github.com/ainzzorl/wordhighlighter/commit/1e785c37ed1e94e31327e9a2a77288c9e58ea068)
