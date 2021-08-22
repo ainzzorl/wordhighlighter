@@ -34,6 +34,7 @@ Word Highlighter is smart about how it matches words on the page with words in t
 ## Release process
 
 - Increment version in `manifest.json`.
+- Tag the commit: `git tag vX.Y.Z`.
 - `gulp release`
 - Firefox: `web-ext sign -s build/ --api-key API-KEY --api-secret API-SECRET`
 - Chrome: generate zip file (`(cd build && zip -r ../local/chrome-release.zip *)`), upload to Chrome Web Store.
