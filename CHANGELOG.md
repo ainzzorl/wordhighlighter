@@ -1,3 +1,13 @@
+## v1.7.2 (2021-08-25)
+
+*  Update CHANGELOG [View](https://github.com/ainzzorl/wordhighlighter/commit/7ee1c92be750a7b67a4794e051293b6a375796bb)
+*  Add store-description.txt [View](https://github.com/ainzzorl/wordhighlighter/commit/58699224ebd6899eb3998105e2f1aee93693fc99)
+*  Update store description: remove top summary, add support for disabling highlights [View](https://github.com/ainzzorl/wordhighlighter/commit/6021c18e4b11b39640c0ffca203e750954c598a4)
+*  Update the release process description with tagging the commit [View](https://github.com/ainzzorl/wordhighlighter/commit/1e53ab8d08551df46cf2aa9a1c484bae5a8d1c86)
+*  Make URL blocklist/allowlist only use ? and * wildcards #116 #101 [View](https://github.com/ainzzorl/wordhighlighter/commit/ab702fee38f13e43ae0c69e88074562ec86636ea)
+*  Bump manifest version [View](https://github.com/ainzzorl/wordhighlighter/commit/d00db767799266ab5d72e4485e4048b9463bb163)
+
+
 ## v1.7.1 (2021-08-22)
 
 *  Update changelog [View](https://github.com/ainzzorl/wordhighlighter/commit/a24f05172b3f375881fb83223b94c8e50ad38680)
