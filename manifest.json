@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Word Highlighter",
   "description": "Create a list of words and phrases. See them highlighted on every page you visit.",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "permissions": ["storage", "contextMenus"],
   "background": {
     "scripts": [ "js/lib.js", "scripts/background-script.js" ]
