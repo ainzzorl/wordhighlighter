@@ -18,21 +18,21 @@ describe('isBlocked', () => {
 
   it('blocks partial matches', async () => {
     expect(
-      isBlocked('https://blocked.example.com/', ['blocked.example.com'], [])
+      isBlocked('https://blocked.example.com/foo', ['blocked.example.com'], [])
     ).toBe(true);
   });
 
   it('can block everything', async () => {
-    expect(isBlocked('foo.example.com', ['.*'], [])).toBe(true);
-    expect(isBlocked('bar.example.com', ['.*'], [])).toBe(true);
+    expect(isBlocked('foo.example.com', ['*'], [])).toBe(true);
+    expect(isBlocked('bar.example.com', ['*'], [])).toBe(true);
   });
 
   it('can override blocks with allows', async () => {
     expect(
-      isBlocked('allowed.example.com', ['.*'], ['allowed.example.com'])
+      isBlocked('allowed.example.com', ['*'], ['allowed.example.com'])
     ).toBe(false);
     expect(
-      isBlocked('something-else.example.com', ['.*'], ['allowed.example.com'])
+      isBlocked('something-else.example.com', ['*'], ['allowed.example.com'])
     ).toBe(true);
   });
 
@@ -42,7 +42,19 @@ describe('isBlocked', () => {
     expect(isBlocked('foo.example-not.com', ['*.example.com'], [])).toBe(false);
   });
 
-  it('ignores invalid regexps', async () => {
-    expect(isBlocked('foo.example.com', ['\\'], [])).toBe(false);
+  it('supports ?', async () => {
+    expect(isBlocked('example.a.com', ['example.?.com'], [])).toBe(true);
+    expect(isBlocked('example.aa.com', ['example.?.com'], [])).toBe(false);
+    expect(isBlocked('example-not.a.com', ['example.?.com'], [])).toBe(false);
+    expect(isBlocked('example.com?a=b', ['example.com?a=b'], [])).toBe(true);
+    expect(isBlocked('example.com/a=b', ['example.com?a=b'], [])).toBe(true);
+    expect(isBlocked('example.com/a', ['example.com/?'], [])).toBe(true);
+  });
+
+  it('does not use any other regexp features', async () => {
+    expect(isBlocked('example-com', ['example.com'], [])).toBe(false);
+    expect(isBlocked('example.com', ['[a-z]*.com'], [])).toBe(false);
+    expect(isBlocked('example.com', ['p{L}*.com'], [])).toBe(false);
+    expect(isBlocked('example.com', ['\\p{L}*.com'], [])).toBe(false);
   });
 });

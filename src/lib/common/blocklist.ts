@@ -1,20 +1,34 @@
+///<reference path="logger.ts" />
+
 // A website is blocked if there's something blocking it and nothing allowing it.
 function isBlocked(
   url: string,
   blockedWebsites: Array<string>,
   allowedWebsites: Array<string>
 ) {
-  function matches(value: string, regexpStr: string) {
-    // To support patterns like *.wikipedia.org,
-    // which are not valid regexps,
-    // we just ignore leading stars.
-    while (regexpStr.startsWith('*')) {
-      regexpStr = regexpStr.substring(1);
-    }
+  function matches(value: string, pattern: string) {
+    // Only support * (any number of characters) and ? (exactly one character) wildcards.
+    // Partially borrowed from https://stackoverflow.com/a/32402438
+
+    let processedPattern = pattern;
+    // Escape everything except * and ?.
+    processedPattern = processedPattern.replace(
+      /([.+^=!:${}()|[\]/\\])/g,
+      '\\$1'
+    );
+
+    // In "real" regexps, * and ? modify the previous symbol.
+    // To treat them as wildcards, we prefix them with dots.
+    processedPattern = processedPattern.replace('*', '.*');
+    processedPattern = processedPattern.replace('?', '.?');
+
     try {
-      return new RegExp(regexpStr).test(value);
+      return new RegExp(processedPattern).test(value);
     } catch (error) {
-      WHLogger.log(`Error testing with regex=${regexpStr}, error=${error}`);
+      // This should never happen unless there are bugs in the code above.
+      WHLogger.log(
+        `Error testing with pattern=${pattern}, processed=${processedPattern}, error=${error}`
+      );
       return false;
     }
   }
