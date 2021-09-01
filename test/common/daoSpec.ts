@@ -23,6 +23,11 @@ describe('DAO', () => {
       expect(dictionary[0].updatedAt).not.toBeNull();
       expect(dictionary[0].id).not.toBeNull();
       expect(dictionary[0].groupId).toEqual(123);
+
+      let elapsedMs = new Date().getTime() - dictionary[0].createdAt.getTime();
+      expect(elapsedMs).toBeGreaterThanOrEqual(0);
+      expect(elapsedMs).toBeLessThanOrEqual(1000);
+
       dictionary.push(new DictionaryEntry(null, 'value2', 'description2'));
       await dao.saveDictionary(dictionary);
       dictionary = await dao.getDictionary();

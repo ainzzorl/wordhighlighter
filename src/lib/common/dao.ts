@@ -373,8 +373,8 @@ class DAO {
       input['id'],
       input['value'],
       input['description'],
-      input['createdAt'],
-      input['updatedAt'],
+      new Date(input['createdAt']),
+      new Date(input['updatedAt']),
       input['strictMatch'],
       input['groupId'] || Group.DEFAULT_GROUP_ID
     );
@@ -447,8 +447,8 @@ class DAO {
       id: input.id,
       value: input.value,
       description: input.description,
-      createdAt: input.createdAt,
-      updatedAt: input.updatedAt,
+      createdAt: input.createdAt.getTime(),
+      updatedAt: input.updatedAt.getTime(),
       strictMatch: input.strictMatch,
       groupId: input.groupId,
     };

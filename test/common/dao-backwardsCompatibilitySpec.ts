@@ -16,6 +16,145 @@ describe('backwards compatibility', () => {
     stubStore();
   });
 
+  // Major data changes in 1.8:
+  // - Dates are stored as unix time.
+  describe('1.7.1', () => {
+    beforeEach(() => {
+      data['dictionary'] = [
+        {
+          id: 1,
+          value: 'word 1',
+          description: 'description 1',
+          createdAt: '2021-03-19T14:07:48.171Z',
+          updatedAt: '2021-03-19T14:07:48.171Z',
+          strictMatch: true,
+          groupId: 1,
+        },
+        {
+          id: 1,
+          value: 'word 2',
+          description: 'description 2',
+          createdAt: '2021-03-19T14:07:48.171Z',
+          updatedAt: '2021-03-19T14:07:48.171Z',
+          strictMatch: false,
+          groupId: 6,
+        },
+      ];
+      data['highlightingLog'] = [
+        {
+          url: 'https://example.com/page1',
+          date: 1616162953869,
+          highlights: [[1, 3]],
+        },
+        {
+          url: 'https://example.com/page2',
+          date: 1616162978512,
+          highlights: [[2, 5]],
+        },
+      ];
+      data['idSequenceNumber'] = 5;
+      data['groupIdSequenceNumber'] = 10;
+      data['settings'] = {
+        timeout: 5,
+        enableHighlighting: true,
+        enablePageStats: true,
+        backgroundColor: 'eeff00',
+        showTooltip: 'NEVER',
+        blockedWebsites: ['global-blocked-website'],
+        allowedWebsites: ['global-allowed-website'],
+      };
+      data['groups'] = [
+        {
+          id: 1,
+          name: 'group-1',
+          backgroundColor: 'group-1-color',
+          matchingType: 'STRICT',
+          matchingLanguage: 'en',
+          createdAt: '2021-07-16T12:27:44.573Z',
+          updatedAt: '2021-07-16T12:27:44.573Z',
+          blockedWebsites: ['group-1-blocked-website'],
+          allowedWebsites: ['group-1-allowed-website'],
+        },
+        {
+          id: 6,
+          name: 'group-2',
+          backgroundColor: 'group-2-color',
+          matchingType: 'SMART',
+          matchingLanguage: 'es',
+          createdAt: '2021-07-16T12:27:44.573Z',
+          updatedAt: '2021-07-16T12:27:44.573Z',
+          blockedWebsites: ['group-2-blocked-website'],
+          allowedWebsites: ['group-2-allowed-website'],
+        },
+      ];
+      dao.init();
+    });
+
+    it('can read the dictionary', async () => {
+      let dictionary = await dao.getDictionary();
+      expect(dictionary.length).toEqual(2);
+      expect(dictionary[0].value).toEqual('word 1');
+      expect(dictionary[0].description).toEqual('description 1');
+      expect(dictionary[0].strictMatch).toEqual(true);
+      expect(dictionary[0].id).toBe(1);
+      expect(dictionary[0].groupId).toEqual(1);
+      expect(dictionary[0].createdAt.getTime()).toEqual(1616162868171);
+      expect(dictionary[0].updatedAt.getTime()).toEqual(1616162868171);
+    });
+
+    it('can read the word sequence', async () => {
+      await dao.addEntry('word 5', 'description 4', true, 0);
+      let dictionary = await dao.getDictionary();
+      expect(dictionary.length).toEqual(3);
+      expect(dictionary[2].id).toEqual(5);
+    });
+
+    it('can read the dictionary sequence', async () => {
+      await dao.addGroup(
+        'group 10',
+        'group 10 color',
+        MatchingType.SMART,
+        'group 10 language',
+        [],
+        []
+      );
+      let groups = await dao.getGroups();
+      expect(groups.length).toEqual(3);
+      expect(groups[2].id).toEqual(10);
+    });
+
+    it('can read settings', async () => {
+      let settings = await dao.getSettings();
+      expect(settings.timeout).toEqual(5);
+      expect(settings.enableHighlighting).toEqual(true);
+      expect(settings.enablePageStats).toEqual(true);
+      expect(settings.showTooltip).toEqual(ShowTooltip.NEVER);
+      expect(settings.blockedWebsites).toEqual(['global-blocked-website']);
+      expect(settings.allowedWebsites).toEqual(['global-allowed-website']);
+    });
+
+    it('can read highlighting log', async () => {
+      let highlightingLog = await dao.getHighlightingLog();
+      expect(highlightingLog.entries.length).toEqual(2);
+      expect(highlightingLog.entries[0].url).toEqual(
+        'https://example.com/page1'
+      );
+      expect(highlightingLog.entries[0].highlights).toEqual(new Map([[1, 3]]));
+    });
+
+    it('can read groups', async () => {
+      let groups = await dao.getGroups();
+      expect(groups.length).toEqual(2);
+      expect(groups[0].id).toBe(1);
+      expect(groups[0].name).toBe('group-1');
+      expect(groups[0].backgroundColor).toBe('group-1-color');
+      expect(groups[0].matchingType).toBe(MatchingType.STRICT);
+      expect(groups[0].matchingLanguage).toBe('en');
+      expect(groups[0].blockedWebsites).toEqual(['group-1-blocked-website']);
+      expect(groups[0].allowedWebsites).toEqual(['group-1-allowed-website']);
+    });
+  });
+
   // Major data changes in 1.7.1:
   // - Added Settings.blockedWebsites and .allowedWebsites
   // - Added Group.blockedWebsites and .allowedWebsites
@@ -93,6 +232,8 @@ describe('backwards compatibility', () => {
       expect(dictionary[0].strictMatch).toEqual(true);
       expect(dictionary[0].id).toBe(1);
       expect(dictionary[0].groupId).toEqual(1);
+      expect(dictionary[0].createdAt.getTime()).toEqual(1616162868171);
+      expect(dictionary[0].updatedAt.getTime()).toEqual(1616162868171);
     });
 
     it('can read the word sequence', async () => {
@@ -222,6 +363,8 @@ describe('backwards compatibility', () => {
       expect(dictionary[0].strictMatch).toEqual(true);
       expect(dictionary[0].id).toBe(1);
       expect(dictionary[0].groupId).toEqual(1);
+      expect(dictionary[0].createdAt.getTime()).toEqual(1616162868171);
+      expect(dictionary[0].updatedAt.getTime()).toEqual(1616162868171);
     });
 
     it('can read the word sequence', async () => {
@@ -331,6 +474,8 @@ describe('backwards compatibility', () => {
       expect(dictionary[0].strictMatch).toEqual(true);
       expect(dictionary[0].id).toBe(1);
       expect(dictionary[1].groupId).toEqual(Group.DEFAULT_GROUP_ID);
+      expect(dictionary[0].createdAt.getTime()).toEqual(1616162868171);
+      expect(dictionary[0].updatedAt.getTime()).toEqual(1616162868171);
     });
 
     it('can read the sequence', async () => {
@@ -437,6 +582,8 @@ describe('backwards compatibility', () => {
       expect(dictionary[0].strictMatch).toEqual(true);
       expect(dictionary[0].id).toBe(1);
       expect(dictionary[1].groupId).toEqual(Group.DEFAULT_GROUP_ID);
+      expect(dictionary[0].createdAt.getTime()).toEqual(1616162868171);
+      expect(dictionary[0].updatedAt.getTime()).toEqual(1616162868171);
     });
 
     it('can read the sequence', async () => {
