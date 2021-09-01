@@ -1,7 +1,7 @@
 # Word Highlighter
 
 ## About
-Word Highlighter is a web extension (add-on) that, given a list of words, highlights their occurences on every page. It's written in TypeScript + AngularJS.
+Word Highlighter is a web extension (add-on) that, given a list of words, highlights their occurrences on every page. It's written in TypeScript + AngularJS.
 
 The primary use case is memorizing new words and expanding your vocabulary:
 - Learn a new word.
@@ -23,7 +23,7 @@ Word Highlighter is smart about how it matches words on the page with words in t
   - `npm install --global gulp`
 - Install [web-ext](https://github.com/mozilla/web-ext)
   - `npm install --global web-ext`
-- Install a browser that allows unsigned extention, for example [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/).
+- Install a browser that allows unsigned extension, for example [Firefox Developer Edition](https://www.mozilla.org/en-US/firefox/developer/).
 
 ### Steps
 - Clone the repo.
