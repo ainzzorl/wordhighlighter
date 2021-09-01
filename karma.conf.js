@@ -2,6 +2,9 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function(config) {
   config.set({
+    preprocessors: {
+      '**/*.js': ['sourcemap']
+    },
     frameworks: ['jasmine'],
     reporters: ['spec'],
     browsers: ['ChromeHeadless'],
@@ -20,8 +23,8 @@ module.exports = function(config) {
       'node_modules/babel-polyfill/dist/polyfill.js',
 
       'build/js/imports.js',
-      'build/js/lib.js',
-      'build/js/mainDialog.js',
+      'build/lib/**/*.js',
+      'build/mainDialog/**/*.js',
       'build/test/**/*.js',
 
       // Fixtures
@@ -30,7 +33,12 @@ module.exports = function(config) {
         watched:  true,
         served:   true,
         included: false
-      }
+      },
+
+      {
+        pattern: 'build/maps/**/*.js.map',
+        included: false
+      },
     ]
   });
 };

@@ -7,6 +7,7 @@ var gutil = require('gulp-util');
 var babel = require('babelify');
 var source = require('vinyl-source-stream');
 var browserify = require('browserify');
+var sourcemaps = require('gulp-sourcemaps');
 
 function onTsCompilationError(error) {
   var log = gutil.log,
@@ -106,9 +107,11 @@ gulp.task(
   gulp.series(function () {
     return tsProjectSrc
       .src()
+      .pipe(sourcemaps.init())
       .pipe(tsProjectSrc())
+      .pipe(sourcemaps.write('maps'))
       .on('error', onTsCompilationError)
-      .js.pipe(gulp.dest('build'));
+      .pipe(gulp.dest('build'));
   })
 );
 
@@ -117,8 +120,10 @@ gulp.task(
   gulp.series(function () {
     return tsProjectSrc
       .src()
+      .pipe(sourcemaps.init())
       .pipe(tsProjectSrc())
       .on('error', swallowError)
+      .pipe(sourcemaps.write('maps'))
       .js.pipe(gulp.dest('build'));
   })
 );
@@ -128,9 +133,11 @@ gulp.task(
   gulp.series(function () {
     return tsProjectTest
       .src()
+      .pipe(sourcemaps.init())
       .pipe(tsProjectTest())
+      .pipe(sourcemaps.write('maps'))
       .on('error', onTsCompilationError)
-      .js.pipe(gulp.dest('build/test'));
+      .pipe(gulp.dest('build'));
   })
 );
 

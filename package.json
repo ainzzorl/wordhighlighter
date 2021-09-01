@@ -45,6 +45,7 @@
     "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
     "karma-jasmine": "^4.0.1",
+    "karma-sourcemap-loader": "^0.3.8",
     "karma-spec-reporter": "0.0.32",
     "natural": "^5.0.3",
     "ng-table": "^2.1.0",
