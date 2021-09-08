@@ -150,6 +150,12 @@ class DAO {
               WHLogger.log(
                 `Group ${name} has been added to the storage. groupIdSequenceNumber: ${newGroupIdSequenceNumber}`
               );
+              if (typeof chrome !== 'undefined') {
+                // Will trigger reloading the context menu.
+                // Ideally, we should send a message to the background script instead,
+                // but it's trickier.
+                chrome.runtime.reload();
+              }
               resolve(self.serializeGroup(group));
             }
           );
