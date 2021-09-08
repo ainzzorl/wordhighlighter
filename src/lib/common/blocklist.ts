@@ -19,8 +19,8 @@ function isBlocked(
 
     // In "real" regexps, * and ? modify the previous symbol.
     // To treat them as wildcards, we prefix them with dots.
-    processedPattern = processedPattern.replace('*', '.*');
-    processedPattern = processedPattern.replace('?', '.?');
+    processedPattern = processedPattern.replace(/\*/g, '.*');
+    processedPattern = processedPattern.replace(/\?/g, '.?');
 
     try {
       return new RegExp(processedPattern).test(value);
