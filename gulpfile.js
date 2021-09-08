@@ -124,7 +124,7 @@ gulp.task(
       .pipe(tsProjectSrc())
       .on('error', swallowError)
       .pipe(sourcemaps.write('maps'))
-      .js.pipe(gulp.dest('build'));
+      .pipe(gulp.dest('build'));
   })
 );
 
