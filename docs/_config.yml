@@ -20,7 +20,7 @@
 
 title: Word Highlighter
 description: >- # this means to ignore newlines until "baseurl:"
-  A web extension for expanding your vocabulary by highlighting words in your dictionary.
+  A web extension that highlights words from your dictionary on every page
 baseurl: "wordhighlighter"
 url: "https://ainzzorl.github.io"
 github_username:  jekyll
