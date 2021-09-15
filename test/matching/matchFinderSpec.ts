@@ -5,19 +5,16 @@
 
 describe('MatchFinder', () => {
   let matchFinder: MatchFinder;
-  let stemmer: Stemmer;
   let stemmers: any;
   let dictionary: Array<DictionaryEntry>;
   let groups: Array<Group>;
 
   describe('findMatches', () => {
+    let stemmer: FakeStemmer;
+
     describe('multiple words in the input', () => {
       beforeEach(() => {
-        stemmer = {
-          stem: function (word) {
-            return word;
-          },
-        };
+        stemmer = new FakeStemmer();
         stemmers = new Map<string, Stemmer>([
           [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
         ]);
@@ -174,22 +171,12 @@ describe('MatchFinder', () => {
         dictionary.push(
           new DictionaryEntry(5, 'read, to', '', new Date(), new Date())
         );
-        stemmer = {
-          stem: function (word) {
-            switch (word) {
-              case 'advent':
-                return 'advent';
-              case 'advents':
-                return 'advent';
-              case 'adventure':
-                return 'adventur';
-            }
-            if (word.toLowerCase().indexOf('content') === 0) {
-              return 'content';
-            }
-            return word;
-          },
-        };
+        stemmer = new FakeStemmer();
+        stemmer.override('advent', 'advent');
+        stemmer.override('advents', 'advent');
+        stemmer.override('adventure', 'adventur');
+        stemmer.overridePrefix('content', 'content');
+
         stemmers = new Map<string, Stemmer>([
           [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
         ]);
@@ -257,20 +244,10 @@ describe('MatchFinder', () => {
 
     describe('multi-word matches', () => {
       beforeEach(() => {
-        stemmer = {
-          stem: function (word) {
-            if (word.toLowerCase().indexOf('one') === 0) {
-              return 'one';
-            }
-            if (word.toLowerCase().indexOf('two') === 0) {
-              return 'two';
-            }
-            if (word.toLowerCase().indexOf('three') === 0) {
-              return 'three';
-            }
-            return word;
-          },
-        };
+        stemmer = new FakeStemmer();
+        stemmer.overridePrefix('one', 'one');
+        stemmer.overridePrefix('two', 'two');
+        stemmer.overridePrefix('three', 'three');
         stemmers = new Map<string, Stemmer>([
           [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
         ]);
@@ -313,7 +290,7 @@ describe('MatchFinder', () => {
         expect(matchResult[2].matchOf).toBeNull();
       });
 
-      it('finds non strict match', () => {
+      fit('finds non strict match', () => {
         let matchResult = matchFinder.findMatches(
           'hello oNeS tWoS, tHrEe goodbye...'
         );
@@ -346,13 +323,8 @@ describe('MatchFinder', () => {
       });
 
       it('finds the longest match', () => {
-        stemmer = {
-          stem: function (word) {
-            return word;
-          },
-        };
         stemmers = new Map<string, Stemmer>([
-          [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
+          [Group.DEFAULT_MATCHING_LANGUAGE, new FakeStemmer()],
         ]);
 
         dictionary = [
@@ -424,44 +396,19 @@ describe('MatchFinder', () => {
           new Group(5, 'Russian', '', MatchingType.SMART, 'ru'),
         ];
 
-        let stemmerEn = {
-          stem: function (word: string) {
-            switch (word) {
-              case 'cherries':
-                return 'cherry';
-              case 'apples':
-                return 'apple';
-              default:
-                return word;
-            }
-          },
-        };
-        let stemmerEs = {
-          stem: function (word: string) {
-            switch (word) {
-              case 'gatos':
-                return 'gato';
-              case 'perros':
-                return 'perro';
-              case 'vacas':
-                return 'vaca';
-              default:
-                return word;
-            }
-          },
-        };
-        let stemmerRu = {
-          stem: function (word: string) {
-            switch (word) {
-              case 'колоды':
-                return 'колод';
-              case 'колода':
-                return 'колод';
-              default:
-                return word;
-            }
-          },
-        };
+        let stemmerEn = new FakeStemmer();
+        stemmerEn.override('cherries', 'cherry');
+        stemmerEn.override('apples', 'apple');
+
+        let stemmerEs = new FakeStemmer();
+        stemmerEs.override('gatos', 'gato');
+        stemmerEs.override('perros', 'perro');
+        stemmerEs.override('vacas', 'vaca');
+
+        let stemmerRu = new FakeStemmer();
+        stemmerRu.override('колоды', 'колод');
+        stemmerRu.override('колода', 'колод');
+
         stemmers = new Map<string, Stemmer>([
           ['en', stemmerEn],
           ['es', stemmerEs],
@@ -566,3 +513,30 @@ describe('MatchFinder', () => {
     });
   });
 });
+
+class FakeStemmer implements Stemmer {
+  overrides: Map<string, string> = new Map<string, string>();
+  prefixOverrides: Map<string, string> = new Map<string, string>();
+
+  stem(input: string): string {
+    if (this.overrides.has(input.toLowerCase())) {
+      return this.overrides.get(input.toLowerCase());
+    }
+    let result = null;
+    this.prefixOverrides.forEach((value: String, prefix: string) => {
+      if (input.toLowerCase().startsWith(prefix)) {
+        result = this.prefixOverrides.get(prefix);
+      }
+    });
+    return result !== null ? result : input;
+  }
+
+  override(from: string, to: string) {
+    this.overrides.set(from.toLowerCase(), to);
+  }
+
+  overridePrefix(prefix: string, to: string) {
+    this.prefixOverrides.set(prefix.toLowerCase(), to);
+    console.log(this.prefixOverrides.size);
+  }
+}
