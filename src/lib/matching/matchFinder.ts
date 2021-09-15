@@ -74,10 +74,9 @@ class MatchFinderImpl implements MatchFinder {
         i++;
         continue;
       }
-      // Try finding a match in the "strict" trie, starting from tokens[i].
-      let [endIndex, match] = this.strictTrie.match(tokens, i);
+      let [endIndex, match] = this.matchFromIndex(tokens, i);
       if (match !== null) {
-        // Found "strict" match.
+        // Found match.
         this.pushMatchIfNotEmpty(result, currentNoMatch, null);
         this.pushMatchIfNotEmpty(
           result,
@@ -90,38 +89,9 @@ class MatchFinderImpl implements MatchFinder {
         currentNoMatch = '';
         i = endIndex;
       } else {
-        // Try finding a match in the "non-strict" trie, starting from tokens[i].
-        [endIndex, match] = [null, null];
-        for (
-          let languageIndex = 0;
-          languageIndex < this.matchingLanguages.length;
-          languageIndex++
-        ) {
-          [endIndex, match] = this.nonStrictTries
-            .get(this.matchingLanguages[languageIndex])
-            .match(tokens, i);
-          if (match !== null) {
-            break;
-          }
-        }
-        if (match !== null) {
-          // Found "non-strict" match.
-          this.pushMatchIfNotEmpty(result, currentNoMatch, null);
-          this.pushMatchIfNotEmpty(
-            result,
-            tokens
-              .slice(i, endIndex)
-              .map((t) => t.value)
-              .join(''),
-            match
-          );
-          currentNoMatch = '';
-          i = endIndex;
-        } else {
-          // No match starting from i-th token.
-          i += 1;
-          currentNoMatch += token.value;
-        }
+        // No match starting from i-th token.
+        i += 1;
+        currentNoMatch += token.value;
       }
     }
     this.pushMatchIfNotEmpty(result, currentNoMatch, null);
@@ -166,6 +136,33 @@ class MatchFinderImpl implements MatchFinder {
         this.nonStrictTries.get(group.matchingLanguage).insert(entry);
       }
     });
+  }
+
+  private matchFromIndex(
+    tokens: Array<Token>,
+    firstTokenIndex: number
+  ): [number, DictionaryEntry] {
+    // Try finding a match in the "strict" trie, starting from tokens[i].
+    let [endIndex, match] = this.strictTrie.match(tokens, firstTokenIndex);
+    if (match !== null) {
+      return [endIndex, match];
+    } else {
+      // Try finding a match in the "non-strict" trie, starting from tokens[i].
+      [endIndex, match] = [null, null];
+      for (
+        let languageIndex = 0;
+        languageIndex < this.matchingLanguages.length;
+        languageIndex++
+      ) {
+        [endIndex, match] = this.nonStrictTries
+          .get(this.matchingLanguages[languageIndex])
+          .match(tokens, firstTokenIndex);
+        if (match !== null) {
+          return [endIndex, match];
+        }
+      }
+    }
+    return [null, null];
   }
 
   private shouldSmartMatch(group: Group) {
