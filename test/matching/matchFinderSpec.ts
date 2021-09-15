@@ -194,50 +194,44 @@ describe('MatchFinder', () => {
         matchFinder.buildIndexes();
       });
 
-      function findWordMatch(input: string) {
-        let result = matchFinder.findMatches(input);
-        expect(result.length).toEqual(1);
-        return result[0].matchOf ? result[0].matchOf.value : null;
-      }
-
       describe('stem matching', () => {
         it('finds exact match', () => {
-          expect(findWordMatch('advent')).toEqual('advent');
+          expect(findOneMatchValue('advent')).toEqual('advent');
         });
 
         it('finds stem match', () => {
-          expect(findWordMatch('advents')).toEqual('advent');
+          expect(findOneMatchValue('advents')).toEqual('advent');
         });
 
         it('detects no match', () => {
-          expect(findWordMatch('adventure')).toBeNull();
+          expect(findOneMatchValue('adventure')).toBeNull();
         });
 
         it('ignores "to" at the beginning', () => {
-          expect(findWordMatch('hamper')).toEqual('To hamper');
+          expect(findOneMatchValue('hamper')).toEqual('To hamper');
         });
 
         it('ignores ", to" at the end', () => {
-          expect(findWordMatch('read')).toEqual('read, to');
+          expect(findOneMatchValue('read')).toEqual('read, to');
         });
 
         it('does not ignore "to" elsewhere', () => {
-          expect(findWordMatch('go')).toBeNull();
-          expect(findWordMatch('go work')).toBeNull();
+          expect(findOneMatchValue('go')).toBeNull();
+          expect(findOneMatchValue('go work')).toBeNull();
         });
       });
 
       describe('strict matching', () => {
         it('finds exact match', () => {
-          expect(findWordMatch('contention')).toEqual('Contention');
+          expect(findOneMatchValue('contention')).toEqual('Contention');
         });
 
         it('ignores case', () => {
-          expect(findWordMatch('cOnTeNtIoN')).toEqual('Contention');
+          expect(findOneMatchValue('cOnTeNtIoN')).toEqual('Contention');
         });
 
         it('does not find stem match', () => {
-          expect(findWordMatch('content')).toBeNull();
+          expect(findOneMatchValue('content')).toBeNull();
         });
       });
     });
@@ -290,7 +284,7 @@ describe('MatchFinder', () => {
         expect(matchResult[2].matchOf).toBeNull();
       });
 
-      fit('finds non strict match', () => {
+      it('finds non strict match', () => {
         let matchResult = matchFinder.findMatches(
           'hello oNeS tWoS, tHrEe goodbye...'
         );
@@ -418,41 +412,35 @@ describe('MatchFinder', () => {
         matchFinder.buildIndexes();
       });
 
-      function findWordMatch(input: string) {
-        let result = matchFinder.findMatches(input);
-        expect(result.length).toEqual(1);
-        return result[0].matchOf ? result[0].matchOf.value : null;
-      }
-
       describe('smart matching disabled for group', () => {
         it('finds exact match', () => {
-          expect(findWordMatch('cherry')).toEqual('cherry');
-          expect(findWordMatch('apple')).toEqual('apple');
-          expect(findWordMatch('vaca')).toEqual('vaca');
+          expect(findOneMatchValue('cherry')).toEqual('cherry');
+          expect(findOneMatchValue('apple')).toEqual('apple');
+          expect(findOneMatchValue('vaca')).toEqual('vaca');
         });
 
         it('does not do smart match', () => {
-          expect(findWordMatch('cherries')).toBeNull();
-          expect(findWordMatch('apples')).toBeNull();
-          expect(findWordMatch('vacas')).toBeNull();
+          expect(findOneMatchValue('cherries')).toBeNull();
+          expect(findOneMatchValue('apples')).toBeNull();
+          expect(findOneMatchValue('vacas')).toBeNull();
         });
       });
 
       describe('smart matching enabled for group', () => {
         it('finds exact match', () => {
-          expect(findWordMatch('gato')).toEqual('gato');
-          expect(findWordMatch('perro')).toEqual('perro');
-          expect(findWordMatch('пень')).toEqual('пень');
-          expect(findWordMatch('колоды')).toEqual('колоды');
+          expect(findOneMatchValue('gato')).toEqual('gato');
+          expect(findOneMatchValue('perro')).toEqual('perro');
+          expect(findOneMatchValue('пень')).toEqual('пень');
+          expect(findOneMatchValue('колоды')).toEqual('колоды');
         });
 
         it('finds stem match if not restricted to strict match', () => {
-          expect(findWordMatch('gatos')).toEqual('gato');
-          expect(findWordMatch('колода')).toEqual('колоды');
+          expect(findOneMatchValue('gatos')).toEqual('gato');
+          expect(findOneMatchValue('колода')).toEqual('колоды');
         });
 
         it('does not find stem match if restricted to strict match', () => {
-          expect(findWordMatch('perros')).toBeNull();
+          expect(findOneMatchValue('perros')).toBeNull();
         });
       });
     });
@@ -477,14 +465,8 @@ describe('MatchFinder', () => {
         matchFinder.buildIndexes();
       });
 
-      function findWordMatch(input: string) {
-        let result = matchFinder.findMatches(input);
-        expect(result.length).toEqual(1);
-        return result[0].matchOf ? result[0].matchOf.value : null;
-      }
-
       it('finds matches', () => {
-        expect(findWordMatch('日本語')).toEqual('日本語');
+        expect(findOneMatchValue('日本語')).toEqual('日本語');
       });
     });
 
@@ -512,6 +494,14 @@ describe('MatchFinder', () => {
       });
     });
   });
+
+  // Helper function to simplify test cases
+  // when it's expected to find exactly one match.
+  function findOneMatchValue(input: string) {
+    let result = matchFinder.findMatches(input);
+    expect(result.length).toEqual(1);
+    return result[0].matchOf ? result[0].matchOf.value : null;
+  }
 });
 
 class FakeStemmer implements Stemmer {
