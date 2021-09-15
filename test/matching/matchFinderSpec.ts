@@ -3,14 +3,12 @@
 ///<reference path="../../src/lib/matching/matchResultEntry.ts" />
 ///<reference path="../../src/lib/common/dictionaryEntry.ts" />
 
-// TODO: consider using real stemmer
 describe('MatchFinder', () => {
   let matchFinder: MatchFinder;
   let stemmer: Stemmer;
   let stemmers: any;
   let dictionary: Array<DictionaryEntry>;
   let groups: Array<Group>;
-  let matchResult: Array<MatchResultEntry>;
 
   describe('findMatches', () => {
     describe('multiple words in the input', () => {
@@ -65,134 +63,93 @@ describe('MatchFinder', () => {
         matchFinder.buildIndexes();
       });
 
-      describe('1 match in the middle', () => {
-        beforeEach(() => {
-          matchResult = matchFinder.findMatches('Internet for people, not');
-        });
+      it('finds 1 match in the middle', () => {
+        let matchResult = matchFinder.findMatches('Internet for people, not');
 
-        it('finds the match', () => {
-          expect(matchResult.length).toEqual(3);
-          expect(matchResult[0].value).toEqual('Internet for ');
-          expect(matchResult[0].matchOf).toBeNull();
-          expect(matchResult[1].value).toEqual('people');
-          expect(matchResult[1].matchOf.value).toEqual('people');
-          expect(matchResult[2].value).toEqual(', not');
-          expect(matchResult[2].matchOf).toBeNull();
-        });
+        expect(matchResult.length).toEqual(3);
+        expect(matchResult[0].value).toEqual('Internet for ');
+        expect(matchResult[0].matchOf).toBeNull();
+        expect(matchResult[1].value).toEqual('people');
+        expect(matchResult[1].matchOf.value).toEqual('people');
+        expect(matchResult[2].value).toEqual(', not');
+        expect(matchResult[2].matchOf).toBeNull();
       });
 
-      describe('no match', () => {
-        beforeEach(() => {
-          matchResult = matchFinder.findMatches('Text that does not match');
-        });
+      it('detects if there is no match', () => {
+        let matchResult = matchFinder.findMatches('Text that does not match');
 
-        it('detects that there is no match', () => {
-          expect(matchResult.length).toEqual(1);
-          expect(matchResult[0].value).toEqual('Text that does not match');
-          expect(matchResult[0].matchOf).toBeNull();
-        });
+        expect(matchResult.length).toEqual(1);
+        expect(matchResult[0].value).toEqual('Text that does not match');
+        expect(matchResult[0].matchOf).toBeNull();
       });
 
-      describe('all string is a match', () => {
-        beforeEach(() => {
-          matchResult = matchFinder.findMatches('people');
-        });
+      it("finds the match if it's the entire input", () => {
+        let matchResult = matchFinder.findMatches('people');
 
-        it('finds the match', () => {
-          expect(matchResult.length).toEqual(1);
-          expect(matchResult[0].value).toEqual('people');
-          expect(matchResult[0].matchOf.value).toEqual('people');
-        });
+        expect(matchResult.length).toEqual(1);
+        expect(matchResult[0].value).toEqual('people');
+        expect(matchResult[0].matchOf.value).toEqual('people');
       });
 
-      describe('match in the beginning', () => {
-        beforeEach(() => {
-          matchResult = matchFinder.findMatches('people and');
-        });
+      it('find matches in the beginning', () => {
+        let matchResult = matchFinder.findMatches('people and');
 
-        it('finds the match', () => {
-          expect(matchResult.length).toEqual(2);
-          expect(matchResult[0].value).toEqual('people');
-          expect(matchResult[0].matchOf.value).toEqual('people');
-          expect(matchResult[1].value).toEqual(' and');
-          expect(matchResult[1].matchOf).toBeNull();
-        });
+        expect(matchResult.length).toEqual(2);
+        expect(matchResult[0].value).toEqual('people');
+        expect(matchResult[0].matchOf.value).toEqual('people');
+        expect(matchResult[1].value).toEqual(' and');
+        expect(matchResult[1].matchOf).toBeNull();
       });
 
-      describe('match in the end', () => {
-        beforeEach(() => {
-          matchResult = matchFinder.findMatches('not profit');
-        });
+      it('finds matches in the end', () => {
+        let matchResult = matchFinder.findMatches('not profit');
 
-        it('finds the match', () => {
-          expect(matchResult.length).toEqual(2);
-          expect(matchResult[0].value).toEqual('not ');
-          expect(matchResult[0].matchOf).toBeNull();
-          expect(matchResult[1].value).toEqual('profit');
-          expect(matchResult[1].matchOf.value).toEqual('profit');
-        });
+        expect(matchResult.length).toEqual(2);
+        expect(matchResult[0].value).toEqual('not ');
+        expect(matchResult[0].matchOf).toBeNull();
+        expect(matchResult[1].value).toEqual('profit');
+        expect(matchResult[1].matchOf.value).toEqual('profit');
       });
 
       describe('other alphabets', () => {
-        describe('chinese', () => {
-          beforeEach(() => {
-            matchResult = matchFinder.findMatches('中文');
-          });
+        it('matches chinese', () => {
+          let matchResult = matchFinder.findMatches('中文');
 
-          it('finds the match', () => {
-            expect(matchResult.length).toEqual(1);
-            expect(matchResult[0].value).toEqual('中文');
-            expect(matchResult[0].matchOf.value).toEqual('中文');
-          });
+          expect(matchResult.length).toEqual(1);
+          expect(matchResult[0].value).toEqual('中文');
+          expect(matchResult[0].matchOf.value).toEqual('中文');
         });
 
-        describe('japanese', () => {
-          beforeEach(() => {
-            matchResult = matchFinder.findMatches('日本語');
-          });
+        it('matches japanese', () => {
+          let matchResult = matchFinder.findMatches('日本語');
 
-          it('finds the match', () => {
-            expect(matchResult.length).toEqual(1);
-            expect(matchResult[0].value).toEqual('日本語');
-            expect(matchResult[0].matchOf.value).toEqual('日本語');
-          });
+          expect(matchResult.length).toEqual(1);
+          expect(matchResult[0].value).toEqual('日本語');
+          expect(matchResult[0].matchOf.value).toEqual('日本語');
         });
 
-        describe('russian', () => {
-          beforeEach(() => {
-            matchResult = matchFinder.findMatches('русский');
-          });
+        it('matches russian', () => {
+          let matchResult = matchFinder.findMatches('русский');
 
-          it('finds the match', () => {
-            expect(matchResult.length).toEqual(1);
-            expect(matchResult[0].value).toEqual('русский');
-            expect(matchResult[0].matchOf.value).toEqual('русский');
-          });
+          expect(matchResult.length).toEqual(1);
+          expect(matchResult[0].value).toEqual('русский');
+          expect(matchResult[0].matchOf.value).toEqual('русский');
         });
 
-        describe('spanish', () => {
-          beforeEach(() => {
-            matchResult = matchFinder.findMatches('español');
-          });
-
-          it('finds the match', () => {
-            expect(matchResult.length).toEqual(1);
-            expect(matchResult[0].value).toEqual('español');
-            expect(matchResult[0].matchOf.value).toEqual('español');
-          });
+        it('matches spanish match', () => {
+          let matchResult = matchFinder.findMatches('español');
+          expect(matchResult.length).toEqual(1);
+          expect(matchResult[0].value).toEqual('español');
+          expect(matchResult[0].matchOf.value).toEqual('español');
         });
+      });
 
-        describe('français', () => {
-          beforeEach(() => {
-            matchResult = matchFinder.findMatches('français');
-          });
+      it('matches french', () => {
+        let matchResult = matchFinder.findMatches('français');
 
-          it('finds the match', () => {
-            expect(matchResult.length).toEqual(1);
-            expect(matchResult[0].value).toEqual('français');
-            expect(matchResult[0].matchOf.value).toEqual('français');
-          });
-        });
+        expect(matchResult.length).toEqual(1);
+        expect(matchResult[0].value).toEqual('français');
+        expect(matchResult[0].matchOf.value).toEqual('français');
       });
     });
 
@@ -344,111 +301,86 @@ describe('MatchFinder', () => {
         matchFinder.buildIndexes();
       });
 
-      describe('1 two-word match', () => {
-        beforeEach(() => {
-          matchResult = matchFinder.findMatches('!one two four');
-        });
+      it('finds 1 two-word match', () => {
+        let matchResult = matchFinder.findMatches('!one two four');
 
-        it('finds the match', () => {
-          expect(matchResult.length).toEqual(3);
-          expect(matchResult[0].value).toEqual('!');
-          expect(matchResult[0].matchOf).toBeNull();
-          expect(matchResult[1].value).toEqual('one two');
-          expect(matchResult[1].matchOf.value).toEqual('one TWO');
-          expect(matchResult[2].value).toEqual(' four');
-          expect(matchResult[2].matchOf).toBeNull();
-        });
+        expect(matchResult.length).toEqual(3);
+        expect(matchResult[0].value).toEqual('!');
+        expect(matchResult[0].matchOf).toBeNull();
+        expect(matchResult[1].value).toEqual('one two');
+        expect(matchResult[1].matchOf.value).toEqual('one TWO');
+        expect(matchResult[2].value).toEqual(' four');
+        expect(matchResult[2].matchOf).toBeNull();
       });
 
-      describe('non strict match', () => {
-        beforeEach(() => {
-          matchResult = matchFinder.findMatches(
-            'hello oNeS tWoS, tHrEe goodbye...'
-          );
-        });
+      it('finds non strict match', () => {
+        let matchResult = matchFinder.findMatches(
+          'hello oNeS tWoS, tHrEe goodbye...'
+        );
 
-        it('finds the match', () => {
-          expect(matchResult.length).toEqual(3);
-          expect(matchResult[0].value).toEqual('hello ');
-          expect(matchResult[0].matchOf).toBeNull();
-          expect(matchResult[1].value).toEqual('oNeS tWoS, tHrEe');
-          expect(matchResult[1].matchOf.value).toEqual('OnE-tWo-ThReEs');
-          expect(matchResult[2].value).toEqual(' goodbye...');
-          expect(matchResult[2].matchOf).toBeNull();
-        });
+        expect(matchResult.length).toEqual(3);
+        expect(matchResult[0].value).toEqual('hello ');
+        expect(matchResult[0].matchOf).toBeNull();
+        expect(matchResult[1].value).toEqual('oNeS tWoS, tHrEe');
+        expect(matchResult[1].matchOf.value).toEqual('OnE-tWo-ThReEs');
+        expect(matchResult[2].value).toEqual(' goodbye...');
+        expect(matchResult[2].matchOf).toBeNull();
       });
 
-      describe('no strict match', () => {
-        beforeEach(() => {
-          matchResult = matchFinder.findMatches('ones twos');
-        });
-
-        it('does not finds the match', () => {
-          expect(matchResult.length).toEqual(1);
-          expect(matchResult[0].value).toEqual('ones twos');
-        });
+      it("doest not find strict match when there's none", () => {
+        let matchResult = matchFinder.findMatches('ones twos');
+        expect(matchResult.length).toEqual(1);
+        expect(matchResult[0].value).toEqual('ones twos');
       });
 
-      describe('possible overlaps', () => {
-        beforeEach(() => {
-          matchResult = matchFinder.findMatches('one two three');
-        });
+      it('handles possible overlaps', () => {
+        let matchResult = matchFinder.findMatches('one two three');
 
-        it('finds two matches', () => {
-          expect(matchResult.length).toEqual(3);
-          expect(matchResult[0].value).toEqual('one two');
-          expect(matchResult[0].matchOf.value).toEqual('one TWO');
-          expect(matchResult[1].value).toEqual(' ');
-          expect(matchResult[1].matchOf).toBeNull();
-          expect(matchResult[2].value).toEqual('three');
-          expect(matchResult[2].matchOf.value).toEqual('three');
-        });
+        expect(matchResult.length).toEqual(3);
+        expect(matchResult[0].value).toEqual('one two');
+        expect(matchResult[0].matchOf.value).toEqual('one TWO');
+        expect(matchResult[1].value).toEqual(' ');
+        expect(matchResult[1].matchOf).toBeNull();
+        expect(matchResult[2].value).toEqual('three');
+        expect(matchResult[2].matchOf.value).toEqual('three');
       });
 
-      describe('several possible matches', () => {
-        beforeEach(() => {
-          stemmer = {
-            stem: function (word) {
-              return word;
-            },
-          };
-          stemmers = new Map<string, Stemmer>([
-            [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
-          ]);
+      it('finds the longest match', () => {
+        stemmer = {
+          stem: function (word) {
+            return word;
+          },
+        };
+        stemmers = new Map<string, Stemmer>([
+          [Group.DEFAULT_MATCHING_LANGUAGE, stemmer],
+        ]);
 
-          dictionary = [
-            new DictionaryEntry(1, 'one', '', new Date(), new Date()),
-            new DictionaryEntry(2, 'two', '', new Date(), new Date()),
-            new DictionaryEntry(3, 'three', '', new Date(), new Date()),
-            new DictionaryEntry(4, 'one two', '', new Date(), new Date()),
-            new DictionaryEntry(5, 'one two three', '', new Date(), new Date()),
-          ];
-          groups = [
-            new Group(
-              Group.DEFAULT_GROUP_ID,
-              'Default',
-              'color',
-              Group.DEFAULT_MATCHING_TYPE,
-              Group.DEFAULT_MATCHING_LANGUAGE
-            ),
-          ];
-          matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
-          matchFinder.buildIndexes();
-        });
+        dictionary = [
+          new DictionaryEntry(1, 'one', '', new Date(), new Date()),
+          new DictionaryEntry(2, 'two', '', new Date(), new Date()),
+          new DictionaryEntry(3, 'three', '', new Date(), new Date()),
+          new DictionaryEntry(4, 'one two', '', new Date(), new Date()),
+          new DictionaryEntry(5, 'one two three', '', new Date(), new Date()),
+        ];
+        groups = [
+          new Group(
+            Group.DEFAULT_GROUP_ID,
+            'Default',
+            'color',
+            Group.DEFAULT_MATCHING_TYPE,
+            Group.DEFAULT_MATCHING_LANGUAGE
+          ),
+        ];
+        matchFinder = new MatchFinderImpl(dictionary, stemmers, groups);
+        matchFinder.buildIndexes();
 
-        describe('multiple possible matches starting from the same word', () => {
-          beforeEach(() => {
-            matchResult = matchFinder.findMatches('one two three four');
-          });
+        let matchResult = matchFinder.findMatches('one two three four');
 
-          it('finds the longest match', () => {
-            expect(matchResult.length).toEqual(2);
-            expect(matchResult[0].value).toEqual('one two three');
-            expect(matchResult[0].matchOf.value).toEqual('one two three');
-            expect(matchResult[1].value).toEqual(' four');
-            expect(matchResult[1].matchOf).toBeNull();
-          });
-        });
+        expect(matchResult.length).toEqual(2);
+        expect(matchResult[0].value).toEqual('one two three');
+        expect(matchResult[0].matchOf.value).toEqual('one two three');
+        expect(matchResult[1].value).toEqual(' four');
+        expect(matchResult[1].matchOf).toBeNull();
       });
     });
 
