@@ -102,32 +102,37 @@ class MatchFinderImpl implements MatchFinder {
   // Not automatically calling from the constructor to prevent
   // unnecessary calculations when highlighting is disabled.
   buildIndexes(): void {
-    this.strictTrie = new Trie(null, this.tokenizer);
-    this.nonStrictTries = new Map<string, Trie>();
-    this.cachingStemmers = new Map<string, CachingStemmer>();
-    this.matchingLanguages = [];
     if (!this.stemmers) {
       return;
     }
+
+    this.strictTrie = new Trie(null, this.tokenizer);
+    this.nonStrictTries = new Map<string, Trie>();
+    this.cachingStemmers = new Map<string, CachingStemmer>();
+    this.matchingLanguages = this.getMatchLanguages();
     let groupIdToGroup = new Map<number, Group>();
+
+    // Map group ids to groups
     this.groups.forEach((group: Group) => {
-      if (this.shouldSmartMatch(group)) {
-        if (this.matchingLanguages.indexOf(group.matchingLanguage) < 0) {
-          this.matchingLanguages.push(group.matchingLanguage);
-          this.cachingStemmers.set(
-            group.matchingLanguage,
-            new CachingStemmer(this.stemmers.get(group.matchingLanguage))
-          );
-        }
-        this.nonStrictTries.set(
-          group.matchingLanguage,
-          new Trie(this.stemmers.get(group.matchingLanguage), this.tokenizer)
-        );
-      }
       groupIdToGroup.set(group.id, group);
     });
+
+    // Initialize caching stemmers and non-strict tries.
+    this.getMatchLanguages().forEach((matchingLanguage) => {
+      this.cachingStemmers.set(
+        matchingLanguage,
+        new CachingStemmer(this.stemmers.get(matchingLanguage))
+      );
+      this.nonStrictTries.set(
+        matchingLanguage,
+        new Trie(this.stemmers.get(matchingLanguage), this.tokenizer)
+      );
+    });
+
+    // Populate tries.
     this.dictionary.forEach((entry: DictionaryEntry) => {
       if (!groupIdToGroup.has(entry.groupId)) {
+        // The group is not enabled.
         return;
       }
       let group = groupIdToGroup.get(entry.groupId);
@@ -136,6 +141,26 @@ class MatchFinderImpl implements MatchFinder {
         this.nonStrictTries.get(group.matchingLanguage).insert(entry);
       }
     });
+  }
+
+  // Releasing memory.
+  // Can't cleanup tries - they need to be available if the page is updated -
+  // but it's safer to release stem cache.
+  cleanup(): void {
+    this.cachingStemmers.forEach((stemmer) => stemmer.clear());
+  }
+
+  // Get different languages for matching.
+  private getMatchLanguages(): Array<string> {
+    let result: Array<string> = [];
+    this.groups.forEach((group: Group) => {
+      if (this.shouldSmartMatch(group)) {
+        if (result.indexOf(group.matchingLanguage) < 0) {
+          result.push(group.matchingLanguage);
+        }
+      }
+    });
+    return result;
   }
 
   private matchFromIndex(
@@ -170,13 +195,6 @@ class MatchFinderImpl implements MatchFinder {
       group.matchingType == MatchingType.SMART &&
       this.stemmers.has(group.matchingLanguage)
     );
-  }
-
-  // Releasing memory.
-  // Can't cleanup tries - they need to be available if the page is updated -
-  // but it's safer to release stem cache.
-  cleanup(): void {
-    this.cachingStemmers.forEach((stemmer) => stemmer.clear());
   }
 
   private pushMatchIfNotEmpty(
