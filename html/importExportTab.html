@@ -1,6 +1,27 @@
 <div id="import-tab" ng-controller="importExportController">
   <div class="well well-sm">
     <h4>Export</h4>
+    <div class="form-group row">
+      <label for="export-group" class="col-xs-3 col-form-label">Group</label>
+      <div class="col-xs-9">
+        <select
+          class="form-control"
+          ng-model="exportInput.groupIdStr"
+          name="export-group"
+        >
+          <option
+            value="0"
+            style="font-weight: bold; font-style: italic"
+            selected
+          >
+            <i>All</i>
+          </option>
+          <option ng-repeat="group in groups" value="{{group.id}}">
+            {{group.name}}
+          </option>
+        </select>
+      </div>
+    </div>
     <div class="row">
       <div class="col-xs-12">
         <button class="btn btn-primary" ng-click="onExportClicked('json')">

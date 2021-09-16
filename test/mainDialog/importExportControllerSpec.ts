@@ -5,9 +5,9 @@
 ///<reference path="../../src/lib/common/group.ts" />
 
 describe('importExportController', () => {
-  let controller;
+  let controller: any;
   let $scope: any;
-  let dao;
+  let dao: any;
   let now = new Date();
 
   let mod: any = module;
@@ -325,6 +325,36 @@ describe('importExportController', () => {
           for (let i = 0; i < 10000; i++) {
             expect(parsedDecoded['words'][i]['word']).toEqual(`word #${i}`);
           }
+        });
+      });
+
+      describe('groups', async () => {
+        beforeEach(() => {
+          dao.getDictionary = function () {
+            return Promise.resolve([
+              new DictionaryEntry(null, 'w1', 'd1', now, now, true, 1),
+              new DictionaryEntry(null, 'w2', 'd2', now, now, true, 2),
+            ]);
+          };
+        });
+
+        it('can export all groups', async () => {
+          $scope.exportInput = {
+            groupIdStr: '0',
+          };
+          await process('json');
+          expect(parsedDecoded['words'].length).toBe(2);
+          expect(parsedDecoded['words'][0]['word']).toEqual('w1');
+          expect(parsedDecoded['words'][1]['word']).toEqual('w2');
+        });
+
+        it('can export one groups', async () => {
+          $scope.exportInput = {
+            groupIdStr: '2',
+          };
+          await process('json');
+          expect(parsedDecoded['words'].length).toBe(1);
+          expect(parsedDecoded['words'][0]['word']).toEqual('w2');
         });
       });
     });

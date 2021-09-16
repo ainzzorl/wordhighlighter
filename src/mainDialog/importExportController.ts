@@ -16,6 +16,10 @@ angular
       groupIdStr: Group.DEFAULT_GROUP_ID.toString(),
     };
 
+    $scope.exportInput = {
+      groupIdStr: '0',
+    };
+
     $scope.showInputSuccessConfirmation = false;
     $scope.showImportError = false;
     $scope.importError = '';
@@ -123,7 +127,7 @@ angular
 
     function getJsonExportString(): Promise<string> {
       return new Promise(function (resolve, _reject) {
-        dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
+        getWordsToExport().then((dictionary: Array<DictionaryEntry>) => {
           let jsonData: any = {};
           jsonData.words = dictionary.map((entry) => {
             return {
@@ -152,7 +156,7 @@ angular
           'updated at',
           'group id',
         ]);
-        dao.getDictionary().then((dictionary: Array<DictionaryEntry>) => {
+        getWordsToExport().then((dictionary: Array<DictionaryEntry>) => {
           csvData = csvData.concat(
             dictionary.map((entry) => {
               return [
@@ -167,6 +171,14 @@ angular
           );
           resolve(Papa.unparse(csvData));
         });
+      });
+    }
+
+    async function getWordsToExport(): Promise<Array<DictionaryEntry>> {
+      let groupId = parseInt($scope.exportInput.groupIdStr);
+      const dictionary = await dao.getDictionary();
+      return dictionary.filter((entry) => {
+        return groupId === 0 || entry.groupId === groupId;
       });
     }
 
