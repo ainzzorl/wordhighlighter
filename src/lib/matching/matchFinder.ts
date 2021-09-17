@@ -14,6 +14,7 @@ interface MatchFinder {
   /**
    * Detect matches in a string.
    * @param input Text string.
+   * @returns List of match results. Concatenated are guaranteed to be equal to the input.
    */
   findMatches(input: string): Array<MatchResultEntry>;
 
@@ -43,8 +44,6 @@ class MatchFinderImpl implements MatchFinder {
   // Map: language->stemmer
   private cachingStemmers: Map<string, CachingStemmer>;
 
-  private matchingLanguages: Array<string>;
-
   private tokenizer: Tokenizer;
 
   constructor(
@@ -61,7 +60,9 @@ class MatchFinderImpl implements MatchFinder {
     this.cachingStemmers = new Map<string, CachingStemmer>();
   }
 
-  // Detect words matching the dictionary in the input.
+  // Find matches in the input.
+  // Tokenize the input and iterate from left to right,
+  // trying to find a match starting from that position.
   findMatches(input: string): Array<MatchResultEntry> {
     let result: Array<MatchResultEntry> = [];
     let tokens = this.tokenizer.tokenize(input);
@@ -109,7 +110,6 @@ class MatchFinderImpl implements MatchFinder {
     this.strictTrie = new Trie(null, this.tokenizer);
     this.nonStrictTries = new Map<string, Trie>();
     this.cachingStemmers = new Map<string, CachingStemmer>();
-    this.matchingLanguages = this.getMatchLanguages();
     let groupIdToGroup = new Map<number, Group>();
 
     // Map group ids to groups
@@ -174,20 +174,15 @@ class MatchFinderImpl implements MatchFinder {
     } else {
       // Try finding a match in the "non-strict" trie, starting from tokens[i].
       [endIndex, match] = [null, null];
-      for (
-        let languageIndex = 0;
-        languageIndex < this.matchingLanguages.length;
-        languageIndex++
-      ) {
-        [endIndex, match] = this.nonStrictTries
-          .get(this.matchingLanguages[languageIndex])
-          .match(tokens, firstTokenIndex);
+      this.nonStrictTries.forEach((trie: Trie) => {
         if (match !== null) {
-          return [endIndex, match];
+          // Already found a match.
+          return;
         }
-      }
+        [endIndex, match] = trie.match(tokens, firstTokenIndex);
+      });
+      return [endIndex, match];
     }
-    return [null, null];
   }
 
   private shouldSmartMatch(group: Group) {
