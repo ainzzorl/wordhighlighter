@@ -13,6 +13,18 @@
 interface MatchFinder {
   /**
    * Detect matches in a string.
+   *
+   * Example:
+   * input = "Hello world. Tengo dos gatos".
+   * Dictionary: [(word="world", lang="en"), (word="gato", lang="es")]
+   * Expected output:
+   * [
+   *  (value="Hello ",       matchOf=null),
+   *  (value="world",        matchOf="world"),
+   *  (value=". Tengo dos ", matchOf=null),
+   *  (value="gatos",        matchOf="gato")
+   * ]
+   *
    * @param input Text string.
    * @returns List of match results. Concatenated are guaranteed to be equal to the input.
    */
